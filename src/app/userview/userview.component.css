@@ -1,0 +1,33 @@
+:host{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+mat-drware{
+    width: 260px;
+    background-color: #3A608E;;
+}
+
+mat-drawer-container{
+    color: #3A608E;
+    height: 86vh;
+    top: 5rem;
+}
+.p-button
+{
+
+  background: #B7CBE3;
+  color:  #3A608E;
+
+} 
+
+.background-primary{
+    color: aliceblue;
+    background-color: #3A608E;
+}
+
+.viewbody{
+    padding: 1%;
+    margin-top: 0%;
+}

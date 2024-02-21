@@ -1,0 +1,490 @@
+<h2>{{ledgertitle}}</h2>
+<div class="p-2 card ">
+  <div class="text-end mr-2">
+    <p-button class="mx-2 p-button-sm" (onClick)="AddBankDetails()"  label="Add bank Details"></p-button>
+    <p-button *ngIf="show" class="mx-2 p-button-sm" (click)="save()" label="Submit" [disabled]="false "></p-button>
+    
+    <p-button *ngIf="!show" class="mx-2 p-button-sm"  mat-button type="button" (click)="edit()">
+      <!-- <button mat-button type="button" (click)="formone.ngSubmit.emit();formtwo.ngSubmit.emit();"></button> -->
+      Save
+    </p-button>
+    <p-button class="mx-2 p-button-sm"  (click)="firstFormGroup.reset()">Reset</p-button>
+    </div>
+  
+
+    <div class="card p-2 my-2">
+
+      <div class="row p-2 ">
+        <form [formGroup]="firstFormGroup" (ngSubmit)="save()" #formone="ngForm">
+          <div class="row my-2">
+            <div class="col-1">
+              <label for="float-input">{{ledgerinitial}} Code</label>
+                <input id="float-input" formControlName="ledgerCode"
+                 [hidden]="salesLedger?.ledgerId!=0" maxlength="30" size="10" class="p-inputtext-sm" type="text" (change)="onLedgerNameChange()" pInputText>
+                 <label [hidden]="salesLedger.ledgerId==0" class="mt-2"> {{salesLedger.ledgerCode}}</label>
+                <mat-error *ngIf=" firstFormGroup.get('ledgerCode').hasError('required') && firstFormGroup.get('ledgerCode').invalid && firstFormGroup.get('ledgerCode').touched" >Please Enter the Ledger</mat-error>
+                <mat-error *ngIf=" firstFormGroup.get('ledgerCode').hasError('nameisnotallowed')">
+                 {{firstFormGroup.get('ledgerCode').value}}already exist!Try new Ledger name
+                </mat-error>
+                <mat-error *ngIf=" firstFormGroup.get('ledgerCode').hasError('maxlength')">
+                  only 30 character's are allowed
+                 </mat-error>
+                 <mat-error *ngIf=" firstFormGroup.get('ledgerCode').hasError('pattern')">
+                  only character's are allowed
+                 </mat-error>
+                <!-- <mat-form-field  formControlName="ledgerCode"  [hidden]="salesLedger.ledgerId!=0" class="col-3 " appearance="outline">
+                  <mat-label>Ledger Code</mat-label>
+                  <input matInput maxlength="30" formControlName="ledgerCode" placeholder="Type Ledger Name"
+                    (change)="onLedgerNameChange()">
+                   
+                  <mat-error *ngIf=" firstFormGroup.get('ledgerCode').hasError('required')" >Please Enter the Ledger</mat-error>
+                  <mat-error *ngIf=" firstFormGroup.get('ledgerCode').hasError('nameisnotallowed')">
+                   {{firstFormGroup.get('ledgerCode').value}}already exist!Try new Ledger name
+                  </mat-error>
+                  <mat-error *ngIf=" firstFormGroup.get('ledgerCode').hasError('maxlength')">
+                    only 30 character's are allowed
+                   </mat-error>
+                   <mat-error *ngIf=" firstFormGroup.get('ledgerCode').hasError('pattern')">
+                    only character's are allowed
+                   </mat-error>
+      
+                </mat-form-field> -->
+                
+            </div>
+            <div class="col-3">
+                
+                <label for="float-input">{{ledgerinitial}} Name</label>
+                <input id="float-input"  size="40" formControlName="ledgerName" onchange="ledgernameChange()" placeholder="Type Ledger Name"  type="text" class="p-inputtext-sm" pInputText>
+                <mat-error *ngIf=" firstFormGroup.get('ledgerName').hasError('required')&&  firstFormGroup.get('ledgerName').invalid && firstFormGroup.get('ledgerName').touched">
+                  Please Enter the Ledger
+                </mat-error>
+                <mat-error *ngIf=" firstFormGroup.get('ledgerName').hasError('nameisnotallowed')">
+                  {{firstFormGroup.get('ledgerName').value}}already exist!Try new Ledger name
+                </mat-error>
+                <mat-error *ngIf=" firstFormGroup.get('ledgerName').hasError('maxlength')">
+                  only 30 character's are allowed
+                </mat-error>
+                <mat-error *ngIf=" firstFormGroup.get('ledgerName').hasError('pattern')">
+                  only character's are allowed
+                </mat-error><!-- 
+                <mat-form-field class="col-3 " appearance="outline">
+                  <mat-label>Ledger Name</mat-label>
+                  <input matInput maxlength="30" formControlName="ledgerName" placeholder="Type Ledger Name"
+                    onchange="ledgernameChange()">
+      
+                  <mat-error *ngIf=" firstFormGroup.get('ledgerName').hasError('required')">Please Enter the Ledger
+                  </mat-error>
+                  <mat-error *ngIf=" firstFormGroup.get('ledgerName').hasError('nameisnotallowed')">
+                    {{firstFormGroup.get('ledgerName').value}}already exist!Try new Ledger name
+                  </mat-error>
+                  <mat-error *ngIf=" firstFormGroup.get('ledgerName').hasError('maxlength')">
+                    only 30 character's are allowed
+                  </mat-error>
+                  <mat-error *ngIf=" firstFormGroup.get('ledgerName').hasError('pattern')">
+                    only character's are allowed
+                  </mat-error>
+      
+                </mat-form-field>
+       -->
+            </div>
+            <div class="col-3">
+                
+                <label for="float-input">{{ledgerinitial}} Alias</label>
+                <input id="float-input"  maxlength="30" size="40" formControlName="ledgerAlias" placeholder="Type Alias Name" type="text" class="p-inputtext-sm" pInputText>
+                <mat-error *ngIf="firstFormGroup.get('ledgerAlias').hasError('required')&&  firstFormGroup.get('ledgerAlias').invalid && firstFormGroup.get('ledgerAlias').touched">Please enter the ledger alias
+                </mat-error>
+                <mat-error *ngIf="firstFormGroup.get('ledgerAlias').hasError('aliasisnotallowed')">
+                  {{firstFormGroup.get('ledgerAlias').value}}already Exist! Try with new one
+                </mat-error>
+                <mat-error *ngIf="firstFormGroup.get('ledgerAlias').hasError('pattern')">
+                  Alias are not allowed
+                </mat-error>
+                <!-- 
+                <mat-form-field class=" col-3" appearance="outline">
+                  <mat-label>Ledger Alias</mat-label>
+                  <input matInput maxlength="30" formControlName="ledgerAlias" placeholder="Type Alias Name">
+                  <mat-error *ngIf="firstFormGroup.get('ledgerAlias').hasError('required')">Please enter the ledger alias
+                  </mat-error>
+                  <mat-error *ngIf="firstFormGroup.get('ledgerAlias').hasError('aliasisnotallowed')">
+                    {{firstFormGroup.get('ledgerAlias').value}}already Exist! Try with new one
+                  </mat-error>
+                  <mat-error *ngIf="firstFormGroup.get('ledgerAlias').hasError('pattern')">
+                    Alias are not allowed
+                  </mat-error>
+                 <mat-error *ngIf="firstFormGroup.get('ledgerAlias').hasError('pattern')">
+                    Only Characters and numbers are allowed
+                  </mat-error> 
+                </mat-form-field> -->
+      
+              </div>
+            <div class="col-2">
+                
+                <label for="float-input">Associated Home Branch</label>
+                <!-- <input id="float-input" type="text" pInputText class="p-inputtext-sm"> -->
+                <p-dropdown [options]="associatedHomeBranch" [required]="true" (ngModelChange)="onchange(associatedHome)" 
+                formControlName="associateHomeBranch" class="p-inputtext-sm" optionLabel="name" optionValue="id"  #associatedHome ngModel   >
+                  
+              </p-dropdown>
+              
+               <!--  <mat-form-field class="col-2" appearance="outline">
+                  <mat-label>Associated with HO/RMO/Branch</mat-label>
+                  <mat-select required (ngModelChange)="onchange($event)" [(value)]="homeselected"
+                    formControlName="associateHomeBranch" Required>
+                    <mat-option [value]=4>ALL</mat-option>
+                    <mat-option [value]=1>HO</mat-option>
+                    <mat-option [value]=2>RMO</mat-option>
+                    <mat-option [value]=3>BRANCH</mat-option>
+                  </mat-select>
+                </mat-form-field> -->
+      
+              </div>
+              <div class="col-3" [hidden]="true">
+                <label for="float-input" class="">IF Branch</label>
+                <p-dropdown formControlName="ifBranch"  [options]="branchlist"   class=" mt-2 p-inputtext-sm"
+                    optionValue="companyid" optionLabel="companyname" [filter]="true" filterBy="name" [showClear]="true" >
+                    
+                </p-dropdown>
+                <!-- <input id="float-input" type="text" class="p-inputtext-sm" pInputText>
+                <mat-form-field class="col-4" appearance="outline">
+                  <mat-label>IF Branch</mat-label>
+                  <mat-select matInput formControlName="ifBranch">
+                    <mat-option *ngFor="let topping of branchlist" [value]="topping.companyid">{{topping.companyname}}
+                    </mat-option>
+      
+                  </mat-select>
+                </mat-form-field> -->
+              
+      
+              </div>
+
+          </div>
+          <div class="row my-2">
+            
+            <div class="col-4 pt-2">
+              <label for="float-input" class="mb-3">Group/Under</label>
+              <p-dropdown  [options]="groupdetails" class="mt-2 p-inputtext-sm"
+               (ngModelChange)="onGroupchange($event)" autoWidth="false" [required]="true" appendTo="body" formControlName="groupId"  
+                  optionValue="groupId" optionLabel="groupName"  [filter]="true" filterBy="groupName" [showClear]="true" >
+                  
+              </p-dropdown>  
+                
+      <!-- 
+                <mat-form-field class="col-3" appearance="outline">
+                  <mat-label>Group/Under</mat-label>
+                  <mat-select required (ngModelChange)="onGroupchange($event)" formControlName="groupId" required>
+                    <mat-option *ngFor="let topping of groupdetails" [value]="topping.groupId">{{topping.groupName}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+       -->
+                  
+            </div>
+            <div class="col-3 pt-2">
+              <label for="float-input" class="mb-3">IF Subgroup Is Applicable</label>
+                <p-dropdown  autowidth="false" [options]="subgroupdetails" [required]="true" formControlName="subGroupId" class="mt-2 p-inputtext-sm"
+                 optionValue="subgroupId" optionLabel="subgroupName">
+
+                </p-dropdown>  
+              
+                
+                <!-- <mat-form-field class="col-3" appearance="outline">
+                  <mat-label>If Subgroup is Applicable</mat-label>
+                  <mat-select required formControlName="subGroupId">
+                    <mat-option *ngFor="let topping of subgroupdetails" [value]="topping.subgroupId" required>
+                      {{topping.subgroupName}}</mat-option>
+                  </mat-select>
+                </mat-form-field> -->
+            </div>
+            <div class="col-2 pt-2">
+              
+              <label for="panno" class="mb-3" >PANNO</label>
+              <input pInputText type="text" size="26" name="panno" formControlName="panno">
+              <!-- <p-dropdown [options]="inventoryvalue"  formControlName="affectInventory" class="p-inputtext-sm"
+              optionValue="id" optionLabel="name"></p-dropdown> -->
+
+              <!-- 
+                <mat-form-field class="col-6 mr-4 " appearance="outline">
+                  <mat-label>Does Ledger effects the inventory value</mat-label>
+                  <mat-select #matInput formControlName="affectInventory">
+                    <mat-option [value]=0>YES</mat-option>
+                    <mat-option [value]=1>NO</mat-option>
+                  </mat-select>
+                </mat-form-field> -->
+              
+            </div>
+
+            <div class="col-2 pt-2">
+              <label class="mb-3">GST</label>
+              <input pInputText size="30" type="text" name="gst" formControlName="gst">
+              </div>
+            
+          </div>
+
+          <div class="row my-2">
+            <div class="col-2">
+              
+              <label for="float-input">Invoice Address</label>
+                <!-- <input id="float-input" type="text" class="p-inputtext-sm" pInputText> -->
+                <textarea size="30" pInputTextarea formControlName="address1"></textarea>
+                <!-- <mat-error *ngIf="firstFormGroup.get('address1').hasError('pattern')&&firstFormGroup.get('address1').invalid&&firstFormGroup.get('address1').">
+                  Address Incorrect</mat-error> -->
+              </div>
+              <!--  <div class="row py-2">
+     
+                <mat-form-field class="col-3" appearance="outline">
+                  <mat-label>Invoice Address</mat-label>
+                  <textarea matInput formControlName="address1"></textarea>
+                  <mat-error *ngIf="firstFormGroup.get('address1').hasError('pattern')">Address Incorrect</mat-error>
+                </mat-form-field> 
+            </div>-->
+            <div class="col-2">
+              
+              <label for="float-input">Office Address</label>
+                <textarea pInputTextarea formControlName="address2"></textarea>
+                <!-- <mat-error *ngIf="firstFormGroup.get('address2').hasError('pattern')">Address Incorrect</mat-error> -->
+              <!-- </mat-form-field> -->
+              <!-- 
+                <mat-form-field class="col-3" appearance="outline">
+                  <mat-label> Office Address </mat-label>
+                  <textarea matInput formControlName="address2"></textarea>
+                  <mat-error *ngIf="firstFormGroup.get('address2').hasError('pattern')">Address Incorrect</mat-error>
+                </mat-form-field> -->
+            </div>
+            <div class="col-3">
+              
+              <label for="float-input">State</label>
+                
+                <p-dropdown  [options]="stateNames" [required]="true" class="p-inputtext-sm"
+                formControlName="state"  (onChange)="onStateChange($event.value)"
+                  optionValue="stateId" optionLabel="stateName"  [filter]="true" filterBy="stateName" [showClear]="true" >
+                  
+              </p-dropdown>  
+              <!-- 
+                <mat-form-field class="col-3" appearance="outline">
+                  <mat-label>State</mat-label>
+                  <mat-select #matInput formControlName="state" (selectionChange)="onStateChange($event.value)">
+                    <mat-option [value]="0">SELECT</mat-option>
+                    <mat-option *ngFor="let state of stateNames" [value]=state.stateId>{{state.stateName}}</mat-option>
+                  </mat-select>
+                </mat-form-field> -->
+            </div>
+            <div class="col-3">
+              
+              <label for="float-input">City</label>
+              <input pInputText type="text" name="cityName" formControlName="cityName">
+                
+                <p-dropdown [hidden]="true" [options]="selectedCityNames" [required]="true" class="p-inputtext-sm"
+                formControlName="city" (onChange)="onCityChange($event.value)"
+                  optionValue="cityId" optionLabel="cityName"  [filter]="true" filterBy="cityName" [showClear]="true" >
+                  
+              </p-dropdown>  <!-- 
+                <mat-form-field class="col-3" appearance="outline">
+                  <mat-label>City</mat-label>
+                  <mat-select required formControlName="city" (selectionChange)="onCityChange($event.value)">
+                    <mat-option value=0>SELECT</mat-option>
+                    <mat-option *ngFor="let city of selectedCityNames" [value]=city.cityId>{{city.cityName}}</mat-option>
+                  </mat-select>
+                </mat-form-field> -->
+            </div>
+
+            <div class="col-2">
+              
+              <label for="float-input">Pin Code</label>
+                
+              <input pInputText type="text" name="pinCode" formControlName="pinCode" >  <!-- 
+                <mat-form-field class="col-3" appearance="outline">
+                  <mat-label>City</mat-label>
+                  <mat-select required formControlName="city" (selectionChange)="onCityChange($event.value)">
+                    <mat-option value=0>SELECT</mat-option>
+                    <mat-option *ngFor="let city of selectedCityNames" [value]=city.cityId>{{city.cityName}}</mat-option>
+                  </mat-select>
+                </mat-form-field> -->
+            </div>
+          </div>
+        </form>
+      </div>
+
+      
+    </div>
+    <p-dialog   [modal]="true"  position="center"  width="300" height="200" [resizable]="true"  [style]="{width: '450px', minWidth: '456px',minHeight:'382px'}"  header="Add Bank Details" appendTo="body" [(visible)]="visibleBankDetails">
+      <form novalidate [formGroup]="bankFormGroup" class="dialogsetting" (ngSubmit)="save()" #formone="ngForm">
+      <div class="row">
+        <div class="col">
+          <label for="bankname">Bank Name<small style="color:red">*</small></label>
+          <input id="bankname" [required]="true"  [(ngModel)]="bankDetails.bankName" formControlName="bankName" type="text" pInputText>
+          <mat-error *ngIf="bankFormGroup.get('bankName').hasError('required') && bankFormGroup.get('bankName').touched  && bankFormGroup.get('bankName').invalid ">
+            Bank Name is required.
+          </mat-error>
+          <mat-error *ngIf="bankFormGroup.get('bankName').hasError('pattern')">
+            Incorrect naming convention.
+          </mat-error>
+        
+      </div>
+      <div class="col">
+        <label for="accno">Account Number<small style="color:red">*</small></label>
+        <input id="accno" [required]="true" minlength="3" formControlName="bankAccountNumber" [(ngModel)]="bankDetails.bankAccountNumber" type="text" pInputText>
+        <mat-error *ngIf="bankFormGroup.get('bankAccountNumber').invalid && bankFormGroup.get('bankAccountNumber').touched ">Atleast 3  characters needed </mat-error>
+      <mat-error *ngIf="bankFormGroup.get('bankAccountNumber').hasError('pattern')">Invalid Account Number
+      </mat-error>
+      
+      </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <label for="ifsccode">Ifsc Code <small style="color:red">*</small></label> 
+          <input id="ifsccode" [required]="true" formControlName="ifscCode"  type="text" maxlength="11" minlength="11" [(ngModel)]="bankDetails.ifscCode" pInputText>
+          <mat-error *ngIf="bankFormGroup.get('ifscCode').hasError('required') && bankFormGroup.get('ifscCode').invalid && bankFormGroup.get('ifscCode').touched" >Please Provide The Ifsc code</mat-error>
+          <mat-error *ngIf="bankFormGroup.get('ifscCode').hasError('minlength')&& bankFormGroup.get('ifscCode').invalid && bankFormGroup.get('ifscCode').touched" >Invalid Ifsc code</mat-error>
+          <mat-error *ngIf="bankFormGroup.get('ifscCode').hasError('pattern')" >Invalid Ifsc Code</mat-error>
+      </div>
+      <div class="col">
+        <label for="bankaddress">Bank Address <small style="color:red">*</small></label>
+        
+        <textarea id="bankaddress" [required]="true" [(ngModel)]="bankDetails.bankAddress"  formControlName="bankAddress"   pInputTextarea></textarea>
+        <mat-error *ngIf="bankFormGroup.get('bankAddress').hasError('required')  && bankFormGroup.get('bankAddress').invalid && bankFormGroup.get('bankAddress').touched" >Please Provide Bank Address</mat-error>
+          
+      </div>
+    </div>
+    <!-- <div class="row">
+      <div class="col">
+        <label for="gstno">Gst NO <small style="color:red">*</small></label>
+        <input id="gstno"  [required]="true" [(ngModel)]="bankDetails.gst" formControlName="gst" type="text" pInputText>
+        <mat-error *ngIf="bankFormGroup.get('gst').hasError('required') && bankFormGroup.get('gst').invalid && bankFormGroup.get('gst').touched" >Please Provide the GST NO</mat-error>
+        <mat-error *ngIf="bankFormGroup.get('gst').hasError('pattern')" >Invalid  the GST NO</mat-error>
+        </div>
+
+      <div class="col">
+        <label for="panno">Pan NO<small style="color:red">*</small></label>
+        <input id="panno" [required]="true" [(ngModel)]="bankDetails.pano"formControlName="pano" type="text" pInputText>
+        <mat-error *ngIf="bankFormGroup.get('pano').hasError('required') && bankFormGroup.get('pano').invalid && bankFormGroup.get('pano').touched" >Please Provide the PAN NO</mat-error>
+        <mat-error *ngIf="bankFormGroup.get('pano').hasError('pattern')" >Invalid PAN NO</mat-error>
+       
+      
+    </div> -->
+   <!--  </div> -->
+    <div class="m-2 text-center">
+    <p-button (onClick)="AddBank()" [disabled]="bankFormGroup.invalid" label="submit"></p-button>
+    </div>
+    
+    
+    
+    
+    </form>
+      </p-dialog>
+
+  <div *ngIf="bankDetailsList.length!=0" class="my-2 card">
+    
+    <div  >
+      <p-table [scrollable]="true" scrollDirection="both" scrollHeight="200px" [value]="bankDetailsList"
+       styleClass="p-datatable-striped " responsiveLayout="scroll" >
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="min-width:200px">Bank Name</th>
+                <th style="min-width:200px">Account NO</th>
+                <th style="min-width:200px">IFSC CODE</th>
+                <!-- <th style="min-width:200px">GST</th>
+                <th style="min-width:200px">PAN NO</th> -->
+                <th style="min-width:200px">Bank Address</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body"  let-bank>
+            <tr>
+                <td style="min-width:200px" pEditableColumn>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input pInputText type="text" [(ngModel)]="bank.bankName">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{bank.bankName}}
+                    </ng-template>
+                </p-cellEditor>
+                  
+                </td>
+                <td style="min-width:200px" pEditableColumn>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input pInputText type="text" [(ngModel)]="bank.bankAccountNumber">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{bank.bankAccountNumber}}
+                    </ng-template>
+                </p-cellEditor>
+                  </td>
+                <td style="min-width:200px" pEditableColumn>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input pInputText type="text" [(ngModel)]="bank.ifscCode">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{bank.ifscCode}}
+                    </ng-template>
+                </p-cellEditor>
+                <!-- </td>
+                <td style="min-width:200px" pEditableColumn>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{bank.gst}}
+                    </ng-template>
+                </p-cellEditor>
+                  </td>
+                <td style="min-width:200px" pEditableColumn>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{bank.pano}}
+                    </ng-template>
+                </p-cellEditor>
+                  </td> -->
+                <td style="min-width:200px" pEditableColumn>
+                  <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input pInputText type="text" [(ngModel)]="bank.bankAddress">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{bank.bankAddress}}
+                    </ng-template>
+                </p-cellEditor>
+                  </td>
+                <td style="min-width:200px" >
+                  <p-button label="remove" (onClick)="removeBank(bank)"></p-button></td>
+            </tr>
+        </ng-template>
+    </p-table><!-- 
+      <div *ngFor="let bank of bankDetailsList" class="my-3" >
+        <div class="row">
+          <label>Bank Name</label>
+          <label>{{bank.bankName}}</label>
+          <label>Bank Account No</label>
+        <label>{{bank.bankAccountNumber}}</label>
+        <label>IFSC CODE</label>
+        <label>{{bank.ifscCode}}</label>
+        <label>GST</label>
+        <label>{{bank.gst}}</label>
+        <label>PANNO</label>
+        <label>{{bank.pano}}</label>
+        <label>Bank Address</label>
+        <label>{{bank.bankAddress}}</label>
+        </div>
+      </div>
+       -->
+       
+    </div>
+  </div>
+  <p-scrollPanel  [style]="{width: '100%', height: '200px'}">
+
+    <div class="card">
+      <div>
+        <app-filesupload [title]="title" [ledgerid]="salesLedger.ledgerId" [ivid]="vid"
+          [displayedId]="salesLedger.fileUploadId" (source)="getFileId($event)"></app-filesupload>
+      </div>
+    </div>
+  </p-scrollPanel>
+</div>
+
+
+

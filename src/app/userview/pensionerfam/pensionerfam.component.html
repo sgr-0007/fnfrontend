@@ -1,0 +1,207 @@
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+  <span class="moduleheadertext">Pensioner Family Master</span>
+    </div>
+  <p-table #dt  [value]="groups" sortField="pensionerfamilyid" [sortOrder]="-1"  [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+   styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,50]"
+   [globalFilterFields]="['annuitynofamily','pensionerfamily','wo','designationpensionerfamily','accnopensionerfamily','ifscpensionerfamily']"
+   dataKey="pensionerfamilyid" editMode="row">
+   <ng-template pTemplate="caption">
+    <div class="row">
+      <div class="col-lg-1 mb-1"><p-button label="ADD" (onClick)="onGroupAdd()"></p-button></div>
+      
+      <div class="tablename">Pensioner Family Master</div>
+      
+      <div class="row align-left">  
+        <div class="col text-start">     
+        <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+        </span>
+    </div>
+          </div>
+
+
+      </div>
+  </ng-template>
+  <ng-template pTemplate="header"></ng-template>
+  
+          <ng-template pTemplate="header" >
+        <tr>
+
+            <th>Annuity No.
+            </th>
+            <th>Family Pensioner Name
+
+            </th>
+            <th>W/o
+
+            </th>
+            <th>Designation of Pensioner
+
+            </th>
+            <th>Acc. No.
+            </th>
+            <th>Ifsc</th>
+  
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="rowData">
+        <td>
+            <p-cellEditor>
+                <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="rowData.annuitynofamily">
+                </ng-template>
+                <ng-template pTemplate="output"> 
+                    {{rowData.annuitynofamily}}
+                </ng-template>
+            </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.pensionerfamily">
+              </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.pensionerfamily}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.wo">
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.wo}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+      
+        <td>
+            <p-cellEditor>
+                <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="rowData.designationpensionerfamily">
+                </ng-template>
+                <ng-template pTemplate="output"> 
+                    {{rowData.designationpensionerfamily}}
+                </ng-template>
+            </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.accnopensionerfamily">
+            </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.accnopensionerfamily}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="rowData.ifscpensionerfamily">
+          </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.ifscpensionerfamily}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+      
+        <td style="text-align:center">
+            <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil"
+                class="ui-button-info" [disabled]="disable" (click)="onRowEditInit(rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"
+                class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData.pensionerid,rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times"
+                class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
+        </td>
+    </tr>
+    </ng-template>
+  </p-table>
+  <p-dialog appendTo="body" header="Pensioner Details" width="300" height="200" [(visible)]="displayDialog"
+            [responsive]="true" showEffect="fade" [modal]="true">
+      <form #GroupForm="ngForm" novalidate>
+          <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="groupForDialog">
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="annuitynofamily">Annuity No.</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <input pInputText id="annuitynofamily" class="form-control" name="annuitynofamily" required
+                             [(ngModel)]="groupForDialog.annuitynofamily"/>
+                            
+                  </div>
+              </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="pensionerfamily">Pensioner Family</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <input  pInputText id="pensionerfamily" class="form-control" name="pensionerfamily" required
+                           [(ngModel)]="groupForDialog.pensionerfamily"/>
+
+                </div>
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="wo">W/o</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <input  pInputText id="wo" class="form-control" name="wo" required
+                           [(ngModel)]="groupForDialog.wo"/>
+
+                </div>
+            </div>
+
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="designationpensionerfamily">Designation Pensioner</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                   
+                    <input  pInputText id="designationpensionerfamily" class="form-control" name="designationpensionerfamily" required
+                    [(ngModel)]="groupForDialog.designationpensionerfamily"/>
+                </div>
+            </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="accnopensionerfamily">Acc. No.</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <input  pInputText id="accnopensionerfamily" class="form-control" name="accnopensionerfamily" required
+                             [(ngModel)]="groupForDialog.accnopensionerfamily"/>
+  
+  
+                  </div>
+              </div>
+              <div [hidden]="false" class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="ifscpensionerfamily">IFSC</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <!-- <input pInputText id="isactive" name="isactive" required
+                             [(ngModel)]="groupForDialog.isactive"/> -->
+  
+                             <input  pInputText id="ifscpensionerfamily" class="form-control" name="ifscpensionerfamily" required
+                             [(ngModel)]="groupForDialog.ifscpensionerfamily"/>
+  
+  
+                  </div>
+              </div>
+  
+          </div>
+      </form>
+      <p-footer>
+          <div class="ui-dialog-buttonpane ui-helper-clearfix">
+              <button type="submit" pButton icon="fa-check" (click)="saveGroup()"
+                      label="Save" [disabled]="!GroupForm.form.valid"></button>
+                      <p-button label="Reset" (onClick)="onGroupReset()"></p-button>
+          </div>
+      </p-footer>
+      </p-dialog>
+  
+  </div>
+  

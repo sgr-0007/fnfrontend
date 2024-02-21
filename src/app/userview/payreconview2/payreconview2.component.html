@@ -1,0 +1,126 @@
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+      <span class="moduleheadertext">Grower Payment Reconciliation-Failed Payments</span>
+    </div>
+    <div class="row mb-3">
+      <form #VoucherForm="ngForm" novalidate>
+        <div *ngIf="daybookForDialog">
+          <div class="row mb-2">
+                  <div class="col-lg-1 col-md-1 col-sm-12">
+                      <label for="salenotedate">Date</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-12">  
+                    <p-calendar name="salenotedate" [maxDate]="dateTime" dateFormat="dd.mm.yy" [(ngModel)]="daybookForDialog.salenotedate" [showIcon]="true"  appendTo="body" ></p-calendar>
+                  </div>
+                  <div class="col-lg-1 col-md-1 col-sm-12">
+                    <label for="companyname">Branch/RMO</label>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-12">  
+                  <p-dropdown name="companyname" [filter]="true" filterBy="companyname" placeholder="-Select-" [options]="companies" optionLabel="companyname"  optionValue="companyid"  [(ngModel)]="daybookForDialog.companyid">
+                  </p-dropdown>
+                </div>
+                <div class="col-lg-1 col-md-1 col-sm-12">
+            
+                  <p-button label="Search" (onClick)="onSearch()"></p-button>
+                </div>
+                <div class="col-lg-1 col-md-1 col-sm-12">
+                  <p-button label="Reset" (onClick)="onReset()"></p-button>
+              </div>  
+            </div>
+       
+  </div>
+      </form>
+    </div>
+    <div class="row mb-3">
+      <div class="col-11"> 
+        <p-fileUpload  #form name="myfile[]" accept=".xlsx,.pdf,.csv,.xls,.png,.jpg,jpeg" [customUpload]="true" (uploadHandler)="myUploader($event,form)"></p-fileUpload>
+      </div>
+  </div>
+ 
+    <div class="row mb-3 ">
+  
+      <p-table #dt sortField="srid"   [sortOrder]="-1" [value]="salenotes" [paginator]="true" [rows]="rows"
+        [showCurrentPageReport]="true" [(first)]="first" styleClass="myTable"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,50]"
+        dataKey="srid" [globalFilterFields]="['tbgrno','salenoteno','growername']"
+        editMode="row">
+  
+        <ng-template pTemplate="caption">
+          <!-- <div class="row">
+            <div class="tablename">Receipt Vouchers</div>
+          </div> -->
+        
+          <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-12 m-2">
+              <span class="p-input-icon-left ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                  placeholder="Search keyword" />
+              </span>
+            </div>     
+           
+            </div>
+            </ng-template>    
+  
+  
+        <ng-template pTemplate="header">
+          <tr>
+           
+            <th>SalenoteNo.</th>
+            <th>TbgrNo.</th>       
+            <th>Grower</th>
+            <th>Bank</th>
+            <th>NetAmount</th>  
+            <th>Salenote Date</th>
+          </tr>
+  
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+          <tr [pEditableRow]="rowData">
+          
+            <td>
+  
+              {{rowData.salenoteno}}
+  
+            </td>
+            <td>
+  
+              {{rowData.tbgrno}}
+  
+            </td>
+          
+                 <td>
+  
+              {{rowData.growername}}
+  
+            </td>
+          
+              <td>
+                {{rowData.bankname}}
+
+  
+            </td>
+            <td>
+                {{rowData.netamount}}
+
+  
+            </td>
+            <td>
+                {{rowData.salenotedate| date}}
+
+  
+            </td>
+           
+  <td><p-button type="submit" [disabled]="((rowData.approvalstatus==2 || rowData.approvalstatus==3) || rowData.flag==0)" (onClick)="savePaymentFailure(rowData)" label="Failed"></p-button></td>
+           
+<td><p-button type="submit" [disabled]="(rowData.approvalstatus==1 || rowData.approvalstatus==3)" (onClick)="savePaymentSuccess(rowData)" label="Approve"></p-button></td>
+       
+          </tr> 
+          
+        </ng-template>
+      </p-table>
+  
+    </div>
+  
+  
+  </div>

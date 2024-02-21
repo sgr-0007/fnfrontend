@@ -1,0 +1,61 @@
+<div class="card">
+    <div class="ui-g mb-3 moduleheaderbg">
+        <span class="moduleheadertext">I & E Schedules</span>
+    </div>
+    <div class="row mb-3">
+        <form #VoucherForm="ngForm" novalidate>
+            <div *ngIf="daybookForDialog">
+                <div class="row mb-2">
+                    <div [hidden]="false" class="col-lg-1 col-md-1 col-sm-12">
+                        <label for="voucherfromdate"> From Date</label>
+                    </div>
+                    <div [hidden]="false" class="col-lg-2 col-md-3 col-sm-12">
+                        <p-calendar name="voucherfromdate" [maxDate]="dateTime" dateFormat="dd.mm.yy"
+                        [(ngModel)]="dateValue" [showIcon]="false" appendTo="body">
+                        </p-calendar>
+                    </div>
+
+
+                     <div [hidden]="false" class="col-lg-1 col-md-1 col-sm-12">
+                        <label for="vouchertodate">To Date</label>
+                    </div>
+                    <div [hidden]="false" class="col-lg-2 col-md-2 col-sm-12">
+                        <p-calendar name="vouchertodate" [maxDate]="dateTime" dateFormat="dd.mm.yy" appendTo="body"
+                        [(ngModel)]="todateValue" [showIcon]="false"
+                            [style]="{'overflow': 'visible', 'z-index': '999'}"></p-calendar>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-12">
+                        <label for="companyname">Branch/RMO</label>
+                    </div>
+                    <div class="col-lg-3 col-md-2 col-sm-12">
+                        <p-dropdown name="companyname"  (onChange)="branchOnChange(daybookForDialog.companyid)" [options]="companies"
+                            optionLabel="companyname" optionValue="companyid" [(ngModel)]="daybookForDialog.companyid">
+                        </p-dropdown>
+                    </div>
+                   
+                    </div>
+                    <div [hidden]="false" class="row mb-2">
+                         <div class="col-lg-1 col-md-1 col-sm-12">
+                        <label for="schname"> Schedule</label>
+                    </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+
+                            <p-dropdown name="schname" [filter]="true" filterBy="schname"
+                             
+                            [options]="schs" optionLabel="schname" optionValue="schid" appendTo="body"
+                            [(ngModel)]="daybookForDialog.schid">
+                          </p-dropdown>
+                          </div>
+                          <div class="col-lg-1 col-md-1 col-sm-12">
+                            <p-button label="Generate" (onClick)="onSearch()"></p-button>
+                        </div>
+                 
+                </div>
+                <div class="row">
+                    <div class="col-lg-10 col-md-10 col-sm-12"></div>
+                 
+                    </div>
+            </div>
+        </form>
+    </div>
+</div><iframe *ngIf="reportUrl" [src]="reportUrl" frameborder="0" allowfullscreen width="100%" height="700px"></iframe>

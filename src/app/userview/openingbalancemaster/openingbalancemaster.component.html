@@ -1,0 +1,143 @@
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+  <span class="moduleheadertext">Opening Balance Master</span>
+    </div>
+  <p-table #dt [value]="item" sortField="loid" [sortOrder]="-1" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first" 
+   styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,50]"
+   [globalFilterFields]="['loid','ledgername','openingbalance','subledgername','companyname']"
+   dataKey="loid" editMode="row">
+   <ng-template pTemplate="caption">
+    <div class="row">
+        <div class="col-lg-1 mb-1"><p-button label="ADD" (onClick)="onUomAdd()"></p-button></div>
+        <div class="creditlimitsetting">Opening Balance Master</div>
+     </div>
+     <div class="row align-left">  
+        <div class="col text-start">     
+        <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+        </span>
+        </div>
+        </div>
+  </ng-template>
+  <ng-template pTemplate="header"></ng-template>
+          <ng-template pTemplate="header" >
+        <tr>
+            <th pSortableColumn="companyname">Branch Name
+                <p-sortIcon field="companyname"></p-sortIcon>
+            </th> 
+            <th pSortableColumn="ledgername">Ledger Name
+                <p-sortIcon field="ledgername"></p-sortIcon>
+            </th> 
+            <th pSortableColumn="subledgername">Sub Ledger Name
+                <p-sortIcon field="subledgername"></p-sortIcon>
+            </th>            
+            <th pSortableColumn="openingbalance">Opening Balance
+                <p-sortIcon field="openingbalance"></p-sortIcon>
+            </th>
+            <th pSortableColumn="createddate">Created Date
+              <p-sortIcon field="createddate"></p-sortIcon>
+          </th>
+            
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+        <tr [pEditableRow]="rowData">
+             <td>
+            
+                  {{rowData.companyname}}
+            
+      </td>
+        <td>
+            
+                  {{rowData.ledgername}}
+            
+      </td>
+      <td>
+            
+        {{rowData.subledgername}}
+  
+</td>
+      <td>
+      
+                {{rowData.openingbalance}}
+            
+      </td>
+      <td>
+            
+        {{rowData.createddate | date}}
+  
+</td>
+      <td>
+        <p-button (onClick)="onDelete(rowData.loid)">
+        <i class="pi pi-trash"></i>
+      </p-button>
+    </td>
+    
+       
+    </ng-template>
+  </p-table>
+  <p-dialog appendTo="body"  header="Op Balance Details" width="300" height="200" [(visible)]="displayDialog"
+            [responsive]="true" showEffect="fade" [modal]="true">
+      <form #GroupForm="ngForm" novalidate>
+          <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="uomForDialog">
+
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="ledgername">Branch</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9"> 
+                  <p-dropdown name="companyname" [virtualScroll]="true" (onChange)="CompanyOnChange(uomForDialog.companyid)" [itemSize]="30" [filter]="true" filterBy="companyname" appendTo="body" [required]="true" placeholder="-Select-" [options]="companies" optionLabel="companyname" optionValue="companyid" [(ngModel)]="uomForDialog.companyid">
+                  </p-dropdown>
+                </div>
+            </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="ledgername">Ledger</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9"> 
+                    <p-dropdown name="ledgername" [virtualScroll]="true" (onChange)="LedgerOnChange(uomForDialog.ledgerid)" [itemSize]="30" [filter]="true" filterBy="ledgername" appendTo="body" [required]="true" placeholder="-Select-" [options]="ledgername" optionLabel="ledgername" optionValue="ledgerid" [(ngModel)]="uomForDialog.ledgerid">
+                    </p-dropdown>
+                  </div>
+              </div>
+                            <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="subledgername">Sub Ledger</label>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                    <p-dropdown name="subledgername" [filter]="true" filterBy="subledgername"
+                    placeholder="-SubLedger-"
+                    [options]="subledgs" optionLabel="subledgername" optionValue="subledgerid" appendTo="body"
+                    [(ngModel)]="uomForDialog.subledgerid">
+                  </p-dropdown>
+                  </div>
+              </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="openingbalance">Opening Balance</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <input  pInputText id="openingbalance" class="form-control" name="openingbalance" required
+                             [(ngModel)]="uomForDialog.openingbalance"/>
+                  </div>
+              </div>
+          </div>
+      </form>
+      <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button type="submit" pButton icon="fa-check" (click)="saveUom()"
+                    label="Save" [disabled]="!GroupForm.form.valid"></button>
+        </div>
+    </p-footer>
+      </p-dialog>
+  
+  </div>
+  
+
+
+
+
+
+
+

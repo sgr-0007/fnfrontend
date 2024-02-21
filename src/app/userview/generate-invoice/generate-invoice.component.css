@@ -1,0 +1,11 @@
+.header{
+    z-index: 999;
+    position: sticky;
+    top: .5rem;
+    background: #3A608E;
+    color: blanchedalmond;
+}
+
+:host ::ng-deep .qty span input{
+    width: 1%;
+  }

@@ -1,0 +1,384 @@
+<mat-nav-list class="background-primary">
+     <!-- <div class="my-2 mx-auto mt-4">FNA</div>
+    <mat-divider></mat-divider> -->
+     <!-- <a mat-list-item routerLink="dashboard" (click)="toggleSidebar()" class="mt-4">
+        <mat-icon>home</mat-icon>
+        DashBoard
+    </a> -->
+    <mat-accordion class="my-2">
+      <mat-expansion-panel class="background-primary">
+        <mat-expansion-panel-header>
+          <mat-panel-title>Master</mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+          <a mat-list-item routerLink="usermaster" [hidden]="checkuser('User Master')"  (click)="toggleSidebar()">
+            <mat-icon>group_add</mat-icon>
+            User
+          </a>
+          <a mat-list-item routerLink="usermanagment" [hidden]="checkuser('User Management')"  (click)="toggleSidebar()">
+            <mat-icon>group_add</mat-icon>
+            User Management
+          </a>
+        <a mat-list-item routerLink="groups" [hidden]="checkuser('Head')"  (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+          Heads
+        </a>
+
+        <a mat-list-item routerLink="subgroups" [hidden]="checkuser('SubHead')"  (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+          SubHeads
+        </a>
+        <!-- <a mat-list-item routerLink="currency">
+          <mat-icon>group_add</mat-icon>
+          Currency
+        </a> -->
+        <a mat-list-item routerLink="roles" [hidden]="checkuser('Role')"  (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+          Roles
+        </a>
+        <a mat-list-item routerLink="company" [hidden]="checkuser('Branch')"  (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+          Branch
+        </a>
+        <a mat-list-item routerLink="normalledger" [hidden]="checkuser('Normal Ledger')"  (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+          Normal Ledger
+        </a>
+          <a mat-list-item routerLink="subledger" [hidden]="checkuser('Sub Ledger')"  (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+          Sub Ledger
+        </a>
+         <a mat-list-item routerLink="budget" [hidden]="checkuser('Budget')"   (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+           Budget
+        </a>
+         <!-- <a mat-list-item routerLink="creditlimit" (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+           Credit Limit
+        </a> -->
+        <a mat-list-item routerLink="item" [hidden]="checkuser('Item')" (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+           Item
+        </a>
+        <a mat-list-item routerLink="pensioner" (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+           Pensioner
+        </a>
+        <a mat-list-item routerLink="pensionerfam" (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+           Pensioner Family
+        </a>
+        <a mat-list-item routerLink="emp" (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+          Employee
+        </a>
+        <a mat-list-item routerLink="branchinfavour" (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+          Branch InFavour
+        </a>
+        <a mat-list-item routerLink="opbalance" (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+           Opening Balance
+        </a>
+        <!-- <a mat-list-item routerLink="underdev" (click)="toggleSidebar()">
+          <mat-icon>group_add</mat-icon>
+           Item
+        </a> -->
+        </mat-nav-list>
+      </mat-expansion-panel> 
+      <mat-expansion-panel >
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+              Create Ledgers
+            </mat-panel-title>        
+          </mat-expansion-panel-header>
+          <mat-nav-list>
+            <a mat-list-item routerLink="salesledger" (click)="toggleSidebar()">
+                <mat-icon>group_add</mat-icon>Buyer
+            </a> 
+            <a mat-list-item routerLink="prucaheledger" (click)="toggleSidebar()">
+                <mat-icon>group_add</mat-icon>Vendor
+            </a>
+          </mat-nav-list>
+    </mat-expansion-panel>
+      <mat-expansion-panel >
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+              View Ledgers
+            </mat-panel-title>        
+          </mat-expansion-panel-header>
+          <mat-nav-list>
+            <a mat-list-item routerLink="salesledger/view" (click)="toggleSidebar()">
+              <mat-icon>group</mat-icon>Buyer
+          </a> 
+          <a mat-list-item routerLink="purchaseledger/view" (click)="toggleSidebar()">
+            <mat-icon>group</mat-icon>Vendor
+        </a>
+          </mat-nav-list>
+    </mat-expansion-panel>
+        
+        <mat-expansion-panel >
+          <mat-expansion-panel-header>
+              <mat-panel-title>
+                Vouchers
+              </mat-panel-title>        
+            </mat-expansion-panel-header>
+            <mat-nav-list>
+           
+        <a mat-list-item routerLink="salesvouchers" [hidden]="checkuser('Sales Voucher')"  (click)="toggleSidebar()">
+          <mat-icon>note_add</mat-icon>SalesVoucher
+      </a> 
+      <a  mat-list-item routerLink="paymentvouchers" [hidden]="checkuser('Payment Voucher')"  (click)="toggleSidebar()" >
+        <mat-icon>note_add</mat-icon> PaymentVoucher </a>
+      <a mat-list-item routerLink="purchasevouchers"  [hidden]="checkuser('Purchase Voucher')"  (click)="toggleSidebar()">
+          <mat-icon>note_add</mat-icon>PurchaseVoucher
+      </a>
+      <a mat-list-item routerLink="contravouchers" [hidden]="checkuser('Contra Voucher')"  (click)="toggleSidebar()">
+        <mat-icon>note_add</mat-icon>ContraVoucher
+    </a>
+    <a mat-list-item routerLink="journalvouchers" [hidden]="checkuser('Journal Voucher')"  (click)="toggleSidebar()">
+      <mat-icon>note_add</mat-icon>JournalVoucher
+  </a>
+  <a mat-list-item routerLink="receiptvouchers" [hidden]="checkuser('Receipt Voucher')"  (click)="toggleSidebar()">
+    <mat-icon>note_add</mat-icon>ReceiptVoucher
+</a>
+ <a mat-list-item routerLink="drnote" [hidden]="checkuser('DebitNote Voucher')"  (click)="toggleSidebar()">
+    <mat-icon>note_add</mat-icon>DebitNoteVoucher
+</a>
+<a mat-list-item routerLink="crnote" [hidden]="checkuser('CreditNote Voucher')"  (click)="toggleSidebar()">
+  <mat-icon>note_add</mat-icon>CreditNoteVoucher
+</a>
+<!-- <a mat-list-item routerLink="gstitview"  (click)="toggleSidebar()">
+  <mat-icon>note_add</mat-icon>GSTIT View
+</a>  -->
+<a mat-list-item routerLink="tdsview"  (click)="toggleSidebar()">
+  <mat-icon>note_add</mat-icon>Tds View
+</a>
+<a mat-list-item routerLink="pettycash"  (click)="toggleSidebar()">
+  <mat-icon>note_add</mat-icon>Petty Cash
+</a>
+            </mat-nav-list>
+      </mat-expansion-panel>
+        
+      <mat-expansion-panel >
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+Payment Reconciliation
+            </mat-panel-title>        
+          </mat-expansion-panel-header>
+          <mat-nav-list>
+        <a mat-list-item routerLink="payreconview1" (click)="toggleSidebar()">
+          <mat-icon>group</mat-icon>Create
+      </a>
+      <a mat-list-item routerLink="payreconview2" (click)="toggleSidebar()">
+        <mat-icon>group</mat-icon>Failed Payments
+    </a>
+          </mat-nav-list>
+          
+   
+    </mat-expansion-panel>
+
+      <mat-expansion-panel >
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+              Day Book
+            </mat-panel-title>        
+          </mat-expansion-panel-header>
+          <mat-nav-list>
+        <a mat-list-item routerLink="daybookview" (click)="toggleSidebar()">
+          <mat-icon>group</mat-icon>View
+      </a>
+          </mat-nav-list>
+          <mat-nav-list>
+            <a mat-list-item routerLink="daybooktransac" (click)="toggleSidebar()">
+              <mat-icon>group</mat-icon>Open and Close
+          </a>
+              </mat-nav-list>
+              <mat-nav-list>
+                <a mat-list-item routerLink="cashbook" (click)="toggleSidebar()">
+                  <mat-icon>group</mat-icon>Cashbook
+              </a>
+                  </mat-nav-list>
+    </mat-expansion-panel>
+
+
+    <mat-expansion-panel >
+      <mat-expansion-panel-header>
+          <mat-panel-title>
+            Trail Balance
+          </mat-panel-title>        
+        </mat-expansion-panel-header>
+        <mat-nav-list>
+      <a mat-list-item routerLink="trailbalance" (click)="toggleSidebar()">
+        <mat-icon>group</mat-icon>View
+    </a>
+        </mat-nav-list>
+ 
+  </mat-expansion-panel>
+
+  <mat-expansion-panel >
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+          Income and Expenditure
+        </mat-panel-title>        
+      </mat-expansion-panel-header>
+      <mat-nav-list>
+    <a mat-list-item routerLink="profitloss" (click)="toggleSidebar()">
+      <mat-icon>group</mat-icon>View
+  </a>
+      </mat-nav-list>
+
+</mat-expansion-panel>
+
+  <mat-expansion-panel >
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+          Balance Sheet
+        </mat-panel-title>        
+      </mat-expansion-panel-header>
+      <mat-nav-list>
+    <a mat-list-item routerLink="balancesheet" (click)="toggleSidebar()">
+      <mat-icon>group</mat-icon>View
+  </a>
+      </mat-nav-list>
+
+</mat-expansion-panel>
+     
+  <mat-expansion-panel >
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+          Invoice
+        </mat-panel-title>        
+      </mat-expansion-panel-header>
+      <mat-nav-list>
+    <a mat-list-item routerLink="invoice/generate" (click)="toggleSidebar()">
+      <mat-icon>description</mat-icon>Generate Invoice
+  </a>
+  <a mat-list-item routerLink="invoice" (click)="toggleSidebar()">
+   <mat-icon>description</mat-icon>View Invoice
+ </a>
+      </mat-nav-list>
+ </mat-expansion-panel>
+ 
+  <mat-expansion-panel >
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+          Payment
+        </mat-panel-title>        
+      </mat-expansion-panel-header>
+      <mat-nav-list>
+    <a mat-list-item routerLink="payment" (click)="toggleSidebar()">
+      <mat-icon>group</mat-icon>View
+  </a>
+  <a mat-list-item routerLink="bankreconcile" (click)="toggleSidebar()">
+    <mat-icon>group</mat-icon>Bank Reconcilation
+</a>
+      </mat-nav-list>
+</mat-expansion-panel>
+
+<mat-expansion-panel >
+  <mat-expansion-panel-header>
+      <mat-panel-title>
+        Reports
+      </mat-panel-title>        
+    </mat-expansion-panel-header>
+    <mat-nav-list>
+      
+  <a mat-list-item routerLink="voucherreport" (click)="toggleSidebar()">
+    <mat-icon>group</mat-icon>Voucher Report
+</a>
+<a mat-list-item routerLink="voucherlistreport" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Voucher List Report
+</a>
+<a mat-list-item routerLink="cashbookreport" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Cashbook Report
+</a>
+<a mat-list-item routerLink="cbledgerreport" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Ledger Report
+</a>
+<a mat-list-item routerLink="tbwosch" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Trail Balance Report
+</a>
+<a mat-list-item routerLink="trailbalanceviewreport" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Trail Balance Schedules
+</a>
+<a mat-list-item routerLink="tbsubledger" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Trail Balance SubLedger
+</a>
+<a mat-list-item routerLink="ieviewreport" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Income Expense Report
+</a> 
+<a mat-list-item routerLink="iesch" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Income Expense Schedules
+</a>
+<a mat-list-item routerLink="bsreport" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Balancesheet Report
+</a> 
+<a mat-list-item routerLink="bssch" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Balancesheet Schedules
+</a>
+<a mat-list-item routerLink="pettyreport1" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>PettyCash Annexure 2
+</a>
+<a mat-list-item routerLink="pettyreport2" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>PettyCash Annexure 3
+</a>
+<a mat-list-item routerLink="gstr3b" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>GSTR-3B
+</a>
+<a mat-list-item routerLink="gstr7" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>GSTR-7
+</a>
+<a mat-list-item routerLink="tdsreport" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>TDS
+</a>
+<a mat-list-item routerLink="otherreport" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Others
+</a>
+
+
+    </mat-nav-list>
+</mat-expansion-panel>
+
+<!-- <mat-expansion-panel >
+  <mat-expansion-panel-header>
+      <mat-panel-title>
+        Bank Cover
+      </mat-panel-title>        
+    </mat-expansion-panel-header>
+    <mat-nav-list>
+      
+  <a mat-list-item routerLink="paybc" (click)="toggleSidebar()">
+    <mat-icon>group</mat-icon>Payment
+</a>
+<a mat-list-item routerLink="recbc" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Receipt
+</a>
+
+    </mat-nav-list>
+</mat-expansion-panel> -->
+<mat-expansion-panel >
+  <mat-expansion-panel-header>
+      <mat-panel-title>
+        Auction
+      </mat-panel-title>        
+    </mat-expansion-panel-header>
+    <mat-nav-list>
+      
+  <a mat-list-item routerLink="invoicetrans" (click)="toggleSidebar()">
+    <mat-icon>group</mat-icon>Invoice
+</a>
+<a mat-list-item routerLink="ledgertrans" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Buyer Ledger
+</a>
+<a mat-list-item routerLink="growertrans" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Grower Ledger
+</a>
+<a mat-list-item routerLink="salesnotetrans" (click)="toggleSidebar()">
+  <mat-icon>group</mat-icon>Salesnote
+</a>
+    </mat-nav-list>
+</mat-expansion-panel>
+</mat-accordion>
+ 
+</mat-nav-list>

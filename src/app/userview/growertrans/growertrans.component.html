@@ -1,0 +1,101 @@
+
+<div>
+    <h2>
+        Grower Details </h2>
+        <p-table #dt  [value]="purchaseData" [(selection)]="selectedData"   [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+       styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,50]"
+       [globalFilterFields]="['tbgrno','growerName','qtyAuthorized','accountNo','status']" 
+       dataKey="mgid" [loading]="loading" [reorderableColumns]="true" sortField="mgid" [sortOrder]="-1" [rowSelectable]="isRowSelectable">
+       <ng-template pTemplate="caption">
+        <div class="row">
+          <div class="col-2 w-auto">
+            <p-dropdown name="companyname" placeholder="Filter By Branch" appendTo="body" [filter]="true"  filterBy="companyname" [required]="true"
+                                   [options]="companies" optionLabel="companyname" [(ngModel)]="filteredbranchid"
+                                   (onChange)="filterbybranch()" optionValue="companyid" >
+                                </p-dropdown>
+             </div>
+          <div class="col mb-1 text-end">
+            <p-button label="Approved" *ngIf="true"  class="mx-2" (click)="approveSelectedLdger()" ></p-button>
+             </div>
+          
+          <div class="tablename">List Of Grower's from e-Auction</div>      
+          <div class="row align-left">  
+            <div class="col text-start">     
+            <span class="p-input-icon-left ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+            </span>
+            </div>
+        
+              </div>
+    
+    
+          </div>
+      </ng-template>
+      <ng-template pTemplate="header" >
+        <tr >
+    
+          <th style="width: 2rem">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+            <th  pSortableColumn="tbgrno"> TBGR NO
+                <p-sortIcon field="tbgrno"></p-sortIcon>
+            </th>
+            <th  pSortableColumn="growerName">Grower Name
+                <p-sortIcon field="growerName"></p-sortIcon>
+            </th>
+    
+            <th  pSortableColumn="qtyAuthorized"> Qty Auth.
+                <p-sortIcon field="qtyAuthorized"></p-sortIcon>
+            </th>
+            <th  pSortableColumn="accountNo"> Account No.
+              <p-sortIcon field="accountNo"></p-sortIcon>
+          </th>
+          <th  pSortableColumn="status"> status
+            <p-sortIcon field="status"></p-sortIcon>
+        </th>
+    
+            
+        
+          
+            <!-- <th>Status</th> -->
+            <th>Action</th>
+    
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData  let-ri="rowIndex">
+      <tr [pEditableRow]="rowData">
+        <td>
+          <p-tableCheckbox [value]="rowData" [disabled]="isAlreadyApproved(rowData)"></p-tableCheckbox>
+      </td>
+        <td>
+                    {{rowData.tbgrno}}
+            
+        </td>
+        <td>
+                  {{rowData.growerName}}
+          
+      </td>
+      
+        <td>
+                    {{rowData.qtyAuthorized}}
+          
+        </td>
+        <td>
+                  {{rowData.accountNo}}
+          
+      </td>
+      <td>
+        <div *ngIf="rowData.status==1">Approved</div>  
+        <div *ngIf="!(rowData.status==1)">Pending</div>  
+        
+    </td>
+        <td style="text-align:center">
+        <button [disabled]="isApproved(rowData)" pButton type="button" label="Approve"
+        class="ui-button-info" (click)="approveBuyer(rowData)" ></button>
+    </td>
+    </tr>
+    </ng-template>
+       </p-table> 
+    </div>
+    

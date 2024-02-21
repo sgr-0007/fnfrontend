@@ -1,0 +1,124 @@
+
+.back {
+  background: #3A608E;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+.noBorder{
+ border: none;
+}
+
+.div-center {
+  width: 400px;
+  height: 400px;
+  background-color:  #e7eaef;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: auto;
+  padding: 1em 2em;
+  border-bottom: 2px solid #ccc;
+  display: table;
+ 
+}
+
+div.content {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+body .p-component {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+
+}
+
+html,body
+{
+
+  background: #f4f0ec;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  height: 100%;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+  background: #E8E9EE;
+  font-size: medium;
+
+}
+
+.p-datatable .p-datatable-tbody > tr > td{
+
+  background: #F9F9F9;
+  font-size: medium;
+ 
+
+}
+.p-datatable .p-datatable-tfoot > tr > td{
+
+  font-size: medium;
+
+}
+.p-dialog
+{
+min-height: 500px;
+min-width: 700px;
+
+
+}
+
+.p-dropdown
+{
+width: 100%;
+
+}
+
+a{
+    text-decoration: none !important;
+
+}
+.vtable{
+
+  width: 500px;
+
+}
+.moduleheaderbg
+{
+  background-color: #3A608E;
+  text-align: center;
+}
+.moduleheadertext
+{
+  color:white;
+
+}
+
+.tablename
+{
+  background-color: #B7CBE3;
+  width: 100%;
+
+}
+.card
+{
+ border-color: #3A608E;
+
+}
+
+
+.required-field
+{
+  color: red;
+
+}
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } 
+
+.progress-spinner {
+  display: flex; justify-content: center; align-items: center; background: white;
+}

@@ -1,0 +1,41 @@
+<strong>{{title}}</strong>
+
+
+
+<p-toast></p-toast>
+<div class="align-center ">
+  <form novalidate>
+
+    <div class="row">
+      <div class="col-11">
+        <p-fileUpload #form name="myfile[]" accept=".xlsx,.pdf,.csv,.xls,.png,.jpg,jpeg" fileuploadlistener="false" mode="advanced" [customUpload]="true" [multiple]=true (uploadHandler)="fileSelected($event,form)" (onProgress)="checkProgress()" (onRemove)="onClear()" ></p-fileUpload>
+      </div>
+    
+    </div>
+    <div class="col-11 card mt-3">
+      <div class="card-header">List of Files</div>
+      <!-- <ul
+        class="list-group list-group-flush"
+        *ngFor="let file of fileId "
+      >
+
+        <li class="list-group-item">
+          <a href="{{ file.url }}">{{ file.filedisplayname}}</a>
+          <div class="col-lg-4 mb-2"><p-button (onClick)="OnDeleteFile(file.filegeneratedname)"><i class="pi pi-trash"></i></p-button></div>
+        </li>
+       
+      </ul> -->
+      <ul
+    class="list-group list-group-flush"
+    *ngFor="let file of fileId"
+  >
+    <li class="list-group-item">
+      <div class="row">
+      <div class="col-lg-8 mb-6"><a href="{{ file.url }}">{{ file.filedisplayname }}</a></div>
+      <div class="col-lg-4 mb-2"><p-button (onClick)="OnDeleteFile(file.filegeneratedname,file)"><i class="pi pi-trash"></i></p-button></div>
+    </div>
+    </li>
+  </ul>
+    </div>
+  </form>
+</div>

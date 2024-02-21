@@ -1,0 +1,136 @@
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+
+      <span class="moduleheadertext" >Currency Master</span>
+    </div>
+  <p-table #dt [value]="currency"  [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+   styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[5,10,50]"
+   [globalFilterFields]="['currencyname','currencydisplay','isactive']"
+   dataKey="currencyid" editMode="row">
+   <ng-template pTemplate="caption">
+    <div class="row">
+      <div class="col-lg-1 mb-1"><p-button label="ADD" (onClick)="onCurrencyAdd()"></p-button></div>
+      <div class="tablename">Currency Master</div>
+   </div>
+   <div class="flex mt-2">       
+    <span class="p-input-icon-left ml-auto">
+        <i class="pi pi-search"></i>
+        <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+    </span>
+</div>
+  </ng-template>
+  <ng-template pTemplate="header"></ng-template>
+
+          <ng-template pTemplate="header" >
+        <tr>
+            <th>Name</th>
+            <th>Display</th>
+            <th>Active</th>
+            <th></th>
+
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="rowData">
+        <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.currencyname">
+              </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.currencyname}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+        <td>
+            <p-cellEditor>
+                <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="rowData.currencydisplay">
+                </ng-template>
+                <ng-template pTemplate="output">
+                    {{rowData.currencydisplay}}
+                </ng-template>
+            </p-cellEditor>
+        </td>
+        <td>
+            <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <p-dropdown name="isactive" [options]="isactive" [(ngModel)]="rowData.isactive">
+                  </p-dropdown>
+                </ng-template>
+                <ng-template pTemplate="output" *ngIf="rowData.isactive==true">
+                   Active
+                </ng-template>
+                <ng-template pTemplate="output" *ngIf="rowData.isactive==false">
+                  InActive
+               </ng-template>
+            </p-cellEditor>
+        </td>
+        <td style="text-align:center">
+            <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil"
+                class="ui-button-info" (click)="onRowEditInit(rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"
+                class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData.currencyid,rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times"
+                class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
+        </td>
+    </tr>
+    </ng-template>
+  </p-table>
+  <p-dialog header="Currency Details" [(visible)]="displayDialog"
+            [responsive]="true" showEffect="fade" [modal]="true">
+      <form #CurrencyForm="ngForm" novalidate>
+          <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="currencyForDialog">
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="currencyname">Currency Name</label>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <input pInputText id="currencyname" class="form-control" name="currencyname" required
+                             [(ngModel)]="currencyForDialog.currencyname"/>
+                             <div class="col-sm-12" *ngIf="!currencynameunique && submitted">
+                                <span style="color: red;">Currency Name should be unique.</span>
+                              </div>
+                  </div>
+              </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="currencydisplay">Display</label>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <input  pInputText id="currencydisplay" class="form-control" name="currencydisplay" required
+                             [(ngModel)]="currencyForDialog.currencydisplay"/>
+
+
+                  </div>
+              </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="isactive">Active</label>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <!-- <input pInputText id="isactive" name="isactive" required
+                             [(ngModel)]="currencyForDialog.isactive"/> -->
+                             <!-- <select class="form-control" name="isactive" [(ngModel)]="currencyForDialog.isactive">
+                              <option value="true">True</option>
+                              <option value="false">False</option>
+                          </select> -->
+                          <p-dropdown name="isactive" [options]="isactive" [(ngModel)]="currencyForDialog.isactive">
+                          </p-dropdown>
+
+
+                  </div>
+              </div>
+
+          </div>
+      </form>
+      <p-footer>
+          <div class="ui-dialog-buttonpane ui-helper-clearfix">
+              <button type="submit" pButton icon="fa-check" (click)="saveCurrency()"
+                      label="Save" [disabled]="!CurrencyForm.form.valid"></button>
+                      <p-button label="Reset" (onClick)="onCurrencyReset()"></p-button>
+          </div>
+      </p-footer>
+      </p-dialog>
+
+  </div>

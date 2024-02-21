@@ -1,0 +1,207 @@
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+  <span class="moduleheadertext">Branch Infavour Master</span>
+    </div>
+  <p-table #dt  [value]="groups" sortField="branchdetailsid" [sortOrder]="-1"  [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+   styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,50]"
+   [globalFilterFields]="['apfname','acctype','infavourof','place','ifsc','bank','accno']"
+   dataKey="branchdetailsid" editMode="row">
+   <ng-template pTemplate="caption">
+    <div class="row">
+      <!-- <div class="col-lg-1 mb-1"><p-button label="ADD" (onClick)="onGroupAdd()"></p-button></div> -->
+      
+      <div class="tablename">Branch Infavour Master</div>
+      
+      <div class="row align-left">  
+        <div class="col text-start">     
+        <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+        </span>
+    </div>
+          </div>
+
+
+      </div>
+  </ng-template>
+  <ng-template pTemplate="header"></ng-template>
+  
+          <ng-template pTemplate="header" >
+        <tr>
+
+            <th>Apf Name
+            </th>
+            <th>Acc Type
+
+            </th>
+            <th>Bank
+            </th>
+            <th>In Favour of
+            </th>
+            <th>Acc No.
+
+            </th>
+            <th>IFSC
+            </th>
+  
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="rowData">
+        <td>
+            <p-cellEditor>
+                <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="rowData.apfname">
+                </ng-template>
+                <ng-template pTemplate="output"> 
+                    {{rowData.apfname}}
+                </ng-template>
+            </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.acctype">
+              </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.acctype}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.bank">
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.bank}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+      
+        <td>
+            <p-cellEditor>
+                <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="rowData.infavourof">
+                </ng-template>
+                <ng-template pTemplate="output"> 
+                    {{rowData.infavourof}}
+                </ng-template>
+            </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.accno">
+            </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.accno}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="rowData.ifsc">
+          </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.ifsc}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+      
+        <td style="text-align:center">
+            <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil"
+                class="ui-button-info" [disabled]="disable" (click)="onRowEditInit(rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"
+                class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData.bankemployeeid,rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times"
+                class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
+        </td>
+    </tr>
+    </ng-template>
+  </p-table>
+  <p-dialog appendTo="body" header="Branch Infavour Details" width="300" height="200" [(visible)]="displayDialog"
+            [responsive]="true" showEffect="fade" [modal]="true">
+      <form #GroupForm="ngForm" novalidate>
+          <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="groupForDialog">
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="employeecode">Employee Code</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <input pInputText id="employeecode" class="form-control" name="employeecode" required
+                             [(ngModel)]="groupForDialog.employeecode"/>
+                            
+                  </div>
+              </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="employeename"> Employee</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <input  pInputText id="employeename" class="form-control" name="employeename" required
+                           [(ngModel)]="groupForDialog.employeename"/>
+
+                </div>
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="designation">Designation</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <input  pInputText id="designation" class="form-control" name="designation" required
+                           [(ngModel)]="groupForDialog.designation"/>
+
+                </div>
+            </div>
+
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="accountno">Account No.</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                   
+                    <input  pInputText id="accountno" class="form-control" name="accountno" required
+                    [(ngModel)]="groupForDialog.accountno"/>
+                </div>
+            </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="ifsc">IFSC</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <input  pInputText id="ifsc" class="form-control" name="ifsc" required
+                             [(ngModel)]="groupForDialog.ifsc"/>
+  
+  
+                  </div>
+              </div>
+              <div [hidden]="false" class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="bank">Bank</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <!-- <input pInputText id="isactive" name="isactive" required
+                             [(ngModel)]="groupForDialog.isactive"/> -->
+  
+                             <input  pInputText id="bank" class="form-control" name="bank" required
+                             [(ngModel)]="groupForDialog.bank"/>
+  
+  
+                  </div>
+              </div>
+  
+          </div>
+      </form>
+      <p-footer>
+          <div class="ui-dialog-buttonpane ui-helper-clearfix">
+              <button type="submit" pButton icon="fa-check" (click)="saveGroup()"
+                      label="Save" [disabled]="!GroupForm.form.valid"></button>
+                      <p-button label="Reset" (onClick)="onGroupReset()"></p-button>
+          </div>
+      </p-footer>
+      </p-dialog>
+  
+  </div>
+  

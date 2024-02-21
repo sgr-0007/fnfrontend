@@ -1,0 +1,78 @@
+<div class="card my-4 p-4">
+    <h2>User Managment</h2>
+    <form #RolemappingForm="ngForm" >
+        <div class="row my-4">
+        <div class="col-6">
+            <label>Select User</label> 
+            <p-dropdown #userrole name="userrole" [options]="user"  optionLabel="userloginname"
+            placeholder="Select a User" [filter]="true"  (onChange)="checkUserExistOrnot()" filterBy="userloginname" [showClear]="true" [(ngModel)]="selectedUser">
+                <ng-template pTemplate="selectedUser">
+                    <div class="user-items user-items-value" *ngIf="selectedUser">
+                        <div>{{selectedUser.userid}}</div>
+                    </div>
+                </ng-template>
+                <ng-template let-user pTemplate="items">
+                    <div class="user-items">
+                        <div>{{user.userloginname}}</div>
+                    </div>
+                </ng-template>
+            </p-dropdown>
+        </div>
+        <div class="col-6">
+            <label>Select Role</label>
+            <p-dropdown #userRole  name="userRole" [options]="roles"  optionLabel="rolename"
+            placeholder="Select a Role" [filter]="true" filterBy="rolename" [showClear]="true" [(ngModel)]="selectedRole" (onChange)="getDefaultModule()">
+            <ng-template pTemplate="selectedRole">
+                <div class="role-item role-item-value" *ngIf="selectedRole">
+                    <div>{{selectedRole.rolename}}</div>
+                </div>
+            </ng-template>
+            <ng-template let-country pTemplate="item">
+                <div class="role-item">
+                    <div>{{country.rolename}}</div>
+                </div>
+            </ng-template>
+            </p-dropdown>
+        </div>
+        </div>
+        <div class="row my-4">
+            <div class="col-6">
+            <label>Select Office</label>
+           <!--  <p-dropdown [options]="companies" optionValue="companyid" optionLabel="companyname"></p-dropdown>
+            --> <p-listbox [options]="companies" #userOffice name="userOffice" [(ngModel)]="selectedOfficies" [metaKeySelection]="false" [checkbox]="true"
+            [filter]="true" [multiple]="true" optionLabel="companyname"  [listStyle]="{'max-height':'250px'}" >
+            <!-- [style]="{'width':'15rem'}" -->
+            <ng-template let-country pTemplate="item">
+              <div class="country-item">
+                <div>{{country.companyname}}</div>
+              </div>
+            </ng-template>
+            </p-listbox>
+            </div>
+            <div class="col-6">
+                <label>Select Module</label>
+               <!--  <p-dropdown [options]="companies" optionValue="companyid" optionLabel="companyname"></p-dropdown>
+                --> <p-listbox  name="moduletype" inputId="filemoduletypeid" #module [options]="moduletype" #userModule name="userModule" [(ngModel)]="selectedModules" [metaKeySelection]="false" [checkbox]="checkbox" dataKey="filemoduletypeid"
+                [filter]="true"  [multiple]="true" optionLabel="filemaodulename"  [listStyle]="{'max-height':'250px'}" >
+                <!-- [style]="{'width':'15rem'}" -->
+                <ng-template let-country pTemplate="item">
+                  <div class="country-item">
+                    <div>{{country.filemaodulename}}</div>
+                  </div>
+                </ng-template>
+                </p-listbox>
+                </div>
+        </div>
+        
+        <!-- <p-listbox [options]="roles" ngModel [metaKeySelection]="false" [checkbox]="true"
+  [filter]="true" [multiple]="true" optionLabel="rolename" [listStyle]="{'max-height':'250px'}" [style]="{'width':'15rem'}">
+  <ng-template let-country pTemplate="item">
+    <div class="country-item">
+      <div>{{country.rolename}}</div>
+    </div>
+  </ng-template>
+</p-listbox> -->
+
+        <p-button type="button" (onClick)="assign()">Assign</p-button>
+    </form>
+</div>

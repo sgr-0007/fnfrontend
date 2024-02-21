@@ -1,0 +1,997 @@
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+      <span class="moduleheadertext">GSTIT View</span>
+    </div>
+    <div *ngIf="urole!=approver && urole!=checker && urole!=maker" class="row mb-3">
+      <form #VoucherForm="ngForm" novalidate>
+        <div>
+          <div class="row mb-1" *ngIf="voucherForDialog">
+            <div class="row mb-0">
+              <div class="col-lg-1 col-md-1 col-sm-12">
+                <label for="companyname">Branch</label>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-12">
+                <p-dropdown name="companyname" [filter]="true" filterBy="companyname" [required]="true"
+                  (onChange)="BranchOnChange(voucherForDialog.companyid)" [options]="companies" optionLabel="companyname"
+                  optionValue="companyid" [(ngModel)]="voucherForDialog.companyid">
+                </p-dropdown>
+              </div>
+              <div class="col-lg-1 col-md-1 col-sm-12">
+                <label for="voucherdate">Voucher Date</label>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-12">
+  
+                <p-calendar name="voucherdate" appendTo="body" [maxDate]="dateTime" dateFormat="dd.mm.yy"
+                  [(ngModel)]="dateValue" [showIcon]="true" [required]="true"></p-calendar>
+              </div>
+              <div class="col-lg-1 col-md-1 col-sm-12">
+                <label for="accounttype">Account</label>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-12">
+                <p-dropdown name="accounttype" [filter]="true" filterBy="accounttype" [required]="true"
+                [options]="voucherAccounts" optionLabel="accounttype"
+               optionValue="accounttypeid" (onChange)="AccountOnChange(voucherForDialog.accounttypeid)" [(ngModel)]="voucherForDialog.accounttypeid">
+             </p-dropdown>
+              </div>
+              <div class="col-lg-1 col-md-1 col-sm-12">
+                <p-button label="Submit"
+                  [disabled]="((totalcreditamountt==0 && totaldebitamountt==0) || totalcreditamountt!=totaldebitamountt)"
+                  (onClick)="saveVoucher()"></p-button>
+  
+              </div>
+              <div [hidden]="true" class="col-lg-1 col-md-1 col-sm-12">
+                <label for="isactive">Voucher Type</label>
+              </div>
+              <div [hidden]="true" class="col-lg-1 col-md-1 col-sm-12">
+                <p-dropdown name="vouchertypename" [required]="true" [options]="vouchertypes"
+                  optionLabel="vouchertypename" [(ngModel)]="selectedVouchertype">
+                </p-dropdown>
+              </div>
+            </div>
+            <div class="row mb-0 mt-1">
+              <div class="row mb-0">
+                <div class="col-lg-10 col-md-10 col-sm-12" style="text-align:center;font-weight:bolder;"
+                  *ngIf="iscashbankbalance">
+                  <span> {{selectedLedgerAlias}} balance is {{cashbankbalance}} INR </span>
+                </div>
+                </div>
+                <div class="row mb-0">
+                  <div class="row ms-1"> S.No.  </div>
+                  <div class="col-lg-1 col-md-1 col-sm-12">
+                  <span class="p-buttonset">
+                    <button pButton pRipple type="button" (click)="vseqmi()"   [disabled]="(vsequence == vstartsequence)" icon="pi pi-minus" class="p-button-rounded p-button-danger p-button-text"></button>
+                    <button pButton pRipple type="button">{{vsequence}}</button>
+                    <button pButton pRipple type="button" (click)="vseqpl()" [disabled]="((totalcreditamountt==0 && totaldebitamountt==0) || totalcreditamountt!=totaldebitamountt)" icon="pi pi-plus" class="p-button-rounded p-button-text"></button>
+               
+                  </span>
+              </div>
+              <div class="col-lg-2 col-md-2 col-sm-12">
+  
+               <p-dropdown name="drcrid" [options]="drOrCr" placeholder="Dr/Cr" optionLabel="drcr" optionValue="drcrid"
+               [(ngModel)]="voucherForDialog.drcrid"></p-dropdown>
+              </div>
+              </div>
+  
+              <div class="col-lg-11 col-md-11 col-sm-12" *ngIf="voucherForDialog.drcrid==1">
+  
+                
+                <div class="row mb-1">
+                  <span class="p-buttonset">
+                  
+                      <button pButton  class="p-button-raised p-button-text" (click)="getOfficeGSTLedger('cgst')" label="GST">
+                      </button>
+                      <button pButton  class="p-button-raised p-button-text" (click)="getOfficeITLedger('sgst')" label="IT">
+                      </button> 
+                      <button pButton  class="p-button-raised p-button-text" (click)="getOfficeArticleLedger('igst')" label="ARTICLE">
+                      </button>
+                     
+      
+                     
+                  </span>
+                   
+                </div>
+                <div class="row mb-1">
+                 
+                  <div class="col-lg-2 col-md-2 col-sm-12">
+  
+                    <p-dropdown name="drledgeralias" [filter]="true" filterBy="drledgeralias"
+                      (onChange)="LedgerOnChange(voucherForDialog.debitledger)" placeholder="- Debit Ledger-"
+                      [options]="debitledgers" optionLabel="drledgeralias" optionValue="debitledger" appendTo="body"
+                      [(ngModel)]="voucherForDialog.debitledger">
+                    </p-dropdown>
+                  </div>
+                  <div class="col-lg-1 col-md-1 col-sm-12">
+  
+                    <p-dropdown name="subledgername" [filter]="true" filterBy="subledgername"
+                      placeholder="-SubLedger-"
+                      [options]="subledgs" optionLabel="subledgername" optionValue="subledgerid" appendTo="body"
+                      [(ngModel)]="voucherForDialog.subledgerid">
+                    </p-dropdown>
+                  </div>
+                  <div class="col-lg-1 col-md-1 col-sm-12">
+  
+                    <p-dropdown name="branchname" [filter]="true" filterBy="branchname"
+                      placeholder="-Branch-"
+                      [options]="branches" optionLabel="branchname" optionValue="branchid" appendTo="body"
+                      [(ngModel)]="voucherForDialog.branchid">
+                    </p-dropdown>
+                  </div>
+  
+                  <div class="col-lg-2 col-md-2 col-sm-12">
+                    <span class="p-float-label">
+                      <p-inputNumber [(ngModel)]="voucherForDialog.debitamount" (ngModelChange)="dachange(voucherForDialog.debitamount)" name="debitamount" mode="decimal" locale="en-IN" [minFractionDigits]="2"></p-inputNumber>
+  
+  
+                      <label for="float-input">Dr. Amount</label>
+                    </span>
+                  </div>
+                  
+  
+                  <div class="col-lg-2 col-md-2 col-sm-12">
+                    <span class="p-float-label">
+                      <p-inputNumber [(ngModel)]="voucherForDialog.rate"  name="rate" mode="decimal" locale="en-IN" [minFractionDigits]="2"></p-inputNumber>
+  
+  
+                      <label for="float-input">Rate</label>
+                    </span>
+                  </div>
+                  <div class="col-lg-1 col-md-1 col-sm-12">
+  
+                    <p-dropdown name="debithsnsaccode" [filter]="true" filterBy="debithsnsaccode"
+                      placeholder="-HSN/SAC-" [options]="drhsnsac" optionLabel="debithsnsaccode"
+                      optionValue="debithsnsacid" [(ngModel)]="voucherForDialog.debithsnsacid">
+                    </p-dropdown>
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-sm-12">
+                    <span class="p-float-label">
+                      <textarea name="narration" [(ngModel)]="voucherForDialog.narrationdr" id="float-input" rows="1"
+                        pInputTextarea></textarea>
+                      <label for="float-input">Narration</label>
+                    </span>
+                  </div>
+                  <div class="col-lg-1 col-md-1 col-sm-12">
+                  <p-button (onClick)="saveDebitVoucher()"
+                  [disabled]="(dacheck || voucherForDialog.debitledger == null)">
+                  <i class="pi pi-plus"></i>
+                </p-button>
+              </div>
+                </div>
+               
+              </div>
+              <div class="col-lg-11 col-md-11 col-sm-12" *ngIf="voucherForDialog.drcrid==2">
+               
+                <div class="row mb-1">
+                  <span class="p-buttonset">
+                  
+                    <button pButton  class="p-button-raised p-button-text" (click)="getOfficeGSTLedger('cgst')" label="GST">
+                    </button>
+                    <button pButton  class="p-button-raised p-button-text" (click)="getOfficeITLedger('sgst')" label="IT">
+                    </button> 
+                    <button pButton  class="p-button-raised p-button-text" (click)="getOfficeArticleLedger('igst')" label="ARTICLE">
+                    </button>            
+                  </span>
+                   
+                </div>
+                <div class="row mb-1">
+                 
+                  <div class="col-lg-2 col-md-2 col-sm-12">
+                    <p-dropdown name="crledgeralias" [filter]="true" filterBy="crledgeralias"
+                      (onChange)="LedgerOnChange(voucherForDialog.creditledger)" placeholder="-Credit Ledger-"
+                      [options]="ledgers" optionLabel="crledgeralias" optionValue="creditledger" appendTo="body"
+                      [(ngModel)]="voucherForDialog.creditledger">
+                    </p-dropdown>
+                  </div>
+                  <div class="col-lg-1 col-md-1 col-sm-12">
+  
+                    <p-dropdown name="subledgername" [filter]="true" filterBy="subledgername"
+                      placeholder="-SubLedger-"
+                      [options]="subledgs" optionLabel="subledgername" optionValue="subledgerid" appendTo="body"
+                      [(ngModel)]="voucherForDialog.subledgerid">
+                    </p-dropdown>
+                  </div>
+                  <div class="col-lg-1 col-md-1 col-sm-12">
+  
+                    <p-dropdown name="branchname" [filter]="true" filterBy="branchname"
+                      placeholder="-Branch-"
+                      [options]="branches" optionLabel="branchname" optionValue="branchid" appendTo="body"
+                      [(ngModel)]="voucherForDialog.branchid">
+                    </p-dropdown>
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-sm-12">
+                    <span class="p-float-label">
+                      <p-inputNumber [(ngModel)]="voucherForDialog.creditamount" (ngModelChange)="cachange(voucherForDialog.creditamount)" name="creditamount" mode="decimal" locale="en-IN" [minFractionDigits]="2"></p-inputNumber>
+  
+                      <label for="float-input">Cr. Amount</label>
+                    </span>
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-sm-12">
+                    <span class="p-float-label">
+                      <p-inputNumber [(ngModel)]="voucherForDialog.rate"  name="rate" mode="decimal" locale="en-IN" [minFractionDigits]="2"></p-inputNumber>
+  
+  
+                      <label for="float-input">Rate</label>
+                    </span>
+                  </div>
+                              
+                   <div class="col-lg-1 col-md-1 col-sm-12">
+  
+                <p-dropdown name="credithsnsaccode" [filter]="true" filterBy="credithsnsaccode"
+                  placeholder="-HSN/SAC-" [options]="crhsnsac" optionLabel="credithsnsaccode"
+                  optionValue="credithsnsacid" [(ngModel)]="voucherForDialog.credithsnsacid">
+                </p-dropdown>
+              </div>
+                  <div class="col-lg-2 col-md-2 col-sm-12">
+                    <span class="p-float-label">
+                      <textarea name="narration" [(ngModel)]="voucherForDialog.narrationcr" id="float-input" rows="1"
+                        pInputTextarea></textarea>
+                      <label for="float-input">Narration</label>
+                    </span>
+                  </div>
+                  <div class="col-lg-1 col-md-1 col-sm-12">
+                  <p-button (onClick)="saveCreditVoucher()"
+                  [disabled]="(cacheck || voucherForDialog.creditledger == null )">
+                  <i class="pi pi-plus"></i>
+                </p-button>
+                 </div>
+                </div>
+                
+              </div>
+            </div>
+            <div class="row mb-1">
+              <div class="col-lg-10 col-md-10 col-sm-12">
+                <p-table  [value]="newGstDetailstbl" class="vtable"
+                  [paginator]="false" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+                 editMode="row">
+                <ng-template pTemplate="header"></ng-template>
+  
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>GST Buyer/Vendor</th>
+                    <th>GST</th>
+                    <th>Invoice No.</th>
+                    <th>Invoice date</th>
+                    <th>Invoice type</th>
+                     <th>Invoice value</th>
+                     <th>Taxable value</th>
+                     <th>Supply attract</th>
+  
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body"  let-rowData let-editing="editing" let-ri="rowIndex">
+                  <tr [pEditableRow]="rowData">
+                   
+                    <td>
+                     {{rowData.gstbvledgeralias}}
+                    </td>
+                    <td>
+                      {{rowData.gstbvgsttin}}
+  
+                    </td>
+                    <td>
+                      {{rowData.invoicenumber}}
+  
+                    </td>
+                    <td>
+                      {{rowData.invoicedate| date}}
+  
+                    </td>
+                        <td>
+                     {{rowData.invtype}}
+                    </td>
+                    <td>
+                      {{rowData.invoicevalue}}
+  
+                    </td>
+                    <td>
+                      {{rowData.taxablevalue}}
+  
+                    </td>
+                    <td>
+                      {{rowData.supplyattract}}
+  
+                    </td>
+                   
+                </tr>
+                
+                </ng-template>
+               
+              </p-table>
+              </div>
+  
+  
+            </div>
+            <div class="row mb-3">
+              <div class="col-lg-10 col-md-10 col-sm-12">
+                <p-table  [value]="newItDetailstbl" class="vtable"
+                  [paginator]="false" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+                 editMode="row">
+                <ng-template pTemplate="header"></ng-template>
+  
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>IT Buyer/Vendor</th>
+                    <th>PAN</th>
+                    <th>TDS rate</th>
+                    <th>Return</th>
+                    <th>Section</th>
+                     <th>TDS deducted</th>
+                     <th>Taxable value</th>
+  
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body"  let-rowData let-editing="editing" let-ri="rowIndex">
+                  <tr [pEditableRow]="rowData">
+                   
+                    <td>
+                     {{rowData.ledgeralias}}
+                    </td>
+                    <td>
+                      {{rowData.panno}}
+  
+                    </td>
+                    <td>
+                      {{rowData.rate}}
+  
+                    </td>
+                    <td>
+                      {{rowData.returnname}}
+  
+                    </td>
+                    <td>
+                      {{rowData.sectionname}}
+  
+                    </td>
+                        <td>
+                     {{rowData.netamount}}
+                    </td>
+                    <td>
+                      {{rowData.grossamount}}
+  
+                    </td>
+                
+                   
+                </tr>
+                
+                </ng-template>
+               
+              </p-table>
+              </div>
+  
+  
+            </div>
+  
+            <div class="row mb-1">
+              <div class="col-lg-10 col-md-10 col-sm-12">
+                <p-table rowGroupMode="rowspan" groupRowsBy="voucherseq"  [value]="voucherdetailsDrCrTable" class="vtable"
+                  [paginator]="false" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+                 editMode="row">
+                <ng-template pTemplate="header"></ng-template>
+  
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>S.No.</th>
+  
+                    <th>Particulars</th>
+                    <th>Narration</th>
+                    <th>Debit</th>
+                    <th>Credit</th>
+  
+                     <th></th>
+                     <!-- <th></th> -->
+  
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowgroup="rowgroup" let-rowspan="rowspan" let-rowData let-editing="editing" let-ri="rowIndex">
+                  <tr [pEditableRow]="rowData">
+                    <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
+                      <span class="font-bold ml-2">{{rowData.voucherseq}}</span>
+                  </td> 
+                    <td>
+                      <p-cellEditor>
+                        <ng-template pTemplate="input">
+                          <input pInputText type="text" name="ledgeralias" [(ngModel)]="rowData.ledgeralias">
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                          {{rowData.ledgeralias}}
+                        </ng-template>
+                      </p-cellEditor>
+                    </td>
+                    <td>
+                      <p-cellEditor>
+                        <ng-template pTemplate="input">
+                          <input pInputText type="text" name="narration" [(ngModel)]="rowData.narration">
+  
+  
+  
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                          {{rowData.narration}}
+                        </ng-template>
+                      </p-cellEditor>
+                    </td>
+                    <td>
+                      <p-cellEditor>
+                        <ng-template pTemplate="input">
+                          <input pInputText type="text" name="debitamount" [(ngModel)]="rowData.debitamount">
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                          {{rowData.debitamount}}
+                        </ng-template>
+                      </p-cellEditor>
+                    </td>
+                    <td>
+                      <p-cellEditor>
+                        <ng-template pTemplate="input">
+                          <input pInputText type="text" name="creditamount" [(ngModel)]="rowData.creditamount">
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                          {{rowData.creditamount}}
+                        </ng-template>
+                      </p-cellEditor>
+                    </td>
+                    <td>
+                      <p-button (onClick)="removeVd(rowData)">
+                        <i class="pi pi-trash"></i>
+                      </p-button></td>
+                      <!-- <td style="text-align:center">
+                        <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil"
+                            class="ui-button-info"  (click)="onRowTempEditInit(rowData,ri)"></button>
+                        <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"
+                            class="ui-button-success" style="margin-right: .5em" (click)="onRowTempEditSave(rowData,ri)"></button>
+                        <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times"
+                            class="ui-button-danger" (click)="onRowTempEditCancel(rowData, ri)"></button>
+                    </td> -->
+                </tr>
+                
+                </ng-template>
+                <ng-template pTemplate="footer">
+                  <tr>
+                    <td>Total:</td>
+                    <td></td>
+                    <td></td>
+                    <td>₹{{totaldebitamountt}}</td>
+                    <td>₹{{totalcreditamountt}}</td>
+  
+                  </tr>
+  
+                </ng-template>
+              </p-table>
+              </div>
+  
+  
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  
+    <div class="row mb-1 ">
+      <div class="row mb-1" [hidden]="true">
+        <div class="col-lg-1 col-md-1 col-sm-12">
+          <label for="currencydisplay">Currency</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12">
+          <p-dropdown name="currencydisplay" [options]="currencies" optionLabel="currencydisplay"
+            [(ngModel)]="selectedCurrency">
+          </p-dropdown>
+        </div>
+      </div>
+  
+      <div class="row">
+  
+      </div>
+  
+    </div>
+    <div *ngIf="vouchermasterdiv" class="row mb-3 ">
+  
+      <p-table #dt sortField="voucherid" [sortOrder]="-1" [value]="vouchers" [paginator]="true" [rows]="rows"
+        [showCurrentPageReport]="true" [(first)]="first" styleClass="myTable"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,50]"
+        dataKey="voucherid" [globalFilterFields]="['companyname','vouchernumber','vouchertypename','narration']"
+        editMode="row">
+  
+        <ng-template pTemplate="caption">
+          <div class="row">
+            <div class="tablename"></div>
+          </div>
+        
+          <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-12 m-2">
+              <span class="p-input-icon-left ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                  placeholder="Search keyword" />
+              </span>
+            </div>
+           
+            <div *ngIf="hoUser" class="col-lg-3 col-md-3 col-sm-12 m-2">
+              <p-dropdown name="companyname"  placeholder="-Filter Branch-" [filter]="true" filterBy="companyname"
+                 [options]="companies" optionLabel="companyname"
+                optionValue="companyid" (onChange)="filterVoucher()" [(ngModel)]="cfilterid">
+              </p-dropdown>
+            </div>
+            <div *ngIf="hoUser" class="col-lg-5 col-md-5 col-sm-12 m-2">
+              <p-radioButton name="radioSelect" value="1" (onClick)="filterVoucher()" [(ngModel)]="radioSelect" inputId="radioSelect1"></p-radioButton>
+              <label for="radioSelect3">Admin</label>
+              <p-radioButton name="radioSelect" value="2" (onClick)="filterVoucher()"  [(ngModel)]="radioSelect"  inputId="radioSelect2"></p-radioButton>
+              <label for="radioSelect3">GPF</label>
+              <p-radioButton name="radioSelect" value="3" (onClick)="filterVoucher()"   [(ngModel)]="radioSelect" inputId="radioSelect3"></p-radioButton>
+              <label for="radioSelect3">Pension</label>
+              <p-radioButton name="radioSelect" value="4" (onClick)="filterVoucher()"   [(ngModel)]="radioSelect" inputId="radioSelect4"></p-radioButton>
+              <label for="radioSelect3">NPS</label>
+              <p-radioButton name="radioSelect" value="5" (onClick)="filterVoucher()"   [(ngModel)]="radioSelect" inputId="radioSelect5"></p-radioButton>
+              <label for="radioSelect3">GWF(AP)</label>
+              <p-radioButton name="radioSelect" value="6" (onClick)="filterVoucher()"  [(ngModel)]="radioSelect"  inputId="radioSelect6"></p-radioButton>
+              <label for="radioSelect3">Trade Wing</label>
+              <p-radioButton name="radioSelect" value="8" (onClick)="filterVoucher()"  [(ngModel)]="radioSelect"  inputId="radioSelect7"></p-radioButton>
+              <label for="radioSelect3">Auction</label>
+            </div>
+          
+  
+          <div hidden="true" class="col-lg-2 col-md-2 col-sm-12">
+            <button type="submit" pButton icon="fa fa-search" (click)="filterVoucher()" label="Filter"
+           ></button>
+  
+            </div>
+          </div>
+        </ng-template>
+  
+  
+  
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Branch</th>
+            <th>Voucher Number</th>
+            <!-- <th>Voucher Type</th> -->
+            <th>Voucher Date</th>
+            <!-- <th>Narration</th> -->
+            <!-- <th>Action</th> -->
+            <th>Status</th>
+            <th>Remarks</th>
+  
+            <th></th>
+            <th></th>
+          </tr>
+  
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+          <tr [pEditableRow]="rowData">
+            <td>
+  
+              {{rowData.companyname}}
+  
+            </td>
+            <td>
+  
+              {{rowData.vouchernumber}}
+  
+            </td>
+            <!-- <td>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.vouchertypename">
+  
+  
+  
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{rowData.vouchertypename}}
+                </ng-template>
+              </p-cellEditor>
+  
+            </td> -->
+            <td>
+  
+              {{rowData.voucherdate | date}}
+  
+  
+            </td>
+            <!-- <td>
+  
+                  {{rowData.narration}}
+               
+  
+            </td> -->
+            <!-- <td *ngIf="(rowData.totaldebitamount !=null && rowData.totalcreditamount!=null)"
+              [style]="{'background-color':'lightgreen'}">
+              Complete
+  
+            </td>
+            <td *ngIf="(rowData.totaldebitamount ==null && rowData.totalcreditamount==null)"
+              [style]="{'background-color':'yellow'}">
+  
+              Pending
+            </td> -->
+            <td *ngIf="urole==maker || urole==0">
+  
+              <p-cellEditor>
+                <ng-template *ngIf="rowData.statusid==1" pTemplate="output">
+                  <span [style]="{'color':'red' , 'font-weight':'bolder'}">New</span>
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==2" pTemplate="output">
+                  <span [style]="{'color':'#999900' , 'font-weight':'bolder'}">Checked</span>
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==3" pTemplate="output">
+                  <span [style]="{'color':'#999900' , 'font-weight':'bolder'}">InCorrect</span>
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==4" pTemplate="output">
+                  <span [style]="{'color':'#00FF00' , 'font-weight':'bolder'}">Approved</span>
+  
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==5" pTemplate="output">
+                  <span [style]="{'color':'red' , 'font-weight':'bolder'}">Rejected</span>
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==1" pTemplate="input">
+                  New
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==2" pTemplate="input">
+                  Checked
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==3" pTemplate="input">
+                  InCorrect
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==4" pTemplate="input">
+                  Approved
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==5" pTemplate="input">
+                  Rejected
+  
+                </ng-template>
+              </p-cellEditor>
+  
+            </td>
+            <td *ngIf="urole==checker">
+  
+              <p-cellEditor>
+                <ng-template style="width: 200px;" pTemplate="input">
+                  <p-dropdown name="status" [options]="approvalStatusChecker" placeholder="Select" optionLabel="status" optionValue="statusid"
+                    [(ngModel)]="rowData.statusid"></p-dropdown>
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==1" pTemplate="output">
+                  <span [style]="{'color':'red' , 'font-weight':'bolder'}">New</span>
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==2" pTemplate="output">
+                  <span [style]="{'color':'#999900' , 'font-weight':'bolder'}">Checked</span>
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==3" pTemplate="output">
+                  <span [style]="{'color':'#999900' , 'font-weight':'bolder'}">InCorrect</span>
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==4" pTemplate="output">
+                  <span [style]="{'color':'#00FF00' , 'font-weight':'bolder'}">Approved</span>
+  
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==5" pTemplate="output">
+                  <span [style]="{'color':'red' , 'font-weight':'bolder'}">Rejected</span>
+  
+                </ng-template>
+              </p-cellEditor>
+  
+            </td>
+            <td *ngIf="urole==approver">
+  
+              <p-cellEditor>
+                <ng-template style="width: 200px;" pTemplate="input">
+                  <p-dropdown name="status" [options]="approvalStatusApprover" placeholder="Select" optionLabel="status" optionValue="statusid"
+                    [(ngModel)]="rowData.statusid"></p-dropdown>
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==1" pTemplate="output">
+                  <span [style]="{'color':'red' , 'font-weight':'bolder'}">New</span>
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==2" pTemplate="output">
+                  <span [style]="{'color':'#999900' , 'font-weight':'bolder'}">Checked</span>
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==3" pTemplate="output">
+                  <span [style]="{'color':'#999900' , 'font-weight':'bolder'}">InCorrect</span>
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==4" pTemplate="output">
+                  <span [style]="{'color':'#00FF00' , 'font-weight':'bolder'}">Approved</span>
+  
+  
+                </ng-template>
+                <ng-template *ngIf="rowData.statusid==5" pTemplate="output">
+                  <span [style]="{'color':'red' , 'font-weight':'bolder'}">Rejected</span>
+  
+                </ng-template>
+              </p-cellEditor>
+  
+  
+            </td>
+              <td>
+              <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.remarks">
+  
+  
+  
+                </ng-template>
+                <ng-template pTemplate="output">
+                  {{rowData.remarks}}
+                </ng-template>
+              </p-cellEditor>
+  
+            </td>
+            <td *ngIf="urole!=maker && urole!=0 " style="text-align:center">
+              <button *ngIf="!editing" [disabled]="rowData.statusid==4|| (urole!=approver && rowData.statusid==2)||rowData.statusid==3 || rowData.statusid==5" pButton type="button"
+                pInitEditableRow icon="pi pi-pencil" class="ui-button-info" (click)="onRowEditInit(rowData)"></button>
+              <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check" class="ui-button-success"
+                (click)="onRowEditSave(rowData.voucherid,rowData)" style="margin-right: .5em"></button>
+              <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times" class="ui-button-danger"
+                (click)="onRowEditCancel(rowData, ri)"></button>
+            </td>
+  
+            <td style="text-align:center">
+              <a pButton type="button" style="margin-right: .5em" routerLink="/vouchers/{{ rowData.voucherid }}"><i
+                  class="fa fa-eye"></i></a>
+  
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+  
+    </div>
+  
+    <p-dialog appendTo="body" header="GST Details" [(visible)]="displayGstDialog" [responsive]="true"
+    showEffect="fade" [modal]="true">
+    <form #GroupForm="ngForm" novalidate>
+      <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="gstDetails">
+        <div class="ui-g ui-g-12 ui-g-nopad">
+          <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="gstbvledgeralias">Buyer/Vendor</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+            <p-dropdown [required]="true" placeholder="-Select-" appendTo="body" [autoDisplayFirst]="false"
+              [options]="gstledgers" (onChange)="gstbvOnChange(gstDetails.gstbvledgerid)" optionLabel="gstbvledgeralias" name="gstbvledgeralias" optionValue="gstbvledgerid"            
+              [(ngModel)]="gstDetails.gstbvledgerid"> 
+            </p-dropdown>
+          </div>
+          <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="invoicedate">GST No.</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+            <label for="gsttin">{{gstDetails.gstbvgsttin}}</label>
+    
+          </div>
+        <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="invoicenumber">Invoice No.</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+  
+          <input type="text" pInputText name="invoicenumber"
+            [(ngModel)]="gstDetails.invoicenumber">
+        </div>
+        <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="invoicedate">Invoice Date</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+          <p-calendar name="invoicedate" appendTo="body" [maxDate]="dateTime" dateFormat="dd.mm.yy"
+          [(ngModel)]="gstDetails.invoicedate" [showIcon]="true" ></p-calendar>
+  
+        </div>
+  
+        <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="invtype">Invoice Type</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+          <p-dropdown [required]="true" placeholder="-Select-" appendTo="body" [autoDisplayFirst]="false"
+            [options]="invtypes" optionLabel="invtype" name="invtype" optionValue="invtypeid"          
+            [(ngModel)]="gstDetails.invtypeid">
+          </p-dropdown>
+        </div>
+  
+  
+        <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+          <label for="igstrate">IGST Rate</label>
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-9">
+  
+          <input type="text" pInputText name="igstrate"
+            [(ngModel)]="gstDetails.igstrate">
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+          <label for="cgstrate">CGST Rate</label>
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-9">
+  
+          <input type="text" pInputText name="cgstrate"
+            [(ngModel)]="gstDetails.cgstrate">
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+          <label for="sgstrate">SGST Rate</label>
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-9">
+  
+          <input type="text" pInputText name="sgstrate"
+            [(ngModel)]="gstDetails.sgstrate">
+        </div>
+  
+        <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="invoicevalue">Invoice Value</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+  
+          <input type="text" pInputText name="invoicevalue"
+            [(ngModel)]="gstDetails.invoicevalue">
+        </div>
+        <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="taxablevalue">Taxable Value</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+  
+          <input type="text" pInputText name="taxablevalue"
+            [(ngModel)]="gstDetails.taxablevalue">
+        </div>
+  
+  
+  
+  
+        <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+          <label for="igst">Integrated Tax</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+  
+          <input [hidden]="true" type="text" pInputText name="igst"
+            [(ngModel)]="gstDetails.igstvalue">
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+          <label for="cgst">Central Tax</label>
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-9">
+  
+          <input type="text" pInputText name="cgst"
+            [(ngModel)]="gstDetails.cgstvalue">
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+          <label for="sgst">State Tax</label>
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-9">
+  
+          <input type="text" pInputText name="sgst"
+            [(ngModel)]="gstDetails.sgstvalue">
+        </div>
+  
+  
+        <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+          <label for="igst">GSTTDS IGST</label>
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-9">
+  
+          <input type="text" pInputText name="gsttdsigst" 
+            [(ngModel)]="gstDetails.gsttdsigst">
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+          <label for="cgst">GSTTDS CGST</label>
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-9">
+  
+          <input type="text" pInputText name="gsttdscgst"
+            [(ngModel)]="gstDetails.gsttdscgst">
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+          <label for="sgst">GSTTDS SGST</label>
+        </div>
+        <div [hidden]="true" class="ui-g-12 ui-md-9">
+  
+          <input type="text" pInputText name="gsttdssgst"
+            [(ngModel)]="gstDetails.gsttdssgst">
+        </div>
+  
+       
+        <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="sgst">Supply Attract</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+  
+          <p-dropdown name="supplyattract"  appendTo="body" [options]="supplyattract" [(ngModel)]="gstDetails.supplyattract">
+          </p-dropdown>
+        </div>
+      </div>
+      </div>
+    
+    </form>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button type="submit" pButton icon="fa-check" (click)="saveGst()" label="Save"
+          [disabled]="!GroupForm.form.valid"></button>
+        <!-- <p-button label="Reset" (onClick)="onPayReset()"></p-button> -->
+      </div>
+    </p-footer>
+  </p-dialog>
+  
+  
+  <p-dialog appendTo="body" header="IT Details" [(visible)]="displayItDialog" [responsive]="true"
+  showEffect="fade" [modal]="true">
+  <form #Group1Form="ngForm" novalidate>
+    <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="itDetails">
+      <div class="ui-g ui-g-12 ui-g-nopad">
+        <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="sectionname">Section</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+          <p-dropdown [required]="true" placeholder="-Select-" appendTo="body" [autoDisplayFirst]="false"
+            [options]="sections" optionLabel="sectionname" name="sectionname" optionValue="sectionid"            
+            [(ngModel)]="itDetails.sectionid">
+          </p-dropdown>
+        </div>
+        <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="itbvledgeralias">Buyer/Vendor</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+          <p-dropdown [required]="true" placeholder="-Select-" appendTo="body" [autoDisplayFirst]="false"
+            [options]="itledgers" (onChange)="iTbvOnChange(itDetails.itbvledgerid)" optionLabel="itbvledgeralias" name="itbvledgeralias" optionValue="itbvledgerid"            
+            [(ngModel)]="itDetails.itbvledgerid">
+          </p-dropdown>
+        </div>
+       
+        <div  class="ui-g-12 ui-md-3 ui-label">
+          <label for="tdsrate">TDS Rate %</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+    
+          <input type="text" pInputText name="tdsrate"
+            [(ngModel)]="itDetails.rate">
+        </div>
+        <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="returnname">Return</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+          <p-dropdown  placeholder="-Select-" appendTo="body" [autoDisplayFirst]="false"
+            [options]="returns" optionLabel="returnname" name="returnname" optionValue="returnid"            
+            [(ngModel)]="itDetails.returnid">
+          </p-dropdown>
+        </div>
+        <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="netamount">TDS Deducted</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+    
+          <input type="text" pInputText name="netamount"
+            [(ngModel)]="itDetails.netamount">
+        </div>
+     
+      <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+        <label for="tds">TDS Amount</label>
+      </div> 
+      <div  [hidden]="true" class="ui-g-12 ui-md-9">
+        <input type="text" pInputText name="tds"
+          [(ngModel)]="itDetails.tds">
+      </div>
+  
+      <div class="ui-g-12 ui-md-3 ui-label">
+        <label for="grossamount">Taxable Value</label>
+      </div>
+      <div class="ui-g-12 ui-md-9">
+  
+        <input type="text" pInputText name="grossamount"
+          [(ngModel)]="itDetails.grossamount">
+      </div>
+      
+  
+    </div>
+    </div>
+  
+  </form>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="submit" pButton icon="fa-check" (click)="saveIt()" label="Save"
+        [disabled]="!Group1Form.form.valid"></button>
+      <!-- <p-button label="Reset" (onClick)="onPayReset()"></p-button> -->
+    </div>
+  </p-footer>
+  </p-dialog>
+  </div>

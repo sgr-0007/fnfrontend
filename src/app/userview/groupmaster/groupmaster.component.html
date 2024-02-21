@@ -1,0 +1,206 @@
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+  <span class="moduleheadertext">Head Master</span>
+    </div>
+  <p-table #dt  [value]="groups" sortField="groupid" [sortOrder]="-1"  [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+   styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,50]"
+   [globalFilterFields]="['groupname','groupcode','groupdescription','balancesheetgroup','isactive']"
+   dataKey="groupid" editMode="row">
+   <ng-template pTemplate="caption">
+    <div class="row">
+      <div class="col-lg-1 mb-1"><p-button label="ADD" (onClick)="onGroupAdd()"></p-button></div>
+      
+      <div class="tablename">Head Master</div>
+      
+      <div class="row align-left">  
+        <div class="col text-start">     
+        <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+        </span>
+        </div>
+    
+          <div class="col text-end">
+          <button  (click)="exportPdf()" class="me-2 noBorder" pTooltip="PDF" tooltipPosition="bottom" >
+              <img
+              class="icon"
+              src="../../../assets/pdficon.png"
+              height="24px"
+            /></button>
+             <button (click)="exportExcel()" pTooltip="Excel" tooltipPosition="bottom" class="p-button-success mr-2 noBorder"  pTooltip="XLS" tooltipPosition="bottom">
+              <img
+              class="icon"
+              src="../../../assets/excelicon.png"
+              height="24px"
+            />
+            </button>
+            </div>
+          </div>
+
+
+      </div>
+  </ng-template>
+  <ng-template pTemplate="header"></ng-template>
+  
+          <ng-template pTemplate="header" >
+        <tr>
+
+            <th> Head Code
+            </th>
+            <th  pSortableColumn="groupname">Head
+                <p-sortIcon field="groupname"></p-sortIcon>
+            </th>
+
+            <th  pSortableColumn="groupdescription"> Description
+                <p-sortIcon field="groupdescription"></p-sortIcon>
+            </th>
+            <th  pSortableColumn="balancesheetgroup">Account Group
+                <p-sortIcon field="balancesheetgroup"></p-sortIcon>
+            </th>
+            <!-- <th>Status</th> -->
+            <th></th>
+  
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="rowData">
+        <td>
+            <p-cellEditor>
+                <ng-template pTemplate="input">
+                    {{rowData.groupcode}}
+                </ng-template>
+                <ng-template pTemplate="output"> 
+                    {{rowData.groupcode}}
+                </ng-template>
+            </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.groupname">
+              </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.groupname}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+      
+        <td>
+            <p-cellEditor>
+                <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="rowData.groupdescription">
+                </ng-template>
+                <ng-template pTemplate="output"> 
+                    {{rowData.groupdescription}}
+                </ng-template>
+            </p-cellEditor>
+        </td>
+        <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                {{rowData.balancesheetgroup}}
+                  </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.balancesheetgroup}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+        <!-- <td>
+            <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <p-dropdown name="isactive" [options]="isactive" [(ngModel)]="rowData.isactive">
+                  </p-dropdown>
+                </ng-template>
+                <ng-template pTemplate="output" *ngIf="rowData.isactive==true">Active</ng-template>
+                <ng-template pTemplate="output" *ngIf="rowData.isactive==false">InActive</ng-template>
+            </p-cellEditor>
+        </td> -->
+        <td style="text-align:center">
+            <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil"
+                class="ui-button-info" [disabled]="disable" (click)="onRowEditInit(rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"
+                class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData.groupid,rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times"
+                class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
+        </td>
+    </tr>
+    </ng-template>
+  </p-table>
+  <p-dialog appendTo="body" header="Head Details" width="300" height="200" [(visible)]="displayDialog"
+            [responsive]="true" showEffect="fade" [modal]="true">
+      <form #GroupForm="ngForm" novalidate>
+          <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="groupForDialog">
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="groupname">Head Name</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <input pInputText id="groupname" class="form-control" name="groupname" required
+                             [(ngModel)]="groupForDialog.groupname"/>
+                             <div class="col-sm-12" *ngIf="!groupnameunique && submitted">
+                              <span style="color: red;">Head Name should be unique.</span>
+                            </div>
+                  </div>
+              </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="groupdescription">Head Code</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <input  pInputText id="groupcode" class="form-control" name="groupcode" required
+                           [(ngModel)]="groupForDialog.groupcode"/>
+                           <div class="col-sm-12" *ngIf="!groupcodeunique && submitted">
+                            <span style="color: red;">Head should be unique.</span>
+                          </div>
+
+                </div>
+            </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="balancesheetgroup">Account Group</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                   
+                  <p-dropdown name="balancesheetgroup" appendTo="body" [required]="true" [filter]="true" filterBy="balancesheetgroup" placeholder="-Select-" [options]="balancesheetgroups" optionLabel="balancesheetgroup" optionValue="balancesheetgroupid" [(ngModel)]="groupForDialog.balancesheetgroupid">
+                  </p-dropdown>
+                </div>
+            </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="groupdescription">Head Description</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <input  pInputText id="groupdescription" class="form-control" name="groupdescription" required
+                             [(ngModel)]="groupForDialog.groupdescription"/>
+  
+  
+                  </div>
+              </div>
+              <div [hidden]="true" class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="isactive">Status</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <!-- <input pInputText id="isactive" name="isactive" required
+                             [(ngModel)]="groupForDialog.isactive"/> -->
+  
+                          <p-dropdown name="isactive" [options]="isactive" [(ngModel)]="groupForDialog.isactive">
+                          </p-dropdown>
+  
+  
+                  </div>
+              </div>
+  
+          </div>
+      </form>
+      <p-footer>
+          <div class="ui-dialog-buttonpane ui-helper-clearfix">
+              <button type="submit" pButton icon="fa-check" (click)="saveGroup()"
+                      label="Save" [disabled]="!GroupForm.form.valid"></button>
+                      <p-button label="Reset" (onClick)="onGroupReset()"></p-button>
+          </div>
+      </p-footer>
+      </p-dialog>
+  
+  </div>
+  

@@ -1,0 +1,70 @@
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+  <span class="moduleheadertext">Opening and Closing of a Day Book</span>
+    </div>
+    <div *ngIf="isLoading">
+      <p-progressBar 
+        color="primary" 
+        mode="indeterminate">
+      </p-progressBar>
+    </div>
+    <div class="row mb-3">
+      <form #VoucherForm="ngForm" novalidate>
+          <div *ngIf="daybookForDialog">      
+             
+          <div class="col-lg-2 col-md-3 col-sm-12 m-3">
+              <p-calendar name="voucherfromdate" [maxDate]="dateTime" dateFormat="dd.mm.yy"
+              [(ngModel)]="dateValue" (onSelect)="datechange()" [showIcon]="true" appendTo="body">
+              </p-calendar>
+          </div>
+          </div>
+      </form>
+  </div>
+    <p-table [value]="companies"
+    styleClass="myTable"    
+    dataKey="companyid" editMode="row">
+    
+   <ng-template pTemplate="header"></ng-template>
+   
+           <ng-template pTemplate="header" >
+         <tr>
+             <th>Board</th>
+             <th></th>
+             <th></th>
+   
+         </tr>
+     </ng-template>
+     <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+       <tr [pEditableRow]="rowData"  >
+         <td>
+           <p-cellEditor>
+               <ng-template pTemplate="input">
+                   <input pInputText type="text" [(ngModel)]="rowData.companyname">
+               </ng-template>
+               <ng-template pTemplate="output">
+                   {{rowData.companyname}}
+               </ng-template>
+           </p-cellEditor>
+       </td>
+         
+         <td style="text-align:center">
+          
+            <button *ngIf="(rowData.isopened==0 && rowData.isclosed==0)" (click)="btnopenclick(rowData)"  type="button" class="btn btn-danger">Open</button>
+            <button *ngIf="(rowData.isopened==1 && rowData.isclosed==0)"  type="button" class="btn btn-success">Open</button>
+            <button *ngIf="(rowData.isopened==1 && rowData.isclosed==1)" type="button" class="btn btn-success">Open</button>
+            
+         </td>
+                <td style="text-align:center">                   
+                    <button *ngIf="(rowData.isopened==0 && rowData.isclosed==0)" type="button" class="btn btn-secondary">Close</button>
+                    <button *ngIf="(rowData.isopened==1 && rowData.isclosed==0)" (click)="btncloseclick(rowData)" type="button" class="btn btn-danger">Close</button>
+                    <button *ngIf="(rowData.isopened==1 && rowData.isclosed==1)" type="button" class="btn btn-success">Close</button>                    
+                   
+                  </td>
+
+     </tr>
+     </ng-template>
+   </p-table>
+    
+
+
+</div>

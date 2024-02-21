@@ -1,0 +1,302 @@
+
+<div>
+
+    <h2>Addition of SaleNote List Inclusion.</h2>
+        <p-table #dt dataKey="shid"   [(selection)]="selectedData"  [paginator]="true"  [reorderableColumns]="true" sortField="invid" [sortOrder]="-1" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
+    [rowsPerPageOptions]="[10,25,50]" [rows]="rows" [(first)]="first" 
+     class="mt-3" [value]="aucinvdetails"   [scrollable]="true" scrollHeight="450px" 
+     [globalFilterFields]="['saleNote_No','tbgrno','auction_Date','status','net_Amount_Payable']"
+     [rowSelectable]="isRowSelectable" [loading]="loading">
+     <ng-template pTemplate="caption">
+        <div class="row">
+            <div class="col-10 mb-1 text-start">
+                <form>
+                    <div class="row">
+                    
+                            <div class="col-4 w-auto">
+                                <label>From Date</label>
+                                <p-calendar appendTo="body" dateFormat="dd/mm/yy" [required]="true" [(ngModel)]="toDate" name="toDate" [maxDate]="currentDate" ></p-calendar>
+                    
+                                 </div>
+                                 <div class="col-4 text-start w-auto">
+                                    <label>To Date</label>
+                                    <p-calendar appendTo="body" dateFormat="dd/mm/yy" [required]="true" [maxDate]="currentDate" [(ngModel)]="fromDate" name="fromDate"></p-calendar>
+                        
+                                     </div>
+                                     <div class="col-2 w-auto">     
+                                        <span class="p-input-icon-left ml-auto">
+                                            <i class="pi pi-search"></i>
+                                            <p-dropdown name="companyname" placeholder="Filter By Branch" appendTo="body" [filter]="true"  filterBy="companyname" [required]="true"
+                                            (onChange)="filterbybranch()" [options]="companies" optionLabel="companyname" [(ngModel)]="filteredbranchid"
+                                            optionValue="companyid" >
+                                          </p-dropdown>
+                                        </span>
+                                        </div>
+                                     <div class="col-2  text-start">
+                                        <p-button label="Search"  (onClick)="searchAucInv()" ></p-button>
+                            
+                                         </div>
+                            
+                                             
+                        </div>
+                        </form>    
+                    
+                </div>
+
+          <div class="col-2 mb-1 text-end">
+            <p-button label="Approve" *ngIf="true"  class="mx-2" (click)="approveSelectedLdger()" ></p-button>
+             </div>
+          
+          <div class="tablename">List Of Salenote from e-Auction</div>      
+          <div class="row align-left">  
+            <div class="col text-start">     
+            <span class="p-input-icon-left ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+            </span>
+            </div>
+    
+    
+            <!-- <div class="col text-end">     
+                <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+                    <p-dropdown name="companyname" appendTo="body" [filter]="true"  filterBy="companyname" [required]="true"
+                    (onChange)="filterbybranch()" [options]="companies" optionLabel="companyname" [(ngModel)]="filteredbranchid"
+                    optionValue="companyid" >
+                  </p-dropdown>
+                </span>
+                </div> -->
+    
+            
+        
+              </div>
+    
+          </div>
+      </ng-template>
+     <ng-template  pTemplate="header">
+           
+            <tr>
+                <th style="width: 2rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th pSortableColumn="saleNote_No">
+                    <div class="flex justify-content-center align-items-center">
+                        SalesNOte No
+                 
+                        <p-sortIcon field="saleNote_No"></p-sortIcon>
+                    </div>
+                   </th>
+                <th pSortableColumn="tbgrno" >
+                    <div class="flex justify-content-center align-items-center">
+                        TBGRNO
+                       
+                        <p-sortIcon field="tbgrno"></p-sortIcon>
+                        <!-- <p-columnFilter type="date" field="invoiceDate" display="menu">
+                     
+                        </p-columnFilter> -->
+                    </div>
+                </th>
+                
+                <th pSortableColumn="auction_Date" >
+                    Quantity Sold
+                    <p-sortIcon field="quantity_Sold"></p-sortIcon>
+                    <!-- <p-columnFilter type="date" field="paymentDueDate" display="menu">
+                     
+                    </p-columnFilter> -->
+                    
+                </th>
+                <th pSortableColumn="auction_Date" >
+                    <div class="flex justify-content-center align-items-center">
+                        Auction Date
+                        <p-sortIcon field="auction_Date"></p-sortIcon>
+                        
+                    </div>
+                    
+                </th>
+                
+    
+                <th pSortableColumn="net_Amount_Payable" >
+                    Net Amount payble
+                    <p-sortIcon field="net_Amount_Payable"></p-sortIcon>
+                </th>
+                <th pSortableColumn="status" >
+                    Approval Status
+                    <p-sortIcon field="status"></p-sortIcon>
+                </th>
+                <th >Action</th>
+            </tr>
+        </ng-template>
+        <ng-template let-invitem pTemplate="body" let-ri="rowIndex" let-expanded="expanded"  let-editing="editing" >
+            <tr [pEditableRow]="invitem">
+                <td>
+                    <p-tableCheckbox [value]="invitem" [disabled]="isAlreadyApproved(invitem)"></p-tableCheckbox>
+                    <button type="button" pButton pRipple [pRowToggler]="invitem" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                </td>
+                <!-- <td>{{invitem.invoiceid}}</td> -->
+                <td >{{invitem.saleNote_No}}</td>
+                <td >{{invitem.tbgrno}}</td>
+                <!-- <td>{{invitem.invoicenumber}}</td> -->
+                <td >{{invitem.quantity_Sold}}</td>
+                <td >{{invitem.auction_Date|date}}</td>
+                
+                <!-- <td>{{invitem.buyergst}}</td>
+                <td>{{invitem.buyerCityName}}</td>
+                <td>{{invitem.buyerStateName}}</td>
+                 -->
+                
+                <td >{{invitem.net_Amount_Payable}}</td>
+                <td >
+                    
+                <div *ngIf="invitem.status==1">
+                        approved
+                    </div>
+                    <div *ngIf="invitem.status==0">
+                        pending
+                    </div>
+                </td>
+                <!-- <td>
+                    <div *ngIf="invitem.voucherStatus==2">
+                        Created
+                    </div>
+                    <div *ngIf="invitem.voucherStatus==0">
+                        Not Initialized
+                    </div>
+                
+                </td> -->
+                
+                
+                <td >
+                    
+                    <p-button [disabled]="invitem.status==1"  class="mx-2  p-button-text" (onClick)="approveBuyer(invitem)" label="Approve">   
+                       
+                    </p-button> 
+                    
+                </td>
+    
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-product>
+            <tr>
+                <td colspan="7">
+                    <div class="p-3">
+                        <p-table [value]="product.aucsalenoteDetail" dataKey="sdid">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="ilotNumber">ILOTNO <p-sortIcon field="ilotNumber"></p-sortIcon></th>
+                                    <!-- <th pSortableColumn="baleStatus">Bale Status <p-sortIcon field="baleStatus"></p-sortIcon></th> -->
+                                    <th pSortableColumn="baleDate"> BaleDate <p-sortIcon field="date"></p-sortIcon></th>
+                                    <th pSortableColumn="baleWeight">Bale Weight <p-sortIcon field="baleWeight"></p-sortIcon></th>
+                                    <th pSortableColumn="balePrice">Bale Price <p-sortIcon field="balePrice"></p-sortIcon></th>
+                                    <th pSortableColumn="totalAmount">Total Amount <p-sortIcon field="totalAmount"></p-sortIcon></th>
+                                    
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-order>
+                                <tr>
+                                    <!-- <td>{{order.invoiceNo}}</td> -->
+                                    <td>{{order.iLotNumber}}</td>
+                                    <!-- <td>{{order.baleStatus}}</td> -->
+                                    <td>{{order.baleDate| date:'dd/MM/yyyy'}}</td>
+                                    <td>{{order.baleWeight}}</td>
+                                    <td>{{order.balePrice}}</td>
+                                    <td>{{order.totalAmount}}</td>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="6">There are no  Detais found for Salesnote yet.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </td>
+            </tr>
+    
+            <tr>
+                <td colspan="7">
+                    <div class="p-3">
+                        <p-table [value]="product.aucsalenoteTaxes" dataKey="stid">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="taxId">Tax ID <p-sortIcon field="taxId"></p-sortIcon></th>
+                                    <th pSortableColumn="taxDesc">Tax Desc <p-sortIcon field="taxDesc"></p-sortIcon></th>
+                                    <th pSortableColumn="taxDesc">Normal Service Charge <p-sortIcon field="taxDesc"></p-sortIcon></th>
+                                    <th pSortableColumn="taxDesc">Excess service charge <p-sortIcon field="taxDesc"></p-sortIcon></th>
+                                    <th pSortableColumn="taxDesc">Max Excess Service Charge <p-sortIcon field="taxDesc"></p-sortIcon></th>
+                                    <th pSortableColumn="value"> Value<p-sortIcon field="value"></p-sortIcon></th>
+                                    <!-- <th pSortableColumn="taxType">Tax Type <p-sortIcon field="taxType"></p-sortIcon></th> -->
+                                    <th pSortableColumn="taxCharges">Tax Charges <p-sortIcon field="taxCharges"></p-sortIcon></th>
+                                    <!-- <th pSortableColumn="displayOrder">Display Order <p-sortIcon field="displayOrder"></p-sortIcon></th> -->
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-order>
+                                <tr>
+                                    <td>{{order.tax_Id}}</td>
+                                    <td>{{order.tax_Desc}}</td>
+                                    <td>{{order.normal_Service_Charge}}</td>
+                                    <td>{{order.excess_Service_Charge}}</td>
+                                    <td>{{order.max_Excess_Service_Charge}}</td>
+                                    <td>{{order.value}}</td>
+                                    <!-- <td>{{order.taxType}}</td> -->
+                                    <td>{{order.tax_Charges}}</td>
+                                    <!-- <td>{{order.displayOrder}}</td> -->
+                                    
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="6">There are no  tax Detais found for Sales note  yet.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </td>
+            </tr>
+            
+            <!-- <tr>
+                <td colspan="7">
+                    <div class="p-3">
+                        <p-table [value]="product.aucsalenoteLoan" dataKey="glid">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="taxId">Loan code <p-sortIcon field="taxId"></p-sortIcon></th>
+                                    <th pSortableColumn="taxDesc">Loan Sanction Date <p-sortIcon field="taxDesc"></p-sortIcon></th>
+                                    <th pSortableColumn="value"> Loan Status <p-sortIcon field="value"></p-sortIcon></th>
+                 
+                                    <th pSortableColumn="taxCharges">Total Deduction <p-sortIcon field="taxCharges"></p-sortIcon></th>
+                 
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-order>
+                                <tr>
+                                    <td>{{order.loanCode}}</td>
+                                    <td>{{order.loanSanctionDate}}</td>
+                                    <td>{{order.loanStatus}}</td>
+                 
+                                    <td>{{order.totalDeductions}}</td>
+                 
+                                    
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td colspan="6">There are no  tax Detais found for Sales note  yet.</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+                </td>
+            </tr> -->
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="6">There are no Auction Salesnote present for the date.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+    
+    </div>
+    
+    
+    
+    

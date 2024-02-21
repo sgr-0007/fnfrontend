@@ -1,0 +1,118 @@
+<div id="payment" class="card m-3 p-3">
+    <h1>Reciept View</h1>
+    
+        <p-table #dt  [value]="paymentdetails" [reorderableColumns]="true" sortField="paymentid" [sortOrder]="-1" dataKey="paymentid"[resizableColumns]="true" [paginator]="true"  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
+        [rowsPerPageOptions]="[10,25,50]" [rows]="rows" [(first)]="first" 
+         class="mt-3" responsiveLayout="scroll"
+         [globalFilterFields]="['paymentNo','invoiceNo','paymentAmount','pAmountPaid','paymentStatus']">
+         <ng-template pTemplate="caption">
+            <div class="row">
+              
+              
+              <div class="row align-left">  
+                <div class="col text-start">     
+                <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+                </span>
+                </div>
+            
+                  </div>
+        
+                  <div class="col text-end">     
+                    <span class="p-input-icon-left ml-auto">
+                        <i class="pi pi-search"></i>
+                        <p-dropdown name="companyname" placeholder="Filter By Auction type" [autoDisplayFirst]=false [showClear]="true" appendTo="body" [filter]="true"  filterBy="companyname" [required]="true"
+                        (onChange)="filterbyAuctionType()" [options]="auctiontype" optionLabel="label" [(ngModel)]="selectedauctionType"
+                        optionValue="id" >
+                      </p-dropdown>
+                    </span>
+                    </div>
+              </div>
+          </ng-template>     
+         <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="paymentNo">
+                            Reciept NO
+                            <p-sortIcon field="paymentNo"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="invoiceNo">
+                            Invoice NO
+                            <p-sortIcon field="invoiceNo"></p-sortIcon>
+                        </th>
+                        <!-- <th>
+                            BuyerName
+                        </th> -->
+                        <th pSortableColumn="pAmountPaid">
+
+                            Total Payment
+                            <p-sortIcon field="pAmountPaid"></p-sortIcon>
+                        </th>
+                        
+                        <th pSortableColumn="paidamt">
+                             Paid Amount
+                             <p-sortIcon field="paidamt"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="paymentStatus">
+                            Payment Status
+                            <p-sortIcon field="paymentStatus"></p-sortIcon>
+                        </th>
+                       <th>
+                        </th>
+
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-pay>
+                    <tr>
+                        <td>
+                            {{pay.paymentNo}}
+                        </td>
+                        <td>
+                            {{pay.invoiceNo}}
+                        </td>
+                        <!-- <td>
+                            {{pay.buyername}}
+                        </td> -->
+                        
+                        <td>
+                            {{pay.paymentAmount}}
+                        </td>
+                        <td>
+                            {{pay.pAmountPaid}}
+                        </td>
+                        <td>
+                            <label *ngIf="pay.paymentStatus==0">
+                            Pending
+                            </label>
+                        <label *ngIf="pay.paymentStatus==1">
+                            Paid
+                        </label>
+                        
+                        </td>
+                        
+                        <!-- <td>
+                            {{pay.paymentdate}}
+                        </td> -->
+                        <td>
+ 
+                            <button  [disabled]="pay.paymentStatus==0" (click)="printPage(pay)" ><mat-icon>print</mat-icon></button>
+                            <p-button [disabled]="pay.paymentStatus==1" (click)="view(pay)" class="mx-2" > <i class="fa fa-eye"> </i></p-button>
+                            <p-button [disabled]="pay.paymentStatus==1" (click)="edit(pay)" class="mx-2" > <i class="fa fa-pencil" aria-hidden="true"></i></p-button>
+                             </td>
+                        
+                    </tr>
+                </ng-template>
+            </p-table>
+
+   
+</div>
+<p-dialog [(visible)]="dialougeOpen" header="File Upload" showEffect="fade" [modal]="true">
+    <app-filesupload [title]="title"></app-filesupload>
+</p-dialog>
+
+<p-dialog id="content" position="top" #content  header="Reciept Details" width="800" height="200" [(visible)]="print" [responsive]="true"
+[style]="{width: '80vw',top:'6vh'}"  showEffect="fade" [modal]="true">
+<iframe *ngIf="reportUrl" [src]="reportUrl" frameborder="10" allowfullscreen width="100%" height="700px"></iframe>
+</p-dialog>
+
+ <!-- <app-paymentreciept *ngIf="print" [print]="print" [printingDetails]="selectedprint"></app-paymentreciept> -->

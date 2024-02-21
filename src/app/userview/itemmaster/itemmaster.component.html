@@ -1,0 +1,257 @@
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+  <span class="moduleheadertext">Item Master</span>
+    </div>
+  <p-table #dt [value]="item" sortField="itemid" [sortOrder]="-1"  [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first" 
+   styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[5,10,50]"
+   [globalFilterFields]="['itemname','uomname','isactive']"
+   dataKey="itemid" editMode="row">
+   <ng-template pTemplate="caption">
+    <div class="row">
+        <div class="col-lg-1 mb-1"><p-button label="ADD" (onClick)="onUomAdd()"></p-button></div>
+        <div class="tablename">Item Master</div>
+     </div>
+     
+     <div class="row align-left">  
+        <div class="col text-start">     
+        <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+        </span>
+        </div>
+    
+          <div class="col text-end">
+          <button  (click)="exportPdf()" class="me-2 noBorder" pTooltip="PDF" tooltipPosition="bottom" >
+              <img
+              class="icon"
+              src="../../../assets/pdficon.png"
+              height="24px"
+            /></button>
+             <button (click)="exportExcel()" pTooltip="Excel" tooltipPosition="bottom" class="p-button-success mr-2 noBorder"  pTooltip="XLS" tooltipPosition="bottom">
+              <img
+              class="icon"
+              src="../../../assets/excelicon.png"
+              height="24px"
+            />
+            </button>
+            </div>
+          </div>
+
+  </ng-template>
+  <ng-template pTemplate="header"></ng-template>
+  
+          <ng-template pTemplate="header" >
+        <tr>
+            <th pSortableColumn="itemname">Item name
+                <p-sortIcon field="itemname"></p-sortIcon>
+            </th>            
+            <th pSortableColumn="itemdescription">Description
+                <p-sortIcon field="itemdescription"></p-sortIcon>
+            </th>
+            <th pSortableColumn="uomname">Uom
+                <p-sortIcon field="uomname"></p-sortIcon>
+            </th>
+            <th pSortableColumn="isactive">Status
+                <p-sortIcon field="isactive"></p-sortIcon>
+            </th>
+            <th></th>
+  
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="rowData">
+        <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.itemname">
+              </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.itemname}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.itemdescription">
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.itemdescription}}
+            </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <p-dropdown name="uomname" [filter]="true" filterBy="uomname" appendTo="body" [required]="true" placeholder="-Select-" [options]="uomname" optionLabel="uomname" optionValue="uomid" [(ngModel)]="rowData.uomid">
+                </p-dropdown>
+                <!-- <p-dropdown name="uomname" [filter]="true" filterBy="uomname" appendTo="body" [required]="true" placeholder="-Select-" [options]="uomname" optionLabel="uomname" optionValue="uomid" [(ngModel)]="uomForDialog.uomid">
+                </p-dropdown> -->
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.uomname}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+        <td>
+            <p-cellEditor>
+                <ng-template pTemplate="input">
+                  <p-dropdown name="isactive" [options]="isactive" [(ngModel)]="rowData.isactive">
+                  </p-dropdown>
+                </ng-template>
+                <ng-template pTemplate="output" *ngIf="rowData.isactive==true">Active</ng-template>
+                <ng-template pTemplate="output" *ngIf="rowData.isactive==false">InActive</ng-template>
+            </p-cellEditor>
+        </td>
+        <td style="text-align:center">
+            <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil"
+                class="ui-button-info" [disabled]="disable" (click)="onRowEditInit(rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"
+                class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData.itemid,rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times"
+                class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
+        </td>
+    </tr>
+    </ng-template>
+  </p-table>
+  <p-dialog appendTo="body"  header="Item Details" width="300" height="200" [(visible)]="displayDialog"
+            [responsive]="true" showEffect="fade" [modal]="true">
+      <form #GroupForm="ngForm" novalidate>
+          <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="uomForDialog">
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="itemname">Item Name</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9"> 
+                      <input pInputText id="itemname" class="form-control" name="itemname" required
+                             [(ngModel)]="uomForDialog.itemname"/>
+                             <div class="col-sm-12" *ngIf="!itemnameunique && submitted">
+                                <span style="color: red;">Item Name should be unique.</span>
+                              </div>
+                  </div>
+              </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="itemdescription">Description</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <input  pInputText id="itemdescription" class="form-control" name="itemdescription" required
+                             [(ngModel)]="uomForDialog.itemdescription"/>
+  
+  
+                  </div>
+              </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="uomname">Uom</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <!-- <p-dropdown name="uomname" [filter]="true" filterBy="uomname" appendTo="body" [required]="true" placeholder="-Select-" [options]="uomname" optionLabel="uomname" optionValue="uomid" [(ngModel)]="uomForDialog.uomid">
+                    </p-dropdown> -->
+                    <p-dropdown name="uomname" [filter]="true" filterBy="uomname" appendTo="body" [required]="true" placeholder="-Select-" [options]="uomname" optionLabel="uomname" [(ngModel)]="selectedUom">
+                    </p-dropdown>
+                </div>
+            </div>
+
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="isactive">Service/Goods</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <p-dropdown name="serviceorgoods" appendTo="body" [required]="true" placeholder="-Select-" [options]="serviceorgoods" [(ngModel)]="selectedUom.serviceorgoods">
+                   </p-dropdown>
+                </div>
+            </div>
+
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="isactive">HSN/SAC</label><span class="required-field">*</span>
+                </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                
+                <div class="ui-g-12 ui-md-9">
+                    <input  pInputText id="hsnorsaccode" class="form-control" name="hsnorsaccode" [required]="true"
+                           [(ngModel)]="uomForDialog.hsnorsaccode"/>
+
+                </div>
+            </div>
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="cgstrate">CGST Rate</label>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <input pInputText id="cgstrate" class="form-control" name="cgstrate"
+                           [(ngModel)]="uomForDialog.cgstrate"/>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                        <p-dropdown name="percentageorvalue" [options]="percentageorvalue" [(ngModel)]="selectedUom.percentageorvalue">
+                        </p-dropdown>
+                </div>
+               </div>
+               <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="sgstrate">SGST Rate</label>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <input pInputText id="sgstrate" class="form-control" name="sgstrate" 
+                           [(ngModel)]="uomForDialog.sgstrate"/>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+
+                    <p-dropdown name="percentageorvalue" [options]="percentageorvalue" [(ngModel)]="selectedUom.percentageorvalue">
+                    </p-dropdown>
+                </div>
+               </div>
+               <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="igstrate">IGST Rate</label>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <input pInputText id="igstrate" class="form-control" name="igstrate" 
+                           [(ngModel)]="uomForDialog.igstrate"/>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <p-dropdown name="percentageorvalue" [options]="percentageorvalue" [(ngModel)]="selectedUom.percentageorvalue">
+                    </p-dropdown>
+                </div>
+               </div>
+               <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="cessrate">CESS Rate</label>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <input pInputText id="cessrate" class="form-control" name="cessrate" 
+                           [(ngModel)]="uomForDialog.cessrate"/>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+
+                    <p-dropdown name="percentageorvalue" [options]="percentageorvalue" [(ngModel)]="selectedUom.percentageorvalue">
+                    </p-dropdown>
+                </div>
+               </div>
+  
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="isactive">Status</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      
+                          <p-dropdown name="isactive" appendTo="body" [options]="isactive" [(ngModel)]="uomForDialog.isactive">
+                          </p-dropdown>
+
+                  </div>
+              </div>
+  
+          </div>
+      </form>
+      <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button type="submit" pButton icon="fa-check" (click)="saveUom()"
+                    label="Save" [disabled]="!GroupForm.form.valid"></button>
+        </div>
+    </p-footer>
+      </p-dialog>
+  
+  </div>
+  

@@ -1,0 +1,494 @@
+<style>
+    .required-field {
+        color: red;
+    }
+</style>
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+        <span class="moduleheadertext">User Master</span>
+    </div>
+    <p-table #dt sortField="userid" [sortOrder]="-1" [value]="users" [paginator]="true" [rows]="rows"
+        [showCurrentPageReport]="true" [(first)]="first" styleClass="myTable"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,50]"
+        [globalFilterFields]="['employeeId','userfirstname','usermiddlename','userlastname','userloginname','emailid','mobilenumber','dob','reportingmanager','designation','officename','sectionname','post','password']"
+        dataKey="userid" editMode="row">
+        <ng-template pTemplate="caption">
+            <p-button class="btnAdd" label="ADD" (onClick)="onUserAdd()"></p-button>
+            <div class="row align-left">  
+                <div class="col text-start">     
+                <span class="p-input-icon-left ml-auto">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+                </span>
+                </div>
+            
+                  <div class="col text-end">
+                  <button  (click)="exportPdf()" class="me-2 noBorder" pTooltip="PDF" tooltipPosition="bottom" >
+                      <img
+                      class="icon"
+                      src="../../../assets/pdficon.png"
+                      height="24px"
+                    /></button>
+                     <button (click)="exportExcel()" pTooltip="Excel" tooltipPosition="bottom" class=" noBorder p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom">
+                      <img
+                      class="icon"
+                      src="../../../assets/excelicon.png"
+                      height="24px"
+                    />
+                    </button>
+                    </div>
+                  </div> 
+        </ng-template>
+        
+
+        <ng-template pTemplate="header">
+
+            <tr>
+
+                <th  pSortableColumn="employeeId" >Employee Id
+                    <p-sortIcon field="employeeId"></p-sortIcon>
+                </th>
+                <th  pSortableColumn="userfirstname" >First Name
+                    <p-sortIcon field="userfirstname"></p-sortIcon>
+                </th>
+                <th pSortableColumn="mobilenumber">Mobile #
+                    <p-sortIcon field="mobilenumber"></p-sortIcon>
+                </th>
+                <th pSortableColumn="designationname">Designation
+                    <p-sortIcon field="designationname"></p-sortIcon>
+                </th>
+                <th  pSortableColumn="officename">Office Name
+                    <p-sortIcon field="officename"></p-sortIcon>
+                </th>
+                <th pSortableColumn="sectionname">Section Name
+                    <p-sortIcon field="sectionname"></p-sortIcon>
+                </th>
+                <th></th>
+                <th></th>
+
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="rowData">
+
+                <td>
+
+                    {{rowData.employeeId}}
+
+                </td>
+                <td>
+
+                    {{rowData.userfirstname}}
+
+                </td>
+
+
+                <td>
+
+                    {{rowData.mobilenumber}}
+
+                </td>
+
+                <td>
+
+                    {{rowData.designationname}}
+
+                </td>
+                <td>
+
+
+                    {{rowData.officename}}
+
+                </td>
+                <td>
+
+                    {{rowData.sectionname}}
+
+                </td>
+
+                <td style="text-align:center">
+                    <button pButton type="button" pInitEditableRow icon="pi pi-pencil" class="ui-button-info"
+                        (click)="onRowEditInit(rowData)"></button>
+
+                </td>
+                <td style="text-align:center">
+                    <button pButton type="button" title="view" pInitEditableRow (click)="onRowView(rowData)"
+                        class="ui-button-info"><i class="fa fa-eye"></i></button>
+        
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<p-dialog header="User Details" appendTo="body" [(visible)]="displayDialog" [responsive]="true"
+    showEffect="fade" [modal]="true" >
+    <form #GroupForm="ngForm" class="mb-5" novalidate>
+        <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="groupForDialog">
+
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="employeeId">Employee Id:</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9" [class.has-error]="employeeId.invalid && employeeId.touched">
+                    <input id="employeeId" class="form-control" name="employeeId" required
+                        [(ngModel)]="groupForDialog.employeeId" #employeeId="ngModel"
+                        (change)="changestatus(employeeId)" >
+                    <span style="color:red" *ngIf="employeeId.invalid && employeeId.touched">
+                        Employee Id is required
+                    </span>
+                    <span style="color:red" *ngIf="!emloyeeidunique && submitted">
+                        Employee Id already exist
+                    </span>
+                </div>
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="userfirstname">First Name:</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9" [class.has-error]="fullNameControl.invalid && fullNameControl.touched">
+                    <input #fistname pInputText id="userfirstname" class="form-control" name="userfirstname" required
+                        [(ngModel)]="groupForDialog.userfirstname" #fullNameControl="ngModel">
+                    <span style="color:red" *ngIf="fullNameControl.invalid && fullNameControl.touched">
+                        First Name is required
+                    </span>
+                </div>
+            </div>
+            <!--  <div class="ui-g ui-g-12 ui-g-nopad">
+                    <div class="ui-g-12 ui-md-3 ui-label">
+                        <label for="usermiddlename">Middle Name:</label>
+                    </div>
+                    <div class="ui-g-12 ui-md-9">
+                        <input pInputText id="usermiddlename" class="form-control" name="usermiddlename"
+                            [(ngModel)]="groupForDialog.usermiddlename">
+                    </div>
+                </div> -->
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+
+                    <label for="userlastname">Last Name:</label>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <input pInputText id="userlastname" class="form-control" name="userlastname"
+                        [(ngModel)]="groupForDialog.userlastname">
+                </div>
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+
+                    <label for="userloginname">User Name:</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9" [class.has-error]="fullNameControl1.invalid && fullNameControl1.touched">
+                    <input pInputText id="userloginname" class="form-control" name="userloginname" required
+                        [(ngModel)]="groupForDialog.userloginname" (change)="checkusername()" #fullNameControl1="ngModel">
+                    <div class="col-sm-12" *ngIf="!usernameunique && submitted">
+                        <span style="color: red;">User Name should be unique.</span>
+                    </div>
+                    <span class="help-block" style="color:red"
+                        *ngIf="fullNameControl1.invalid && fullNameControl1.touched">
+                        User Name is required
+                    </span>
+                </div>
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+
+                    <label for="emailid">Emailid:</label>
+                </div>
+                <div class="ui-g-12 ui-md-9" [class.has-error]="fullNameControl2.invalid && fullNameControl2.touched && fullNameControl2.hasError('pattern')">
+                    <input pInputText id="emailid" class="form-control" name="emailid" type="email" pattern="^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$"
+                         [(ngModel)]="groupForDialog.emailid" #fullNameControl2="ngModel">
+                    <span class="help-block" style="color:red"
+                        *ngIf="fullNameControl2.invalid && fullNameControl2.touched">
+                        Enter Valid EmailID
+                    </span>
+                </div>
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+
+                    <label for="mobilenumber">Mobile number:</label>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+                    <p-inputNumber id="mobilenumber"  [useGrouping]="false" mode="decimal" [minlength]="10" [maxlength]="12"
+                      name="mobilenumber" [(ngModel)]="groupForDialog.mobilenumber"  
+                       #mobilenumber="ngModel" (ngModelChange)="chekuniqueMobileNumber()"  ></p-inputNumber>
+                        <span class="help-block" style="color:red"
+                        *ngIf="mobilenumberunique">
+                         Mobile number should be unique
+                    </span>
+                </div>
+                <!-- <div class="ui-g-12 ui-md-9">
+                    <p-inputNumber id="mobilenumber"  [useGrouping]="false" mode="decimal" [minlength]="10" [maxlength]="12"
+                      name="mobilenumber" [(ngModel)]="groupForDialog.mobilenumber"  
+                      appUniqueMobileNumber #mobilenumber="ngModel"  ></p-inputNumber>
+                        <span class="help-block" style="color:red"
+                        *ngIf="mobilenumber.errors?.['mobilenumberunique']">
+                         Mobile number should be unique
+                    </span>
+                </div> -->
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+
+                    <label for="dob">DOB:</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9" [class.has-error]="fullNameControl8.invalid && fullNameControl8.touched">
+                    <p-calendar name="dob" dateFormat="dd/mm/yy" appendTo="body" [maxDate]="dateTime" [required]="true"
+                        [(ngModel)]="groupForDialog.dob" #fullNameControl8="ngModel"
+                        [style]="{'overflow': 'visible', 'z-index': '999'}"></p-calendar>
+                    <span style="color:red" *ngIf="fullNameControl8.invalid && fullNameControl8.touched">
+                        Date required
+                    </span>
+                </div>
+            </div>
+            <!-- <div class="ui-g ui-g-12 ui-g-nopad">
+                    <div class="ui-g-12 ui-md-3 ui-label">
+
+                        <label for="reportingmanager">Reporting manager:</label><span class="required-field">*</span>
+                    </div>
+                    <div class="ui-g-12 ui-md-9"
+                        [class.has-error]="fullNameControl2.invalid && fullNameControl2.touched">
+                        <p-dropdown name="reportingmanager" name="reportingmanager" [options]="users"
+                            optionLabel="userfirstname" [(ngModel)]="SelectedUser" #fullNameControl2="ngModel">
+                        </p-dropdown>
+                        <span style="color:red" *ngIf="fullNameControl2.invalid && fullNameControl2.touched">
+                            Reporting manager is required
+                        </span>
+                    </div>
+                </div> -->
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+
+                    <label for="designation">Designation:</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9" [class.has-error]="fullNameControl3.invalid && fullNameControl3.touched">
+                    <p-dropdown appendTo="body" [filter]="true" filterBy="designationname" name="designation" name="designation" [options]="desginations"
+                    [filter]="true" filterBy="designationname"  optionLabel="designationname" optionValue="designationid"
+                        [(ngModel)]="groupForDialog.designationid" #fullNameControl3="ngModel">
+                    </p-dropdown>
+                    <span style="color:red" *ngIf="fullNameControl3.invalid && fullNameControl3.touched">
+                        Designation is required
+                    </span>
+                </div>
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+
+                    <label for="originaldepartment">Office Name:</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9" [class.has-error]="fullNameControl4.invalid && fullNameControl4.touched">
+                    <p-dropdown appendTo="body" [filter]="true" filterBy="officename" name="originaldepartment" name="originaldepartment" [options]="ogdepartments"
+                        optionLabel="officename" optionValue="officenameid" #fullNameControl3="ngModel"
+                        [(ngModel)]="groupForDialog.officenameid" #fullNameControl4="ngModel">
+                    </p-dropdown>
+                    <span style="color:red" *ngIf="fullNameControl4.invalid && fullNameControl4.touched">
+                        Office Name is required
+                    </span>
+                </div>
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+
+                    <label for="currentdepartment">Section Name:</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9" [class.has-error]="fullNameControl5.invalid && fullNameControl5.touched">
+                    <p-dropdown name="currentdepartment" [filter]="true" filterBy="sectionname" name="currentdepartment" [options]="currentdepartments"
+                        optionLabel="sectionname" optionValue="sectionnameid" [(ngModel)]="groupForDialog.sectionnameid"
+                        #fullNameControl5="ngModel">
+                    </p-dropdown>
+                    <span style="color:red" *ngIf="fullNameControl5.invalid && fullNameControl5.touched">
+                        Section Name is required
+                    </span>
+                </div>
+            </div>
+
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+
+                    <label for="originaldepartment">Reporting Manager:</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9"  [class.has-error]="fullNameControl4.invalid && fullNameControl4.touched">
+                    <p-dropdown [autoDisplayFirst]="false" [filter]="true" filterBy="userfirstname" appendTo="body" [virtualScroll]="true" name="reportingmanager" name="reportingmanager" [options]="users"
+                        optionLabel="userfirstname" optionValue="userid" [(ngModel)]="groupForDialog.reportingmanager"
+                        (onChange)="checkmanager($event)"
+                        onload="checkmanager($event)"
+                        #reportingmangerdesg="ngModel"
+                        placeholder="Select Reporting Manager"
+                        >
+                    </p-dropdown>
+                    <span style="color:red" *ngIf="reportingmangerdesg.invalid && reportingmangerdesg.touched">
+                       Reporting Manager is required
+                    </span>
+                </div>
+                
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad my-2">
+                <div class="ui-g-12 ui-md-3 ui-label">
+
+                    <label for="originaldepartment">Reporting Manager Designation:</label>
+                </div>
+                <div class="ui-g-12 ui-md-9 my-2" [class.has-error]="fullNameControl4.invalid && fullNameControl4.touched">
+                    {{selectedReportingmanager.designationname||groupForDialog.rmdesigntion||'Not Available'}}
+                    
+                </div>
+                
+            </div>
+
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+
+                    <label for="password">Password:</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9"  >
+                    <input pInputText id="password" [ngClass]="{'has-error':fullNameControl7.invalid && fullNameControl7.touched}"   minlength="8" maxlength="15" required  name="password"
+                        [(ngModel)]="groupForDialog.password" #fullNameControl7="ngModel">
+                    <span style="color:red" *ngIf="fullNameControl7.invalid && fullNameControl7.touched">
+                        Password is required
+                    </span>
+                </div>
+            </div>
+
+            
+        </div>
+
+    </form>
+    <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button type="submit" (click)="saveUser(GroupForm)" pButton icon="fa-check" label="Submit"
+                [disabled]="!GroupForm.form.valid || mobilenumberunique"></button>
+        </div>
+    </p-footer>
+</p-dialog>
+
+<p-dialog appendTo="body" class="container p-5" header="User View" [(visible)]="displayViewDialog" [responsive]="true"
+    showEffect="fade" [modal]="true" [style]="{width: '75vw'}">
+    <form #GroupForm="ngForm" class="mb-5" novalidate>
+        <div class="card">
+            <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="groupForDialog">
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="employeeId">Employee Id:</label>
+                    </div>
+                    <div class="col">
+
+                        <label for="employeeId">{{groupForDialog.employeeId}}</label>
+
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="userfirstname">First Name:</label>
+                    </div>
+                    <div class="col">
+                        <label for="userfirstname">{{groupForDialog.userfirstname}}</label>
+
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="userlastname">Last Name:</label>
+                    </div>
+                    <div class="col">
+                        <label for="userlastname">{{groupForDialog.userlastname}}</label>
+
+
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="userloginname">User Name:</label>
+                    </div>
+                    <div class="col">
+                        <label for="userloginname">{{groupForDialog.userloginname}}</label>
+
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="emailid">Email Id:</label>
+                    </div>
+                    <div class="col">
+                        <label for="emailid">{{groupForDialog.emailid}}</label>
+                    </div>
+                </div>
+
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="dob">DOB:</label>
+                    </div>
+                    <div class="col">
+                        <label for="dob">{{groupForDialog.dob|date}}</label>
+
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="mobilenumber">Mobile #.:</label>
+                    </div>
+                    <div class="col">
+                        <label for="mobilenumber">{{groupForDialog.mobilenumber}}</label>
+
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="designationname">Designation:</label>
+                    </div>
+                    <div class="col">
+                        <label for="designationname">{{groupForDialog.designationname}}</label>
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="officename">Office Name:</label>
+                    </div>
+                    <div class="col">
+
+                        <label for="officename">{{groupForDialog.officename}}</label>
+
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="sectionname">Section Name:</label>
+                    </div>
+                    <div class="col">
+                        <label for="sectionname">{{groupForDialog.sectionname}}</label>
+
+                    </div>
+                </div>
+
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="sectionname">Reporting Manager:</label>
+                    </div>
+                    <div class="col">
+                        <label for="sectionname">{{groupForDialog.rmname||'Not Available'}}</label>
+
+                    </div>
+                </div>
+                
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="sectionname">Reporting Manager EmployeeId</label>
+                    </div>
+                    <div class="col">
+                        <label for="sectionname">{{groupForDialog.rmempcode||'Not Available'}}</label>
+
+                    </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="sectionname">Reporting Manager Designation</label>
+                    </div>
+                    <div class="col">
+                        <label for="sectionname">{{groupForDialog.rmdesigntion||'Not Available'}}</label>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+</p-dialog>

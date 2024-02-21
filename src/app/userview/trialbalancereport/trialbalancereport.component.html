@@ -1,0 +1,305 @@
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+  <span class="moduleheadertext">Trial Balance Report</span>
+    </div>
+    <div class="row">
+    <div class="col md-2">  
+        <div class="p-field-radiobutton mb-3  ms-2">
+            <p-radioButton name="radioSelect" value="3" [(ngModel)]="radioSelect" inputId="radioSelect3"></p-radioButton>
+            <label for="radioSelect3">Ledgerwise Trail Balance</label>
+        </div>
+         <div class="p-field-radiobutton mb-3 ms-2">
+        <p-radioButton name="radioSelect" value="1" [(ngModel)]="radioSelect" inputId="radioSelect1"></p-radioButton>
+        <label for="radioSelect1">Ledgerwise Detailed Trail Balance</label>
+    </div>
+    <div class="p-field-radiobutton mb-3  ms-2">
+        <p-radioButton name="radioSelect" value="2" [(ngModel)]="radioSelect" inputId="radioSelect2"></p-radioButton>
+        <label for="radioSelect2">Groupwise Trail Balance</label>
+    </div>
+        <div class="p-field-radiobutton mb-3  ms-2">
+        <p-radioButton name="radioSelect" value="4" [(ngModel)]="radioSelect" inputId="radioSelect4"></p-radioButton>
+        <label for="radioSelect4">Groupwise Detailed Trail Balance</label>
+    </div>
+
+</div>
+<div class="col md-3">
+    <div class="row mb-3"> 
+    <div class="col md-2">
+       <label for="voucherfromdate">From Date</label>
+
+        <p-calendar name="voucherfromdate" [maxDate]="dateTime" dateFormat="dd.mm.yy" [(ngModel)]="trailForDialog.voucherfromdate" [showIcon]="true"  appendTo="body" ></p-calendar>
+
+</div>
+<div class="col md-2">
+    <label for="vouchertodate">To Date</label>
+
+    <p-calendar name="vouchertodate" [maxDate]="dateTime" dateFormat="dd.mm.yy"  appendTo="body"  [(ngModel)]="trailForDialog.vouchertodate" [showIcon]="true" [style]="{'overflow': 'visible', 'z-index': '999'}"></p-calendar>
+
+</div>
+    </div>
+<div class="row">
+<div class="col md-2">
+<p-button label="Generate Trail Balance " (onClick)="generateTrailReport()"></p-button>
+</div>
+</div>
+
+</div>
+<div class="col md-4 ">
+    <div class="row ms-3"> Current Financial Year 2023-2024</div>
+    <div class="row ms-3"> Period 01-Apr-2023 to 31-Mar-2024</div>
+</div>
+</div>
+
+<div class="row">
+<div *ngIf="ledgerWise">
+    <p-table #dt [value]="ledgerTrailBalance"  [paginator]="false"  [showCurrentPageReport]="true" 
+    styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[5,10,50]"
+    dataKey="ledgerid" editMode="row" [exportHeader]="'customExportHeader'">
+    <ng-template pTemplate="caption">
+     <div class="row">       
+       <div class="tablename">Ledgerwise Trail Balance</div>
+    </div>
+   </ng-template>
+   <ng-template pTemplate="header"></ng-template>
+   
+           <ng-template pTemplate="header" >
+         <tr>
+             <th>Particulars</th>
+             <th>Debit</th>
+             <th>Credit</th>
+
+
+   
+         </tr>
+     </ng-template>
+     <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+       <tr [pEditableRow]="rowData">
+         <td>
+           <p-cellEditor>
+               <ng-template pTemplate="input">
+                   <input pInputText type="text" [(ngModel)]="rowData.ledgeralias">
+               </ng-template>
+               <ng-template pTemplate="output">
+                   {{rowData.ledgeralias}}
+               </ng-template>
+           </p-cellEditor>
+       </td>
+         <td>
+             <p-cellEditor>
+                 <ng-template pTemplate="input">
+                     <input pInputText type="text" [(ngModel)]="rowData.debitamount">
+                 </ng-template>
+                 <ng-template pTemplate="output">
+                     {{rowData.debitamount}}
+                 </ng-template>
+             </p-cellEditor>
+         </td>
+         <td>
+           <p-cellEditor>
+               <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.creditamount">
+
+               </ng-template>
+               <ng-template pTemplate="output">
+                   {{rowData.creditamount}}
+               </ng-template>
+           </p-cellEditor>
+       </td>
+     </tr>
+     </ng-template>
+     <ng-template pTemplate="footer">
+        <tr>
+          <td >Grand Total:</td>
+          <td>₹{{totaldebitamountt}}</td>
+          <td>₹{{totalcreditamountt}}</td>
+      </tr>
+      </ng-template>
+   </p-table>
+
+</div>
+
+
+<div *ngIf="groupWise">
+    <p-table [value]="groupTrailBalance"  [paginator]="false"  [showCurrentPageReport]="true" 
+    styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[5,10,50]"
+    dataKey="balancesheetgroupid" editMode="row">
+    <ng-template pTemplate="caption">
+     <div class="row">
+       
+       <div class="tablename">Groupwise Trail Balance</div>
+    </div>
+   </ng-template>
+   <ng-template pTemplate="header"></ng-template>
+   
+           <ng-template pTemplate="header" >
+         <tr>
+             <th>Account Group</th>
+             <th>Debit</th>
+             <th>Credit</th>
+
+
+   
+         </tr>
+     </ng-template>
+     <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+       <tr [pEditableRow]="rowData">
+         <td>
+           <p-cellEditor>
+               <ng-template pTemplate="input">
+                   <input pInputText type="text" [(ngModel)]="rowData.balancesheetgroup">
+               </ng-template>
+               <ng-template pTemplate="output">
+                   {{rowData.balancesheetgroup}}
+               </ng-template>
+           </p-cellEditor>
+       </td>
+         <td>
+             <p-cellEditor>
+                 <ng-template pTemplate="input">
+                     <input pInputText type="text" [(ngModel)]="rowData.debitamount">
+                 </ng-template>
+                 <ng-template pTemplate="output">
+                     {{rowData.debitamount}}
+                 </ng-template>
+             </p-cellEditor>
+         </td>
+         <td>
+           <p-cellEditor>
+               <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.creditamount">
+
+               </ng-template>
+               <ng-template pTemplate="output">
+                   {{rowData.creditamount}}
+               </ng-template>
+           </p-cellEditor>
+       </td>
+     </tr>
+     </ng-template>
+     <ng-template pTemplate="footer">
+        <tr>
+          <td >Grand Total:</td>
+          <td>₹{{totaldebitamountt}}</td>
+          <td>₹{{totalcreditamountt}}</td>
+      </tr>
+      </ng-template>
+   </p-table>
+
+</div>
+
+
+<div *ngIf="detailedWise">
+    <p-table [value]="detailedTrailBalance"
+    groupRowsBy="ledgeralias" dataKey="ledgerid"
+    rowGroupMode="subheader">
+       <ng-template pTemplate="caption">
+           <div class="row">
+             
+             <div class="tablename">Ledgerwise Detailed Trail Balance</div>
+          </div>
+         </ng-template>
+         <ng-template pTemplate="header">
+           <tr>
+               <th></th>
+               <th>Debit</th>
+               <th>Credit</th>
+
+           </tr>
+       </ng-template>
+         <ng-template pTemplate="groupheader" let-rowData let-rowIndex="rowIndex" let-expanded="expanded">
+           <tr>
+               <td colspan="5">
+                   <button type="button" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                   <span class="p-text-bold p-ml-2">{{rowData.ledgeralias}}</span>
+               </td>
+        
+           </tr>
+       </ng-template>
+       <ng-template pTemplate="groupfooter" let-rowData>
+           <tr class="p-rowgroup-footer">
+               <td  style="font-weight: bolder;">Total</td>
+               <td style="font-weight: bolder;">{{calculateLedgerDebitTotal(rowData.ledgeralias)}}</td>
+               <td style="font-weight: bolder;">{{calculateLedgerCreditTotal(rowData.ledgeralias)}}</td>
+           </tr>
+       </ng-template>
+       <ng-template pTemplate="rowexpansion" let-rowData>
+           <tr>
+               <td></td>
+            
+               <td>
+                   {{rowData.debitamount}}
+               </td>
+               <td>
+                   {{rowData.creditamount}}
+               </td>
+           </tr>
+       </ng-template>
+       <ng-template pTemplate="footer">
+           <tr>
+             <td >Grand Total:</td>
+             <td>₹{{totaldebitamountt}}</td>
+             <td>₹{{totalcreditamountt}}</td>
+         </tr>
+         </ng-template>
+   </p-table>
+</div>
+
+<div *ngIf="groupDetailedWise">
+
+    <p-table [value]="groupDetailedTrailBalance"
+     groupRowsBy="balancesheetgroup" dataKey="balancesheetgroupid"
+     rowGroupMode="subheader">
+        <ng-template pTemplate="caption">
+            <div class="row">
+              
+              <div class="tablename">Groupwise Detailed Trail Balance</div>
+           </div>
+          </ng-template>
+          <ng-template pTemplate="header">
+            <tr>
+                <th>Particulars</th>
+                <th>Debit</th>
+                <th>Credit</th>
+
+            </tr>
+        </ng-template>
+          <ng-template pTemplate="groupheader" let-rowData let-rowIndex="rowIndex" let-expanded="expanded">
+            <tr>
+                <td colspan="5">
+                    <button type="button" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                    <span class="p-text-bold p-ml-2">{{rowData.balancesheetgroup}}</span>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="groupfooter" let-rowData>
+            <tr class="p-rowgroup-footer">
+                <td  style="font-weight: bolder;">Total</td>
+                <td style="font-weight: bolder;">{{calculateDebitTotal(rowData.balancesheetgroup)}}</td>
+                <td style="font-weight: bolder;">{{calculateCreditTotal(rowData.balancesheetgroup)}}</td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="rowexpansion" let-rowData>
+            <tr>
+                <td>
+                    {{rowData.ledgeralias}}
+                </td>
+                <td>
+                    {{rowData.debitamount}}
+                </td>
+                <td>
+                    {{rowData.creditamount}}
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <tr>
+              <td >Grand Total:</td>
+              <td>₹{{totaldebitamountt}}</td>
+              <td>₹{{totalcreditamountt}}</td>
+          </tr>
+          </ng-template>
+    </p-table>
+</div>
+</div>
+
+</div>

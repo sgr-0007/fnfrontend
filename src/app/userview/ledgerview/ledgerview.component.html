@@ -1,0 +1,203 @@
+<div>
+    <div class="card p-2">
+        <h1>Ledger Details</h1>
+
+
+        <form>
+            <div class="card my-3 p-2">
+                <div class="row my-3">
+                    <div class="col">
+                        <label> Ledger Name</label>
+                    </div>
+                    <div class="col">
+                        {{ledgerview.ledgerName}}
+                    </div>
+                    <div class="col">
+                        <label> Ledger Alias</label>
+                    </div>
+                    <div class="col">
+                        {{ledgerview.ledgerAlias}}
+                    </div>
+                    <div class="col">
+                        <label> Associated Branch</label>
+                    </div>
+                    <div class="col">
+                        {{ledgerview.homeBranchName}}
+                    </div>
+
+                </div>
+                <div class="row my-3">
+                    <div class="col">
+                        <label> If Branch</label>
+                    </div>
+                    <div class="col">
+                        {{ledgerview.ifbranch||"Not Available"}}
+                    </div>
+
+                    <div class="col">
+                        <label> Group</label>
+                    </div>
+                    <div class="col">
+                        {{ledgerview.groupName}}
+                    </div>
+                    <div class="col">
+                        <label> Sub Group</label>
+                    </div>
+                    <div class="col">
+                        {{ledgerview.subGroupName}}
+                    </div>
+
+                </div>
+                <div class="row my-3">
+                    <div class="col-2">
+                        <label> Mailing Address 1</label>
+                    </div>
+                    <div class="col">
+                        {{ledgerview.address1}}
+                    </div>
+                    <div class="col-2">
+                        <label> Mailing Address 2</label>
+                    </div>
+                    <div class="col">
+                        {{ledgerview.address2}}
+                    </div>
+
+                </div>
+                <div class="row my-3">
+                    <div class="col-2">
+                        <label> State</label>
+                    </div>
+                    <div class="col-2">
+                        {{ledgerview.stateName}}
+                    </div>
+                    <div class="col-2">
+                        <label> City</label>
+                    </div>
+                    <div class="col-2">
+                        {{ledgerview.cityName}}
+                    </div>
+
+                    <div class="col-2">
+                        <label> Pin Code</label>
+                    </div>
+                    <div class="col-2">
+                        {{ledgerview.pinCode}}
+                    </div>
+                    <div class="col-2">
+                        <label> Does Ledger Effect the inventory value</label>
+                    </div>
+                    <div class="col">
+                        <div *ngIf="ledgerview.affectInventory==1">NO</div>
+                        <div *ngIf="ledgerview.affectInventory!=1">Yes</div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card my-3 p-2">
+                <h2>Bank Details</h2>
+                <div *ngIf=" bankLedgerDetails.length!=0">
+                    <div *ngFor="let bank of  bankLedgerDetails">
+                        <div class="row">
+                            <div class="col">
+                                <label> Bank Name </label>
+                            </div>
+                            <div class="col">
+                                {{bank.bankName}}
+                            </div>
+                            <div class="col">
+                                <label> Bank Account No </label>
+                            </div>
+                            <div class="col">
+                                {{bank.bankAccountNumber}}
+                            </div>
+                            <div class="col">
+                                <label> IFSC Code </label>
+                            </div>
+                            <div class="col">
+                                {{bank.ifscCode}}
+                            </div>
+
+                        </div>
+
+                        <div class="row my-3">
+                            <div class="col">
+                                <label> Bank Address</label>
+                            </div>
+                            <div class="col">
+                                {{bank.bankAddress}}
+                            </div>
+                            <!--<div class="col">
+                                <label> GST</label>
+                             </div>
+                            <div class="col">
+                                {{bank.gst}}
+                            </div>
+                            <div class="col">
+                                <label> PAN</label>
+                            </div>
+                            <div class="col">
+                                {{bank.pano}}
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf=" bankLedgerDetails.length==0">
+                    Currently no bank has been linked.
+                </div>
+            </div>
+
+            <div class="card my-3 p-2">
+                <h2>File uploads</h2>
+                <div>
+                    <ul class="list-group list-group-flush" *ngFor="let file of filelist">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <!-- <div class="col-lg-8 mb-6"><a href="{{ file.url }}">{{ file.filedisplayname }}</a></div> -->
+                                <div class="col-lg-8 mb-6"><a
+                                        *ngIf="checktypeImage(file.filegeneratedname) ">{{
+                                        file.filedisplayname }}</a>
+                                    </div>
+                                    <div class="col-lg-8 mb-6"><a
+                                        *ngIf="checktypePdf(file.filegeneratedname)">{{
+                                        file.filedisplayname }}</a>
+                                    </div>
+                                <p-button *ngIf="checktypeImage(file.filegeneratedname) ||checktypePdf(file.filegeneratedname)" (onClick)="viewDisable(file)">VIEW</p-button>
+
+
+
+                                <!--    <ngx-doc-viewer
+ [url]="file.url"
+  viewer="google"
+  style="width:100%;height:50vh;"
+></ngx-doc-viewer> -->
+
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <a *ngIf="!checktypeImage(file.filegeneratedname) && !checktypePdf(file.filegeneratedname) " href="{{ file.url }}">{{ file.filedisplayname
+                                }}</a>
+                        </li>
+                    </ul>
+                    <div *ngIf="filelist.length==0">No Files Available</div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <p-dialog header="Uploaded Files" appendTo="body" [(visible)]="viewdisable" [closable]="true">
+        <div *ngIf="imagefile">
+            <img *ngIf="imagefile" [src]="viewablefile.url" height="200px">
+            
+        </div>
+        <div *ngIf="pdffile">
+            <div class="pdf-container">
+                <pdf-viewer [src]="viewablefile.url" [rotation]="0" [original-size]="false" [show-all]="true"
+                    [fit-to-page]="false" [zoom]="1" [zoom-scale]="'page-width'" [stick-to-page]="false"
+                    [render-text]="true" [external-link-target]="'blank'" [autoresize]="true" [show-borders]="false"
+                    style="width: 100%; height: 600px;"></pdf-viewer>
+            </div>
+        </div>
+    </p-dialog>
+    <div class="row my-5">
+        <p-button class="text-center" (click)="back()">Back</p-button>
+    </div>
+</div>

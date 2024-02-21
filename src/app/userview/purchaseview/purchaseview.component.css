@@ -1,0 +1,237 @@
+table{
+    width: auto;
+    
+      
+}
+.example-container {
+    height: 450px;
+    max-width: 100%;
+    overflow: auto;
+  }
+  .mat-header-row{
+    position: sticky;
+    top: 0;
+    z-index: 100;
+   
+    }
+.mat-success{
+    color: rgb(95, 243, 95);
+}
+
+::ng-deep.mat-menu-panel.fabclass{
+    min-width: 48px;
+    background-color: transparent;
+}
+.mat-column-sno{
+      
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 5% !important;
+    width: 5% !important;
+    overflow-wrap: break-word;
+    }
+
+/* table{
+    width: auto;
+
+} */
+/* table{
+    width: auto;
+
+}
+.mat-column-ledgerId{
+      
+word-wrap: break-word !important;
+white-space: unset !important;
+flex: 0 0 8% !important;
+width: 5% !important;
+overflow-wrap: break-word;
+}
+.mat-header-row{
+    max-height: 5rem;
+}
+.mat-header-cell{
+    height: 5rem;
+}
+
+.mat-column-state{
+    
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 15% !important;
+    width: 12% !important;
+    overflow-wrap: break-word;
+}
+.mat-column-gst{
+    
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 13% !important;
+    width: 12% !important;
+    overflow-wrap: break-word;
+}
+.mat-column-pano{
+    
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 12% !important;
+    width: 12% !important;
+    overflow-wrap: break-word;
+} */
+/* 
+.example-container {
+    height: auto;
+    width: auto;
+    max-width: 100%;
+    overflow: auto;
+  }
+
+  .mat-column-ledgerId{
+      
+      word-wrap: break-word !important;
+  white-space: unset !important;
+  flex: 0 0 5% !important;
+  width: 5% !important;
+  overflow-wrap: break-word;
+  }
+
+  .mat-column-ledgerName{
+    
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 28% !important;
+    width: 28% !important;
+    overflow-wrap: break-word;
+}
+.mat-column-ledgerAlias{
+    
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 28% !important;
+    width: 28% !important;
+    overflow-wrap: break-word;
+}
+.mat-column-associateHomeBranch{
+    
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 28% !important;
+    width: 28% !important;
+    overflow-wrap: break-word;
+}
+.mat-column-city{
+    align-self: center;
+    word-wrap: break-word !important;
+    white-space: initial !important;
+    flex: 0 0 28% !important;
+    width: 30% !important;
+    overflow-wrap: break-word;
+    
+}
+
+.mat-column-state{
+    
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 28% !important;
+    width: 28% !important;
+    overflow-wrap: break-word;
+}
+.mat-column-gst{
+    
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 28% !important;
+    width: 28% !important;
+    overflow-wrap: break-word;
+}
+.mat-column-pano{
+    
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 28% !important;
+    width: 28% !important;
+    overflow-wrap: break-word;
+}
+.mat-column-subGroupId{
+    
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 28% !important;
+    width: 28% !important;
+    overflow-wrap: break-word;
+}
+.mat-column-approvalStatus{
+    
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 28% !important;
+    width: 28% !important;
+    overflow-wrap: break-word;
+}
+.mat-column-affectInventory{
+    
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 28% !important;
+    width: 28% !important;
+    overflow-wrap: break-word;
+} */
+.icon {
+    height: 27px;
+}
+
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+    
+  }
+  ::ng-deep .mat-grid-list {
+    font-size: 14px;
+    width: 100%;
+    background-color: #B7CBE3;
+  }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+ ::ng-deep .mat-grid-list .mat-grid-tile-content{
+      justify-content: right;
+  }
+  ::ng-deep .mat-raised-button{
+    min-width: 0;
+    padding: 0;
+  }
+  .example-button-container {
+    display: flex;
+    justify-content: center;
+    width: 120px;
+  }
+  td, th {
+    width: 25%;
+  }
+  ::ng-deep .mat-sort-header-arrow {
+    color: #fff;
+}
+::deep.mat-sort-header-sorted {
+    color: #B7CBE3;
+}
+.mat-header-row {
+    background-color: #B7CBE3;
+    text-align: center;
+    color: rgb(19, 3, 3);
+}
+.mat-row{
+    background-color: #93b7bf4d;
+}
+.mat-row:hover{
+    background-color: #131f224d;
+}
+
+.mat-color-red{
+    color: red;
+
+}
+.mat-color-green{
+    color: green;
+
+}
+.mat-select-value{
+    color: blue;
+}

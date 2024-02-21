@@ -1,0 +1,289 @@
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+  <span class="moduleheadertext">Normal Ledger Master</span>
+    </div>
+  <p-table #dt [value]="normalledger" sortField="ledgerid" [sortOrder]="-1"  [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first" 
+   styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[5,10,50]"
+   [globalFilterFields]="['ledgerid','ledgername','groupname','isactive']"
+   dataKey="ledgerid" editMode="row">
+   <ng-template pTemplate="caption">
+    <div class="row">
+        <div class="col-lg-1 mb-1"><p-button label="ADD" (onClick)="onGroupAdd()"></p-button></div>
+        <div class="tablename">Normal Ledger Master</div>
+     </div>
+     
+     <div class="row align-left">  
+        <div class="col text-start">     
+        <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+        </span>
+        </div>
+    
+          <div class="col text-end">
+          <button  (click)="exportPdf()" class="me-2 noBorder" pTooltip="PDF" tooltipPosition="bottom" >
+              <img
+              class="icon"
+              src="../../../assets/pdficon.png"
+              height="24px"
+            /></button>
+             <button (click)="exportExcel()" pTooltip="Excel" tooltipPosition="bottom" class="p-button-success mr-2 noBorder"  pTooltip="XLS" tooltipPosition="bottom">
+              <img
+              class="icon"
+              src="../../../assets/excelicon.png"
+              height="24px"
+            />
+            </button>
+            </div>
+          </div>
+
+  </ng-template>
+  <ng-template pTemplate="header"></ng-template>
+  
+          <ng-template pTemplate="header" >
+        <tr>
+             <th pSortableColumn="ledgerid">Ledger Code
+                <p-sortIcon field="ledgerid"></p-sortIcon>
+            </th> 
+            <th pSortableColumn="ledgername">Ledger Name
+                <p-sortIcon field="ledgername"></p-sortIcon>
+            </th>  
+            <th pSortableColumn="ledgeralias">Ledger Alias
+                <p-sortIcon field="ledgeralias"></p-sortIcon>
+            </th>            
+            <th pSortableColumn="groupname">Head
+                <p-sortIcon field="groupname"></p-sortIcon>
+            </th>
+            <th pSortableColumn="subgroupname">Subhead
+                <p-sortIcon field="subgroupname"></p-sortIcon>
+            </th>
+            <th pSortableColumn="companytypename">Office Type
+                <p-sortIcon field="companytypename"></p-sortIcon>
+            </th>
+            <th pSortableColumn="accounttype">Account Type
+                <p-sortIcon field="accounttype"></p-sortIcon>
+            </th>
+            <th></th>
+  
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="rowData">
+          <td>{{rowData.ledgerid}}</td>
+        <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.ledgername">
+              </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.ledgername}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.ledgeralias">
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.ledgeralias}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+        <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                <p-dropdown name="groupname" [options]="groups" optionLabel="groupname" optionValue="groupid" appendTo="body"  [(ngModel)]="rowData.groupid">
+                </p-dropdown>
+              </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.groupname}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+        
+      <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-dropdown name="subgroupname" [options]="subgroups" optionLabel="subgroupname" optionValue="subgroupid" appendTo="body"  [(ngModel)]="rowData.subgroupid">
+              </p-dropdown>
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.subgroupname}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+     
+    <!-- <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-dropdown name="companyname" [options]="companies" optionLabel="companyname" optionValue="companyid"  [(ngModel)]="rowData.companyid">
+              </p-dropdown>
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.companyname}}
+            </ng-template>
+        </p-cellEditor>
+    </td> -->
+    <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-dropdown name="companytypename" (onChange)="officeOnChange(rowData.companytype)" placeholder="-Select-" appendTo="body" [options]="companytypes" optionLabel="companytypename" optionValue="companytype"  [(ngModel)]="rowData.companytype">
+              </p-dropdown>
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.companytypename}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+    <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+              <p-dropdown name="accounttype" placeholder="-Select-" appendTo="body" [options]="voucherAccounts" optionLabel="accounttype" optionValue="accounttypeid"  [(ngModel)]="rowData.accounttypeid">
+              </p-dropdown>
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.accounttype}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+       
+        <td style="text-align:center">
+            <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil"
+                class="ui-button-info" [disabled]="disable" (click)="onRowEditInit(rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"
+                class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData.ledgerid,rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times"
+                class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
+        </td>
+    </tr>
+    </ng-template>
+  </p-table>
+  <p-dialog appendTo="body"  header="Normal Ledger Details" width="300" height="200" [(visible)]="displayDialog"
+            [responsive]="true" showEffect="fade" [modal]="true">
+      <form #GroupForm="ngForm" novalidate>
+          <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="groupForDialog">
+            <!-- <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="ledgername">Ledger Code</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9"> 
+                    <input pInputText id="ledgername" class="form-control" name="ledgername" required
+                           [(ngModel)]="groupForDialog.ledgername"/>
+                           <div class="col-sm-12" *ngIf="!ledgernameunique && submitted">
+                              <span style="color: red;">Ledger Name should be unique.</span>
+                            </div>
+                </div>
+            </div>   -->
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="ledgername">Ledger Name</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9"> 
+                      <input pInputText id="ledgername" class="form-control" name="ledgername" required
+                             [(ngModel)]="groupForDialog.ledgername"/>
+                             <div class="col-sm-12" *ngIf="!ledgernameunique && submitted">
+                                <span style="color: red;">Ledger Name should be unique.</span>
+                              </div>
+                  </div>
+              </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="ledgeralias">Ledger Alias</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <input  pInputText id="ledgeralias" class="form-control" name="ledgeralias" required
+                             [(ngModel)]="groupForDialog.ledgeralias"/>
+  
+  
+                  </div>
+              </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="groupname">Head</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+  
+                    <p-dropdown name="groupname" [filter]="true" filterBy="groupname" appendTo="body" [required]="true" placeholder="-Select-" [options]="groups" optionLabel="groupname" optionValue="groupid" [(ngModel)]="groupForDialog.groupid">
+                    </p-dropdown>
+                </div>
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="subgroupname">Subhead</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+  
+                    <p-dropdown name="subgroupname" appendTo="body" [required]="true" placeholder="-Select-" [options]="subgroups" optionLabel="subgroupname" optionValue="subgroupid" [filter]="true" filterBy="subgroupname"  [(ngModel)]="groupForDialog.subgroupid">
+                    </p-dropdown>
+                </div>
+            </div>
+            
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="subgroupname">GST</label>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+  
+                    <input pInputText id="gst" class="form-control" name="gst" 
+                             [(ngModel)]="groupForDialog.gsttin"/>
+                </div>
+            </div>
+            <div [hidden]="true" class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="companyname">Office</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+  
+                    <p-dropdown name="companyname" [filter]="true" filterBy="companyname" appendTo="body" placeholder="-Select-" [options]="companies" optionLabel="companyname" optionValue="companyid" [(ngModel)]="groupForDialog.companyid">
+                    </p-dropdown>
+                </div>
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="companytypename">Office Type</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+  
+                    <p-dropdown name="companytypename" appendTo="body" [filter]="true" filterBy="companytypename"  [required]="true" placeholder="-Select-" [options]="companytypes" optionLabel="companytypename" (onChange)="officeOnChange(groupForDialog.companytype)" optionValue="companytype" [(ngModel)]="groupForDialog.companytype">
+                    </p-dropdown>
+                </div>
+            </div>
+            <div class="ui-g ui-g-12 ui-g-nopad">
+                <div class="ui-g-12 ui-md-3 ui-label">
+                    <label for="companytypename">Account Type</label><span class="required-field">*</span>
+                </div>
+                <div class="ui-g-12 ui-md-9">
+  
+                    <p-dropdown name="accounttype" appendTo="body" [filter]="true" placeholder="-Select-" filterBy="accounttype" [required]="true"
+                    [options]="voucherAccounts" optionLabel="accounttype"
+                   optionValue="accounttypeid" [(ngModel)]="groupForDialog.accounttypeid">
+                 </p-dropdown>
+                </div>
+            </div>
+  
+              <div [hidden]="true" class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="isactive">Status</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      
+                          <p-dropdown name="isactive" appendTo="body" [options]="isactive" [(ngModel)]="groupForDialog.isactive">
+                          </p-dropdown>
+  
+  
+                  </div>
+              </div>
+  
+          </div>
+      </form>
+      <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button type="submit" pButton icon="fa-check" (click)="saveGroup()"
+                    label="Save" [disabled]="!GroupForm.form.valid"></button>
+        </div>
+    </p-footer>
+      </p-dialog>
+  
+  </div>
+  

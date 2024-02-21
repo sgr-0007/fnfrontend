@@ -1,0 +1,574 @@
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+        <span class="moduleheadertext">Yearly Budget</span>
+    </div>
+    <div *ngIf="isLoading">
+        <p-progressBar 
+          color="primary" 
+          mode="indeterminate">
+        </p-progressBar>
+      </div>
+    <div class="row mt-2 mb-2" *ngIf="budgetform">
+    <form #YbForm="ngForm" novalidate>
+        
+        
+        <div *ngIf="ybForDialog">
+
+            <div class="row mb-2 mt-2">
+
+                <div class="col-lg-1 col-md-1 col-sm-12">
+                    <label for="isactive">Financial Year</label><span class="required-field">*</span>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12">
+                    <p-dropdown name="financialyearname" (onChange)="fyOnChange(ybForDialog.financialyearid)"
+                        [options]="allFy" optionLabel="financialyearname" optionValue="financialyearid"
+                        [(ngModel)]="ybForDialog.financialyearid">
+                    </p-dropdown>
+
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12">
+                    <label for="isactive">Budget Name</label><span class="required-field">*</span>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12">
+                    <input pInputText (change)="bnameChange()" id="budgetname" required name="budgetname"
+                        [(ngModel)]="ybForDialog.yearlybudgetname" />
+
+                    <div class="col-sm-12" *ngIf="!ybnameunique && submitted">
+                        <span style="color: red;">Budget Name should be unique.</span>
+                    </div>
+                </div>
+
+                <div [hidden]="true" class="col-lg-1 col-md-1 col-sm-12">
+                    <label for="isactive">Status</label><span class="required-field">*</span>
+                </div>
+                <div [hidden]="true" class="col-lg-2 col-md-2 col-sm-12">
+                    <p-dropdown name="isactive" [options]="isactive" [(ngModel)]="ybForDialog.isactive"
+                        [required]="true">
+                    </p-dropdown>
+
+                </div>
+                <div class="col-lg-1 col-md-1 col-sm-12">
+                    <label for="isactive">Branch</label><span class="required-field">*</span>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                    <p-dropdown name="companyname" [filter]="true" filterBy="companyname" [required]="true"  [options]="companies"
+                        (onChange)="companyChange(ybForDialog.companyid)" optionLabel="companyname"
+                        optionValue="companyid" [(ngModel)]="ybForDialog.companyid">
+                    </p-dropdown>
+                </div>
+              
+                </div>
+                <div class="row mb-2">
+
+
+                    <div class="col-lg-1 col-md-1 col-sm-12">
+                        <label for="isactive">Ledger</label><span class="required-field">*</span>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-12">
+                        <p-dropdown name="ledgeralias" [filter]="true" filterBy="ledgeralias" [required]="true"  [options]="ledgers"
+                            optionLabel="ledgeralias" optionValue="ledgerid" [(ngModel)]="ybForDialog.ledgerid">
+                        </p-dropdown>
+                    </div>
+    
+                    <div class="col-lg-2 col-md-2 col-sm-12">
+                        <label for="isactive">Estimated Budget</label><span class="required-field">*</span>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-12">
+    
+                        <input pInputText id="estimatedbudget" required name="estimatedbudget"
+                        (change)="eschange()"   [(ngModel)]="ybForDialog.estimatedbudget" />
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-12">
+                        <p-button label="+" (onClick)="saveYbDet()" [disabled]="!YbForm.form.valid"></p-button>
+                    </div>
+                    <div class="col-lg-2 col-md-2 col-sm-12">
+                        <p-button label="Submit" (onClick)="saveYb()" [disabled]="yearlyDetails.length==0"></p-button>
+                    </div>
+            </div>
+            </div>
+    </form>
+</div>
+
+
+<div class="row mt-2 mb-2 ms-2" *ngIf="backtoform">
+    <div class="col-lg-2 col-md-2 col-sm-12"><p-button title="Back" (onClick)="addNewBudget()"><i class="pi pi-backward"></i></p-button>
+       Back to Budget Form</div>
+
+
+</div>
+
+    <div class="row mt-2 mb-2" *ngIf="budgetdetailsdivog">
+        <p-table #dt [value]="ybDetails" sortField="yearlybudgetdetailsid" [sortOrder]="-1" styleClass="myTable"
+            [paginator]="false" [showCurrentPageReport]="true" dataKey="yearlybudgetdetailsid" editMode="row"
+            [globalFilterFields]="['ledgeralias']">
+            <ng-template pTemplate="caption">
+                <div class="row">
+                    <div class="tablename">Budget Details : {{ybName}}</div>
+                </div>
+                <div class="row mb-2 mt-2">
+                    <form #ledgerform="ngForm" novalidate>
+                        <div class="row" *ngIf="newLedgerForDialog">
+                
+                            <div class="col-lg-1 col-md-2 col-sm-12 ms-1">
+                                <label for="isactive">Ledger</label><span class="required-field">*</span>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-12 ms-1">
+                                <p-dropdown name="ledgeralias" [filter]="true" filterBy="ledgeralias" [required]="true" placeholder="-Select Ledger-" [options]="ledgers"
+                                    optionLabel="ledgeralias" optionValue="ledgerid" [(ngModel)]="newLedgerForDialog.ledgerid">
+                                </p-dropdown>
+                            </div>
+                
+                            <div class="col-lg-2 col-md-2 col-sm-12 ms-1">
+                                <label for="estimatedbudget">Estimated Budget</label><span class="required-field">*</span>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-12 ms-1">
+                
+                                <p-inputNumber [required]="true" name="estimatedbudget" [(ngModel)]="newLedgerForDialog.estimatedbudget" mode="decimal" inputId="withoutgrouping" [useGrouping]="false"></p-inputNumber>
+                
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-12">
+                                <p-button (onClick)="saveYbDetails()" [disabled]="!ledgerform.form.valid">Submit
+                                </p-button>
+                
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="flex mt-2">
+                    <span class="p-input-icon-left ml-auto">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                            placeholder="Search keyword" />
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header"></ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+
+                    <th>Particulars</th>
+                    <th>Budget Estimated</th>
+                    
+                    <th> Revised</th>
+                    <th> Additional</th>
+                    <th>Total Budget</th>
+                    <th>Budget Used</th>
+                    <th>Budget Balance</th>
+                    <th>Created Date</th>
+                    <th></th>
+
+
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="rowData">
+
+                    <td>{{rowData.ledgeralias}}</td>
+                    <td>{{rowData.estimatedbudget}}</td>
+                    <td>{{rowData.revise}}</td>
+                    <td>{{rowData.additional}}</td>
+
+                    <td>{{rowData.sanctionedbudget}}</td>
+                    <td>{{rowData.usedbudgetamount}}</td>
+                    <td>{{rowData.balancebudgetamount}}</td>
+                    <td>{{rowData.createddate | date}}</td>
+                    <td> <button pButton type="button" (click)="showHistory(rowData)" class="ui-button-info"><i
+                                class="pi pi-angle-right"></i></button>
+                    </td>
+
+                </tr>
+
+            </ng-template>
+
+        </p-table>
+
+
+    </div>
+
+
+    <div class="row mt-2 mb-2" *ngIf="budgetdetailsdiv">
+        <p-table #dt [value]="ybDetails" styleClass="myTable"
+            [paginator]="false" [showCurrentPageReport]="true"  editMode="row"
+            [globalFilterFields]="['ledgeralias']">
+            <ng-template pTemplate="caption">
+               
+                <div class="flex mt-2">
+                    <span class="p-input-icon-left ml-auto">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                            placeholder="Search keyword" />
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header"></ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+
+                    <th>Particulars</th>
+                    <th>Budget Estimated</th>
+                    <th>Revised</th>
+                    <th>Additional</th>
+
+                    <th>Total Budget</th>                 
+                    <th>Budget Used</th>
+                    <th>Budget Balance</th>
+                    <th>Created Date</th>
+
+
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="rowData">
+
+                    <td>{{rowData.ledgeralias}}</td>
+                    <td>{{rowData.estimatedbudget}}</td>
+                    <td>{{rowData.revise}}</td>
+                    <td>{{rowData.additional}}</td>
+                    <td>{{rowData.sanctionedbudget}}</td>
+                    <td>{{rowData.usedbudgetamount}}</td>
+                    <td>{{rowData.balancebudgetamount}}</td>
+                    <td>{{rowData.createddate | date}}</td>
+                   
+
+                </tr>
+
+            </ng-template>
+
+        </p-table>
+
+
+    </div>
+    <div class="row mt-2 mb-2" *ngIf="budgetmasterdiv">
+        <p-table #dt [value]="yb" sortField="yearlybudgetid" [sortOrder]="-1" styleClass="myTable" [paginator]="false"
+            [showCurrentPageReport]="true" dataKey="yearlybudgetid" editMode="row"
+            [globalFilterFields]="['financialyear','yearlybudgetname','companyname']">
+            <ng-template pTemplate="caption">
+                    <div class="row">
+                        <div class="tablename">
+                            Yearly Budget
+                            </div>                       
+
+                </div>
+                <div class="flex mt-2">
+                    <span class="p-input-icon-left ml-auto">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                            placeholder="Search keyword" />
+                    </span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header"></ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Financial Year</th>
+                    <th>Branch</th>
+                    <th>Yearly Budget Name</th>
+                    <th>Created Date</th>
+                    <th></th>
+
+
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="rowData">
+                    <td>{{rowData.financialyear}}</td>
+
+                    <td>{{rowData.companyname}}</td>
+
+                    <td>{{rowData.yearlybudgetname}}</td>
+
+                    <td>{{rowData.createddate | date}}</td>
+
+                    <td style="text-align:center">
+                        <button pButton type="button" title="view" (click)="onView( rowData.yearlybudgetid,rowData)"
+                            class="ui-button-info"><i class="fa fa-eye"></i></button>
+
+                    </td>
+
+
+
+                </tr>
+
+            </ng-template>
+
+        </p-table>
+    </div>
+    <p-dialog appendTo="body" class="container p-1" header=" Budget Details History" [(visible)]="historyDialog" [responsive]="true"
+        showEffect="fade" [modal]="true" [style]="{width: '100vw'}">
+
+        <p-table #dt [value]="ybDetailsHist" styleClass="myTable" [paginator]="false" [showCurrentPageReport]="true"
+            dataKey="yearlybudgetdetailshistoryid" editMode="row" [globalFilterFields]="['ledgeralias']">
+
+            <ng-template pTemplate="caption">
+                <div class="row">
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Particulars</th>
+                    <th>Estimated</th>
+                    <th>Revised</th>
+                    <th>Additional</th>
+
+                    <th>Total</th>
+                    <th>Created On</th>
+                    <th>Status</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="rowData">
+
+                    <td>{{rowData.ledgeralias}}</td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template *ngIf="rowData.statusid!=4" pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="rowData.estimatedbudget">
+                            </ng-template>
+                            <ng-template *ngIf="rowData.statusid==4" pTemplate="input">
+                                {{rowData.estimatedbudget}}
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{rowData.estimatedbudget}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>{{rowData.revise}}</td>
+
+                    <td>{{rowData.additional}}</td>
+                    <td>                       
+                        <p-cellEditor>
+                            <ng-template *ngIf="rowData.statusid!=4" pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="rowData.sanctionedbudget">
+                            </ng-template>
+                            <ng-template *ngIf="rowData.statusid==4" pTemplate="input">
+                                {{rowData.sanctionedbudget}}
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{rowData.sanctionedbudget}}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>{{rowData.createddate | date}}</td>
+
+                    <td *ngIf="urole==maker || urole==0">
+
+                        <p-cellEditor>
+                            <ng-template  *ngIf="rowData.statusid==1" pTemplate="output">
+                                <span [style]="{'color':'red' , 'font-weight':'bolder'}">New</span> 
+ 
+                             </ng-template>
+                             <ng-template *ngIf="rowData.statusid==2" pTemplate="output">
+                                 <span [style]="{'color':'#999900' , 'font-weight':'bolder'}">Checked</span>
+ 
+                             </ng-template>
+                             <ng-template *ngIf="rowData.statusid==3" pTemplate="output">
+                                 <span [style]="{'color':'#999900' , 'font-weight':'bolder'}">InCorrect</span>
+ 
+                             </ng-template>
+                             <ng-template *ngIf="rowData.statusid==4" pTemplate="output">
+                                 <span  [style]="{'color':'#00FF00' , 'font-weight':'bolder'}">Approved</span>
+ 
+ 
+                             </ng-template>
+                             <ng-template *ngIf="rowData.statusid==5" pTemplate="output">
+                                 <span [style]="{'color':'red' , 'font-weight':'bolder'}">Rejected</span> 
+ 
+                             </ng-template>
+                            <ng-template *ngIf="rowData.statusid==1" pTemplate="input">
+                                New
+
+                            </ng-template>
+                            <ng-template *ngIf="rowData.statusid==2" pTemplate="input">
+                                Checked
+
+                            </ng-template>
+                            <ng-template *ngIf="rowData.statusid==3" pTemplate="input">
+                                InCorrect
+
+                            </ng-template>
+                            <ng-template *ngIf="rowData.statusid==4" pTemplate="input">
+                                Approved
+
+                            </ng-template>
+                            <ng-template *ngIf="rowData.statusid==5" pTemplate="input">
+                                Rejected
+
+                            </ng-template>
+                        </p-cellEditor>
+
+                    </td>
+                    <td *ngIf="urole==checker">
+
+                        <p-cellEditor>
+                            <ng-template style="width: 200px;" pTemplate="input">
+                                <p-dropdown name="status" [options]="approvalStatusChecker" optionLabel="status"
+                                    optionValue="statusid" [(ngModel)]="rowData.statusid"></p-dropdown>
+                            </ng-template>
+                            <ng-template  *ngIf="rowData.statusid==1" pTemplate="output">
+                                <span [style]="{'color':'red' , 'font-weight':'bolder'}">New</span> 
+ 
+                             </ng-template>
+                             <ng-template *ngIf="rowData.statusid==2" pTemplate="output">
+                                 <span [style]="{'color':'#999900' , 'font-weight':'bolder'}">Checked</span>
+ 
+                             </ng-template>
+                             <ng-template *ngIf="rowData.statusid==3" pTemplate="output">
+                                 <span [style]="{'color':'#999900' , 'font-weight':'bolder'}">InCorrect</span>
+ 
+                             </ng-template>
+                             <ng-template *ngIf="rowData.statusid==4" pTemplate="output">
+                                 <span  [style]="{'color':'#00FF00' , 'font-weight':'bolder'}">Approved</span>
+ 
+ 
+                             </ng-template>
+                             <ng-template *ngIf="rowData.statusid==5" pTemplate="output">
+                                 <span [style]="{'color':'red' , 'font-weight':'bolder'}">Rejected</span> 
+ 
+                             </ng-template>
+                        </p-cellEditor>
+
+                    </td>
+                    <td *ngIf="urole==approver">
+
+                        <p-cellEditor>
+                            <ng-template style="width: 200px;" pTemplate="input">
+                                <p-dropdown name="status" [options]="approvalStatusApprover" optionLabel="status"
+                                    optionValue="statusid" [(ngModel)]="rowData.statusid"></p-dropdown>
+                            </ng-template>
+                            <ng-template  *ngIf="rowData.statusid==1" pTemplate="output">
+                               <span [style]="{'color':'red' , 'font-weight':'bolder'}">New</span> 
+
+                            </ng-template>
+                            <ng-template *ngIf="rowData.statusid==2" pTemplate="output">
+                                <span [style]="{'color':'#999900' , 'font-weight':'bolder'}">Checked</span>
+
+                            </ng-template>
+                            <ng-template *ngIf="rowData.statusid==3" pTemplate="output">
+                                <span [style]="{'color':'#999900' , 'font-weight':'bolder'}">InCorrect</span>
+
+                            </ng-template>
+                            <ng-template *ngIf="rowData.statusid==4" pTemplate="output">
+                                <span  [style]="{'color':'#00FF00' , 'font-weight':'bolder'}">Approved</span>
+
+
+                            </ng-template>
+                            <ng-template *ngIf="rowData.statusid==5" pTemplate="output">
+                                <span [style]="{'color':'red' , 'font-weight':'bolder'}">Rejected</span> 
+
+                            </ng-template>
+                        </p-cellEditor>
+
+
+                    </td>
+                    <td style="text-align:center">
+                        <button *ngIf="!editing"  [disabled]="( rowData.statusid==4 || rowData.statusid==5)" pButton type="button" pInitEditableRow icon="pi pi-pencil"
+                            class="ui-button-info" (click)="onRowEditInit(rowData)"></button>
+                        <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"
+                            class="ui-button-success"
+                            (click)="onRowEditSave(rowData.yearlybudgetdetailshistoryid,rowData)"
+                            style="margin-right: .5em"></button>
+                        <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times"
+                            class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
+                    </td> 
+                    <td>
+                        <button  pButton type="button" 
+                            (click)="displayHDialog(rowData)">
+                            <i class="fa fa-eye"></i></button>
+                    </td>     
+                    <td>
+                        <button [disabled]="( rowData.statusid!=4)" label="Revise/Add" pButton type="button" 
+                            class="ui-button-info" (click)="addRevise(rowData)"></button>
+                    </td>            
+                </tr>
+
+            </ng-template>
+
+        </p-table>
+
+    </p-dialog>
+
+    <p-dialog appendTo="body" header="Revise/Add" width="300" height="200" [(visible)]="displayDialog"
+    [responsive]="true" showEffect="fade" [modal]="true">
+<form #GrouprevForm="ngForm" novalidate>
+  <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="reviseForDialog">
+      <div class="ui-g ui-g-12 ui-g-nopad">
+          <div class="ui-g-12 ui-md-3 ui-label">
+              <label for="revise">Revise</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+              <input pInputText id="revise" (change)="revChange()" class="form-control" name="revise" 
+                     [(ngModel)]="reviseForDialog.revise"/>
+                  
+          </div>
+      </div>
+      <div class="ui-g ui-g-12 ui-g-nopad">
+          <h5>(Or)</h5>
+</div>
+      <div class="ui-g ui-g-12 ui-g-nopad">
+        <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="additional">Additional</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+            <input  pInputText id="additional"  (change)="addChange()" class="form-control" name="additional" 
+                   [(ngModel)]="reviseForDialog.additional"/>              
+        </div>
+    </div>
+  </div>
+</form>
+<p-footer>
+  <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="submit" pButton icon="fa-check" (click)="saveRevise()"
+              label="Update" [disabled]="!GrouprevForm.form.valid"></button>
+            
+  </div>
+</p-footer>
+</p-dialog>
+
+<p-dialog appendTo="body" class="container p-1" [(visible)]="historyofHistDialog" [responsive]="true"
+showEffect="fade" [modal]="true" [style]="{width: '70vw'}">
+
+<p-table #dt [value]="ybDetailsHistofHist" styleClass="myTable" [paginator]="false" [showCurrentPageReport]="true"
+    dataKey="yearlybudgetdetailshistoryhid" editMode="row">
+
+    <ng-template pTemplate="caption">
+        <div class="row">
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="header">
+        <tr>
+           
+            <th>Revised</th>
+            <th>Additional</th>
+            <th>Date</th>
+
+
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+        <tr [pEditableRow]="rowData">
+
+          
+            <td>{{rowData.revise}}</td>
+
+            <td>{{rowData.additional}}</td>
+            <td>{{rowData.createddate | date}}</td>
+
+        </tr>
+
+    </ng-template>
+
+</p-table>
+
+</p-dialog>
+
+
+</div>

@@ -1,0 +1,688 @@
+<h1 class="header" >{{title}}</h1>
+<div class="card">
+
+  <form #invoiceForm="ngForm" (ngSubmit)="saveInvoice(invoiceForm)">
+    <div class=" py-3 px-1 my-3 mx-2">
+      <h2 >Generate Invoice</h2>
+      <div class="row mt-2 mx-3">
+        <div class="col-3 me-5">
+          <span class="p-float-label p-input-outlined">
+            <p-dropdown [autoDisplayFirst]="false" [options]="companies" optionLabel="companyname" name="CompanyName"
+              optionValue="companyid" [filter]="true" filterBy="companyname" (onChange)="selectedCompany($event)" [(ngModel)]="selectCompany.companyid">
+            </p-dropdown>
+            <label for="float-input">Select Office</label>
+          </span>
+
+        </div>
+        <div class="col-2 ms-2">
+          <span class="p-float-label p-input-outlined">
+            <p-calendar [required]="true" appendTo="body" #invoicedate="ngModel" [maxDate]="currentDate"
+              [(ngModel)]="invoiceDetails.invoicedate" name="invoiceDate" dateFormat="dd.mm.yy"></p-calendar>
+            <div class="alert-danger"
+              *ngIf="(invoicedate.touched||invoicedate.dirty) && invoicedate.errors?.['required']">Please select the
+              Invoice Date</div>
+            <label for="float-input">Invoice Date <small class="text-danger">*</small></label>
+          </span>
+        </div><!-- 
+        <div class="col">
+          <span class="p-float-label p-input-outlined">
+            <input id="float-input" [disabled]="true" type="text" pInputText [(ngModel)]="invoiceDetails.invoicenumber"
+              name="invoicenumber">
+            <label for="float-input">Invoice Number <small class="text-danger">*</small></label>
+          </span>
+        </div> -->
+
+        <div class=" col-2 ms-2">
+          <span class="p-float-label p-input-outlined">
+            <p-calendar [(ngModel)]="invocieperiod"  name="invoiceperiod" selectionMode="range"
+              [readonlyInput]="false" inputId="range" dateFormat="dd.mm.yy"></p-calendar>
+            <label for="float-input">Invoice Period <small class="text-danger">*</small></label>
+          </span>
+
+        </div>
+        <div class=" col-3 ms-2">
+          <span class="p-float-label p-input-outlined">
+            <p-calendar [(ngModel)]="dateRange" [disabled]="true" name="financialYear" selectionMode="range"
+              [readonlyInput]="true" inputId="range" dateFormat="dd.mm.yy"></p-calendar>
+            <label for="float-input">Financial Year <small class="text-danger">*</small></label>
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="px-3 my-2 mx-3">
+      <h2>Party Details</h2>
+      <div class="row mt-2">
+        <div class="col">
+          <span class="p-float-label p-input-outlined">
+            <p-dropdown [required]="true" #BuyerledgerName="ngModel" [ngModel]="buyerLedgerDetails?.ledgerId"
+              [autoDisplayFirst]="false" [options]="buyerLedger" optionLabel="ledgerName" name="BuyerledgerName"
+              optionValue="ledgerId" [filter]="true" filterBy="ledgerName" (onChange)="change($event)" >
+            </p-dropdown>
+            <label for="float-input">Select partydetails</label>
+          </span>
+          <div class="alert-danger"
+            *ngIf="(BuyerledgerName.touched||BuyerledgerName.dirty) && BuyerledgerName.errors?.['required']">
+            Select party details
+          </div>
+        </div>
+        
+        <div class="col">
+          <span class="p-float-label p-input-outlined">
+            <input id="float-input" [disabled]="true" type="text" pInputText [ngModel]="buyerLedgerDetails?.cityName"
+              name="city">
+            <label for="float-input">City</label>
+          </span>
+        </div>
+
+ 
+        <div class="p-field col">
+          <span class="p-float-label p-input-outlined">
+            <input id="float-input" type="text" [disabled]="true" pInputText [ngModel]="buyerLedgerDetails?.stateName"
+              name="state">
+            <label for="float-input">State</label>
+          </span>
+
+        </div>       
+        <div class="col">
+          <span class="p-float-label p-input-outlined">
+            <input id="float-input" [disabled]="true" type="text" pInputText>
+            <label for="float-input">Pin</label>
+          </span>
+        </div>
+
+        <div class="p-field col">
+          <span class="p-float-label p-input-outlined">
+            <input id="float-input" type="text" [disabled]="true" pInputText [ngModel]="buyerLedgerDetails?.gst"
+              name="gst">
+            <label for="float-input">GST</label>
+          </span>
+
+        </div>
+
+
+        <div class="col">
+          <span class="p-float-label p-input-outlined">
+            <textarea [disabled]="true" pInputTextarea [ngModel]="buyerLedgerDetails?.address1"
+              name="Address"></textarea>
+            <label for="float-input">Address</label>
+          </span>
+        </div>
+        
+
+      </div>
+<!-- 
+      <div class="row mt-4">
+        
+        <div class="p-field col ms-2">
+          <span class="p-float-label p-input-outlined">
+            
+            <label for="float-input">Balance</label>
+          </span>
+          <div class="mt-2" >{{buyerlimit?.limitBalance||"Not Available"}}</div>
+        </div>
+
+      </div> -->
+    </div>
+
+    <!-- <div class="p-3 m-3">
+      <h2>Supplier Details</h2>
+      <div class="row">
+        <div class="col">
+          <span class="p-float-label p-input-outlined">
+            <p-dropdown [autoDisplayFirst]="false" [ngModel]="sellerLedgerDetails.ledgerId" [options]="sellerLedger"
+              optionLabel="ledgerName" name="sellerledgerName" [filter]="true" filterBy="ledgerName"  optionValue="ledgerId"
+              (onChange)="changeforseller($event)"></p-dropdown>
+            <label for="float-input">Select Seller</label>
+          </span>
+
+        </div>
+        <div class="col">
+          <span class="p-float-label p-input-outlined">
+            <input id="float-input" [disabled]="true" type="text" pInputText [ngModel]="sellerLedgerDetails?.cityName"
+              name="sellercity">
+            <label for="float-input">City</label>
+          </span>
+        </div>
+
+        <div class="p-field col">
+          <span class="p-float-label p-input-outlined">
+            <input id="float-input" [disabled]="true" type="text" pInputText [ngModel]="sellerLedgerDetails?.stateName"
+              name="sellerstate">
+            <label for="float-input">State</label>
+          </span>
+
+        </div>
+        <div class="col">
+          <span class="p-float-label p-input-outlined">
+            <input id="float-input" type="text" pInputText [disabled]="true">
+            <label for="float-input">Pin</label>
+          </span>
+        </div>
+
+        <div class="p-field col">
+          <span class="p-float-label p-input-outlined">
+            <input id="float-input" [disabled]="true" type="text" pInputText [ngModel]="sellerLedgerDetails?.gst"
+              name="sellergst">
+            <label for="float-input">GST</label>
+          </span>
+
+        </div>
+
+        <div class="col ">
+          <span class="p-float-label p-input-outlined">
+            <textarea pInputTextarea [disabled]="true" [ngModel]="sellerLedgerDetails?.address1"
+              name="selleraddress"></textarea>
+            <label for="float-input">Address</label>
+          </span>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        
+        
+
+      </div>
+
+    </div> -->
+
+    <div class=" p-3 mx-3 ">
+      <p-checkbox name="dileveryStauts" [(ngModel)]="samedelivery" [binary]="true" (onChange)="checkdelivery()">Same on
+        Billing Address</p-checkbox>
+      <h2>Delivery Details</h2>
+
+      <div class="row">
+        <div class="col">
+          <span class="p-float-label p-input-outlined">
+            <p-dropdown [autoDisplayFirst]="false" [options]="delevieryLedger" optionLabel="ledgerName"
+              name="delieveryledgerName" [filter]="true" filterBy="ledgerName"  optionValue="ledgerId" (onChange)="changeDelievery($event)"
+              [ngModel]="delieveryDetails?.ledgerId"></p-dropdown>
+            <label for="float-input">Select Delivery address</label>
+          </span>
+
+        </div>
+        
+        <div class="col">
+          <span class="p-float-label p-input-outlined">
+            <input id="float-input" [disabled]="true" [ngModel]="delieveryDetails?.cityName" name="dieleverycity"
+              type="text" pInputText>
+            <label for="float-input">City</label>
+          </span>
+        </div>
+
+        <div class="p-field col">
+          <span class="p-float-label p-input-outlined">
+            <input id="float-input" type="text" pInputText [disabled]="true"  [ngModel]="delieveryDetails?.stateName" name="dieleveryState">
+            <label for="float-input">State</label>
+          </span>
+
+        </div>
+
+        <div class="col">
+          <span class="p-float-label p-input-outlined">
+            <p-inputNumber [useGrouping]="false" [disabled]="true">
+            </p-inputNumber>
+            <label for="float-input">Pin</label>
+          </span>
+        </div>
+
+        <div class="p-field col">
+          <span class="p-float-label p-input-outlined">
+            <input id="float-input" name="delieveryDetails" type="text" pInputText [disabled]="true" [ngModel]="delieveryDetails?.gst">
+            <label for="float-input">GST</label>
+          </span>
+
+        </div>
+
+        <div class="col-3">
+          <span class="p-float-label p-input-outlined">
+            <textarea pInputTextarea [disabled]="true" [ngModel]="delieveryDetails?.address1"
+              name="dieleveryaddress"></textarea>
+            <label for="float-input">Address</label>
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="card p-3 m-3">
+      <h2>Add Items</h2>
+      <form #invoicedate="ngForm">
+        <div class="row">
+          <div class="col">
+            <span class="p-float-label p-input-outlined">
+              <p-dropdown #itemDetailsName="ngModel" [(ngModel)]="item.itemid" [autoDisplayFirst]="false"
+                [options]="itemDetails" optionLabel="itemname" name="itemDetailsName" optionValue="itemid"
+                (onChange)="changeItem($event)"></p-dropdown>
+
+              <label for="float-input">Items</label>
+            </span>
+
+          </div>
+          
+          <div class="col">
+            <span class="p-float-label p-input-outlined">
+              <input id="float-input" [disabled]="true" type="text" pInputText [(ngModel)]="itemselect.hsnorsaccode"
+                name="itemhonor/sac">
+              <label for="float-input">SAC/HSN</label>
+            </span>
+          </div>
+
+          <div class="col">
+            <span class="p-float-label p-input-outlined">
+              <p-inputNumber class="qty" width="14%" id="float-input" type="text" inputId="integeronly" [(ngModel)]="item.qty" name="qty">
+              </p-inputNumber>
+              <label for="float-input">QTY</label>
+
+            </span>
+
+          </div>
+
+          <div class="col">
+            <span class="p-float-label p-input-outlined">
+              <input  id="float-input" class="qty" type="text" [disabled]="true" pInputText [(ngModel)]="itemselect.uomName"
+                name="uomName">
+              <label for="float-input">UOM</label>
+            </span>
+
+          </div>
+
+          <div class=" col">
+            <span class="p-float-label p-input-outlined">
+              <p-inputNumber #itemRate="ngModel" id="float-input" type="text" inputId="integeronly"
+                [(ngModel)]="item.itemrate" mode="decimal" name="itemRate" [minFractionDigits]="2"
+                [maxFractionDigits]="5" [required]="true"></p-inputNumber>
+              <label for="float-input">Rate</label>
+
+            </span>
+
+          </div>
+          <div class="col-2">
+            <span class="p-float-label p-input-outlined">
+              <p-dropdown autoWidth="false" class="qty" optionValue="options" [(ngModel)]="invoiceDetails.currency"
+                [options]="currency" placeholder="" optionLabel="currencydisplay" name="curencyDetails"
+                optionValue="currencyid"></p-dropdown>
+              <label for="float-input">Currency</label>
+            </span>
+          </div>
+          <div class="col">
+            <span class="p-float-label p-input-outlined">
+              <textarea [disabled]="true" pInputTextarea [(ngModel)]="itemselect.itemdescription"
+                name="itemdesc"></textarea>
+              <label for="float-input">Item Description</label>
+            </span>
+          </div>
+          
+
+          <div class="col">
+            <p-button [disabled]="itemDetailsName.invalid ||itemRate.invalid " for="float-input" (onClick)="addTable()">
+              <i class="pi pi-plus"></i></p-button>
+            <!-- <p-button [disabled]="itemDetailsName.invalid " for="float-input" icon="fa fa-close" (onClick)="deleteTable()"><i class="pi pi-minus"></i></p-button> -->
+          </div>
+        </div>
+        <!-- <div class="row mt-3 py-3">
+         
+          
+        <div class="col m-auto">
+          <span class="p-float-label p-input-outlined">
+            <p-inputNumber id="float-input" inputId="percent" suffix="%" [(ngModel)]="item.tdsrate" name="tds"></p-inputNumber>
+            <label for="float-input">TDS</label>
+            
+          </span>
+          
+        </div> 
+
+          <div class="col">
+            </div>
+        </div> -->
+      </form>
+      <div class="row">
+        <p-table styleClass="p-datatable-sm" required class="mt-3" dataKey="itemid" [value]="itemselected"
+          dataKey="itemid" editMode="row" responsiveLayout="scroll" [(selection)]="deleteSelected">
+
+          <ng-template pTemplate="header">
+            <tr>
+              <button type="button" pButton pRipple icon="pi pi-trash" class="p-button-danger"
+                (click)="deleteselected()" [disabled]="!deleteSelected || !deleteSelected.length"></button>
+            </tr>
+            <tr>
+              <th style="width: 3rem">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+              </th>
+              <th>Item</th>
+              <th>Item Description</th>
+              <th>SAC/HSN</th>
+              <th>Taxable Service Description</th>
+              <th>Item Rate</th>
+              <th>QTY</th>
+              <th>Taxable Value</th>
+              <!-- <th>Service Charge</th> -->
+              <th>CGST(%)</th>
+              <th>CGST Value</th>
+              <th>SGST(%)</th>
+              <th>SGST Value</th>
+              <th>IGST(%)</th>
+              <th>IGST Value</th>
+              <th>Total</th>
+            </tr>
+          </ng-template>
+          <ng-template let-invitem pTemplate="body">
+            <tr [pEditableRow]="item">
+              <td>
+                <p-tableCheckbox [value]="invitem"></p-tableCheckbox>
+              </td>
+              <!-- <td>{{invitem.itemid}}</td> -->
+              <td>
+                {{invitem.itemname}}
+
+              </td>
+              <td>{{invitem.itemdescription}}</td>
+              <td>{{invitem.hsnorsaccode}}</td>
+              <td>{{invitem.taxServiceDesc}}</td>
+              <td>{{invitem.itemrate}}</td>
+              <td [pEditableColumn]>
+                <p-cellEditor>
+                  <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="invitem.qty" name="itemName"
+                      (change)="calculateTotal(invitem)" required>
+                  </ng-template>
+                  <ng-template pTemplate="output">
+                    {{invitem.qty}}
+                  </ng-template>
+                </p-cellEditor>
+              </td>
+              <td>{{invitem.taxvalue}}</td>
+              <!-- <td>{{invitem.servicevalue}}</td> -->
+              <td>{{invitem.cgstrate}}</td>
+              <td>{{invitem.cgstvalue}}</td>
+              <td>{{invitem.sgstrate}}</td>
+              <td>{{invitem.sgstvalue}}</td>
+              <td>{{invitem.igstrate}}</td>
+              <td>{{invitem.igstvalue}}</td>
+              <td>{{invitem.total}}</td>
+
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="footer">
+            <tr>
+              <td colspan="14" class="text-right">Totals</td>
+              <td>{{invoiceTotal}}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="summary">
+
+            <td>In Words:</td>
+            <td> {{words}} only/- </td>
+
+
+          </ng-template>
+        </p-table>
+        <div class="row my-3">
+          <div class="col-3 mt-3">
+            <span class="p-float-label p-input-outlined">
+              <p-dropdown [autoDisplayFirst]="false" [options]="paymentTermDetails" optionLabel="paymentTermsName"
+                name="PaymentTerm" optionValue="paymentTermsId" (onChange)="selectePaymentTerm($event)"
+                [(ngModel)]="selectedPayment.paymentTermsId"></p-dropdown>
+              <label for="float-input">Select Paymnet Terms</label>
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="row  text-center mb-2">
+      <p-button [disabled]="invoiceForm.invalid" type="submit">Save</p-button>
+    </div>
+  </form>
+</div>
+
+
+
+<!-- 
+
+<form [formGroup]="formGroup">
+  <mat-horizontal-stepper formArrayName="formArray" linear>
+    <mat-step formGroupName="0" [stepControl]="formArray?.get([0])">
+      <ng-template matStepLabel>Invoice Details</ng-template>
+      <div class="card mt-3">
+
+      </div>
+      <mat-card>
+
+        <mat-card-title>Generate Invoice</mat-card-title>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Select RMO</mat-label>
+          <mat-select>
+            <mat-option [value]="1">
+              RMO-1
+            </mat-option>
+            <mat-option [value]="1">
+              RMO-2
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="example-form-field">
+          <mat-label>Invoice Date</mat-label>
+          <input matInput [matDatepicker]="datepicker">
+          <mat-hint>MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+          <mat-datepicker #datepicker>
+            <mat-datepicker-actions>
+              <button mat-button matDatepickerCancel>Cancel</button>
+              <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+            </mat-datepicker-actions>
+          </mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Invoice Number</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="example-form-field">
+          <mat-label>Invoice Period</mat-label>
+          <mat-date-range-input [rangePicker]="rangePicker">
+            <input matStartDate placeholder="Start date">
+            <input matEndDate placeholder="End date">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #rangePicker>
+            <mat-date-range-picker-actions>
+              <button mat-button matDateRangePickerCancel>Cancel</button>
+              <button mat-raised-button color="primary" matDateRangePickerApply>Apply</button>
+            </mat-date-range-picker-actions>
+          </mat-date-range-picker>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Head Of Account</mat-label>
+          <mat-select>
+            <mat-option [value]="1">
+              Service Charge ion stamp tobacco
+            </mat-option>
+            <mat-option [value]="1">
+              Service Charge ion stamp tobacco-2
+            </mat-option>
+          </mat-select>
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+      </mat-card>
+
+      <mat-card class="mat-elevation-z0">
+        <mat-card-title>Buyers Details</mat-card-title>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Select Buyers</mat-label>
+          <mat-select>
+            <mat-option value=1>Ledger 1</mat-option>
+            <mat-option value=1>Ledger 2</mat-option>
+          </mat-select>
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Address</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>City</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>State</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Pin</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>GST</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+      </mat-card>
+      <mat-card class="mat-elevation-z0">
+        <mat-card-title>Suppliers Details</mat-card-title>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Select Buyers</mat-label>
+          <mat-select>
+            <mat-option value=1>Ledger 1</mat-option>
+            <mat-option value=1>Ledger 2</mat-option>
+          </mat-select>
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Address</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>City</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>State</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Pin</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>GST</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+      </mat-card>
+
+      <mat-card class="mat-elevation-z0">
+        <mat-card-title>Delivery Address</mat-card-title>
+        <mat-form-field appearance="outline">
+          <mat-label>Select Buyers</mat-label>
+          <mat-select>
+            <mat-option value=1>Ledger 1</mat-option>
+            <mat-option value=1>Ledger 2</mat-option>
+          </mat-select>
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Address</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>City</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>State</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Pin</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>GST</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+      </mat-card>
+
+      <div>
+        <button mat-button matStepperNext type="button">Next</button>
+      </div>
+    </mat-step>
+    <mat-step formGroupName="1" [stepControl]="formArray?.get([1])">
+      <ng-template matStepLabel>Add Items</ng-template>
+
+      <mat-card class="mat-elevation-z0">
+        <mat-card-title>Add Items</mat-card-title>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Items</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Item Description</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>SAC/HSN</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>QTY</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>UOM</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Value / Rate</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Currency</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>TDS</mat-label>
+          <input matInput placeholder="Placeholder">
+          <mat-hint>Hint</mat-hint>
+        </mat-form-field>
+      </mat-card>
+      <div>
+        <button mat-button matStepperPrevious type="button">Back</button>
+        <button mat-button matStepperNext type="button">Next</button>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</form> -->

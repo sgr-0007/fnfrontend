@@ -1,0 +1,578 @@
+<style>
+    .required-field {
+      color: red;
+    }
+    </style>
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+        <span class="moduleheadertext">Branch Master</span>
+     
+    </div>
+  <p-table #dt [value]="companies" sortField="companyid" [sortOrder]="-1"  [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+ styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,50]"
+ [globalFilterFields]="['companyname','tannumber','companyaddress1','companyaddress2','cityid','stateid','pin','website','emailid','gsttin','pan','mobile','phone','companytypeid','regionaloffice','branchid','isactive']"
+ dataKey="companyid" editMode="row">
+ <ng-template pTemplate="caption">
+    <div class="col-lg-1 mb-1"><p-button label="ADD" (onClick)="onCompanyAdd()"></p-button></div>
+    <div class="tablename">Branch Master</div>
+    
+    <div class="row align-left">  
+        <div class="col text-start">     
+        <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+        </span>
+        </div>
+    
+          <div class="col text-end">
+          <button  (click)="exportPdf()" class="me-2 noBorder" pTooltip="PDF" tooltipPosition="bottom" >
+              <img
+              class="icon"
+              src="../../../assets/pdficon.png"
+              height="24px"
+            /></button>
+             <button (click)="exportExcel()" pTooltip="Excel" tooltipPosition="bottom" class="noBorder p-button-success mr-2"  pTooltip="XLS" tooltipPosition="bottom">
+              <img
+              class="icon"
+              src="../../../assets/excelicon.png"
+              height="24px"
+            />
+            </button>
+            </div>
+          </div>
+
+  </ng-template>
+  <ng-template pTemplate="header"></ng-template>
+  
+          <ng-template pTemplate="header" >
+
+        <tr>
+            <th pSortableColumn="companyname">Branch Name
+                <p-sortIcon field="companyname"></p-sortIcon>
+            </th>
+            <th pSortableColumn="tannumber">TAN
+                <p-sortIcon field="tannumber"></p-sortIcon>
+            </th>
+            <th pSortableColumn="companyaddress1">Branch Address1
+                <p-sortIcon field="companyaddress1"></p-sortIcon>
+            </th>
+            <th pSortableColumn="companytypename">Branch Type
+                <p-sortIcon field="companytypename"></p-sortIcon>
+            </th>       
+
+            <!-- <th>Branchaddress2</th> -->
+            <th pSortableColumn="statename">State 
+                <p-sortIcon field="statename"></p-sortIcon>
+            </th>
+            <th pSortableColumn="cityname">City
+                <p-sortIcon field="cityname"></p-sortIcon>
+            </th>
+            <!-- <th>Website</th> -->
+            <!-- <th>GST</th>
+            <th>Pan</th> -->
+            <th pSortableColumn="emailid">Email
+                <p-sortIcon field="emailid"></p-sortIcon>
+            </th>          
+            <!-- <th>Mobile</th> -->
+            <!-- <th>Phone</th> -->
+            <!-- <th>Regionaloffice</th>
+            <th>Branch</th> -->
+            <!-- <th pSortableColumn="statename">Status
+                <p-sortIcon field="statename"></p-sortIcon>
+            </th> -->
+            <th></th>
+            <th></th>
+
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="rowData">
+        <td>
+
+                  {{rowData.companyname}}
+              
+      </td>
+      <td>
+        {{rowData.tannumber}}
+
+       </td>
+        <td>
+            {{rowData.companyaddress1}}
+
+        </td> 
+        <td>
+            {{rowData.companytypename}}
+
+        </td>
+        <!-- <td>
+            {{rowData.companyaddress2}}
+
+        </td> -->
+        <td>
+            {{rowData.statename}}
+
+        </td>
+        <td>
+            {{rowData.cityname}}
+
+        </td>
+
+        <!-- <td>
+            {{rowData.website}}
+
+        </td>
+        <td>
+            {{rowData.gsttin}}
+
+        </td>
+        <td>
+            {{rowData.pan}}
+
+        </td> -->
+        <td>
+            {{rowData.emailid}}
+
+        </td>
+        <!-- <td>
+            {{rowData.mobile}}
+
+        </td>
+        <td>
+            {{rowData.phone}}
+
+        </td> -->
+        <!-- <td>
+            <p-cellEditor>
+            <ng-template pTemplate="input">
+                <p-dropdown name="companytypeid" [options]="CompanyTypes" optionLabel="companytypename"   [(ngModel)]="rowData.companytypeid">
+                </p-dropdown>
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.companytypeid}}
+            </ng-template>
+            </p-cellEditor>
+        </td> -->
+        <!-- <td>
+            {{rowData.regionaloffice}}
+
+        </td>
+        <td>
+            {{rowData.branchid}}
+
+        </td> -->
+       <!--  <td *ngIf="rowData.isactive==true">Active</td>
+                <td *ngIf="rowData.isactive==false">InActive</td> -->
+
+        <td style="text-align:center">
+            <button pButton type="button" pInitEditableRow  title="edit" icon="pi pi-pencil"
+                class="ui-button-info" (click)="onRowEditInit(rowData)"></button>
+
+        </td>
+        <td style="text-align:center">
+            <button pButton type="button" title="view" pInitEditableRow (click)="onRowView(rowData)"
+                class="ui-button-info"><i class="fa fa-eye"></i></button>
+
+        </td>
+    </tr>
+    </ng-template>
+  </p-table>
+  <p-dialog  class="container p-5" appendTo="body" header="Branch Details" [(visible)]="displayDialog" 
+            [responsive]="true" showEffect="fade" [modal]="true" [style]="{width: '75vw'}"  >
+      <form #GroupForm="ngForm" class="mb-5" novalidate>
+          <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="groupForDialog">
+            <div class="row m-3">
+                <div class="col">
+                      <label for="companyname">Branch Name:</label><span class="required-field">*</span>
+                  </div>
+                  <div class="col" [class.has-error]="fullNameControl1.invalid && fullNameControl1.touched">
+                      <input pInputText id="companyname" name="companyname" required
+                             [(ngModel)]="groupForDialog.companyname" #fullNameControl1="ngModel"/>
+                             <div class="col-sm-12" *ngIf="!compnameunique && submitted">
+                                <span style="color: red;">Company Name should be unique.</span>
+                              </div>
+                              <span style="color: red;" *ngIf="fullNameControl1.invalid && fullNameControl1.touched">CompanyName is required</span>
+                  </div>
+              </div>
+
+         
+              <div class="row m-3">
+                <div class="col">
+                      <label for="companyaddress1">Branch Add1:</label><span class="required-field">*</span>
+                  </div>
+                  <div class="col" [class.has-error]="fullNameControl.invalid && fullNameControl.touched">
+                      <input  pInputText id="companyaddress1" name="companyaddress1" required
+                             [(ngModel)]="groupForDialog.companyaddress1" #fullNameControl="ngModel"/>
+                             <span style="color: red;" *ngIf="fullNameControl.invalid && fullNameControl.touched">CompanyAddress1 is required</span>
+                  </div>
+              </div>
+              <div class="row m-3">
+                <div class="col">
+                    <label for="companyaddress2">Branch Add2:</label>
+                </div>
+                <div class="col">
+                    <input  pInputText id="companyaddress2" name="companyaddress2" 
+                           [(ngModel)]="groupForDialog.companyaddress2"/>
+
+
+                </div>
+            </div>
+            <div class="row m-3">
+                <div class="col">
+                    <label for="State">State:</label><span class="required-field">*</span>
+                </div>
+                <div class="col" [class.has-error]="fullNameControl4.invalid && fullNameControl4.touched" >
+                    <p-dropdown [filter]="true" filterBy="stateName" name="state" placeholder="-Select-" [options]="states" [required]="true" optionLabel="stateName"  optionValue="stateId"  (onChange)="onChange1($event)" [(ngModel)]="groupForDialog.stateid"  #fullNameControl4="ngModel" >
+                    </p-dropdown>
+                    <span style="color: red;" *ngIf="fullNameControl4.invalid && fullNameControl4.touched">State is required</span>   
+                </div>
+            </div>
+            <div class="row m-3">
+                <div class="col" >
+                    <label for="city">City:</label><span class="required-field">*</span>
+                </div>
+                <div class="col" [class.has-error]="fullNameControl3.invalid && fullNameControl3.touched">
+                    <p-dropdown name="city" [filter]="true" filterBy="cityname" placeholder="-Select-" [options]="cities"  optionValue="cityid" [required]="true" optionLabel="cityname"  [(ngModel)]="groupForDialog.cityid" #fullNameControl3="ngModel">
+                    </p-dropdown>
+                    <span style="color: red;"style="color: red;" *ngIf="fullNameControl3.invalid && fullNameControl3.touched">City is required</span>
+                </div>
+            </div>
+           
+            <div class="row m-3">
+                <div class="col">
+                    <label for="pin">Pin:</label> <span class="required-field">*</span>
+                </div>
+                <div class="col" [class.has-error]="fullNameControl2.invalid && fullNameControl2.touched">
+                    <input  pInputText id="pin" name="pin" minlength="6" maxlength="6"  required
+                           [(ngModel)]="groupForDialog.pin" #fullNameControl2="ngModel" />
+                           <span style="color: red;" *ngIf="fullNameControl2.invalid && fullNameControl2.touched">Pin is required</span>
+                </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col">
+                        <label for="pin">Website:</label>
+                    </div>
+                    <div class="col">
+                        <input  pInputText id="website" name="website" 
+                               [(ngModel)]="groupForDialog.website"/>
+    
+                    </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
+                     <label for="Email">Email Id:</label>
+                        </div>
+                        <div class="col">
+                            <input  pInputText id="emailid" name="emailid" 
+                            name="emailid" type="email" pattern="^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$"
+                            [(ngModel)]="groupForDialog.emailid" #fullNameControl2="ngModel"/>
+                            <span class="help-block" style="color:red"
+                            *ngIf="fullNameControl2.invalid && fullNameControl2.touched">
+                            Enter Valid EmailID
+                        </span>
+                        </div>
+                        </div>
+                        <div class="row m-3">
+                            <div class="col">
+                                <label for="GSTPIn" >GST Tin:</label>
+                            </div>
+                            <div class="col" [class.has-error]="fullNameControl9.invalid && fullNameControl9.touched">
+                                <input pattern="^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$" 
+                                #fullNameControl9="ngModel" pInputText id="gsttin" name="gsttin" 
+                                       [(ngModel)]="groupForDialog.gsttin"/>
+                                       <span style="color: red;" *ngIf="fullNameControl9.invalid && fullNameControl9.touched">Invalid GST</span>
+            
+                            </div>
+                            </div>
+                            <div class="row m-3">
+                                <div class="col">
+                                    <label for="PAN">PAN:</label>
+                                </div>
+                                <div class="col" [class.has-error]="fullNameControl8.invalid && fullNameControl8.touched">
+                                    <input pattern="^[A-Z]{5}[0-9]{4}[A-Z]{1}$" pInputText id="pan" name="pan" 
+                                    #fullNameControl8="ngModel"    [(ngModel)]="groupForDialog.pan"/>
+                                    <span style="color: red;" *ngIf="fullNameControl8.invalid && fullNameControl8.touched">Invalid PAN</span>
+                                </div>
+                                </div>
+                                <div class="row m-3">
+                                    <div class="col">
+                                          <label for="tannumber">Tan:</label><span class="required-field">*</span>
+                                      </div>
+                                      <div class="col" [class.has-error]="fullNameControl1.invalid && fullNameControl1.touched">
+                                          <input pInputText id="tannumber" name="tannumber" required
+                                                 [(ngModel)]="groupForDialog.tannumber" #fullNameControl1="ngModel"/>
+                                      </div>
+                                  </div>
+                    
+                                <div class="row m-3">
+                                    <div class="col">
+                                        <label for="Mobile">Mobile No: </label>
+                                    </div>
+                                    <div class="col">
+                                        <input  pInputText id="mobile" name="mobile" minlength="10" maxlength="10"
+                                               [(ngModel)]="groupForDialog.mobile"/>
+                    
+                                    </div>
+                                    </div>
+                                    <div class="row m-3">
+                                        <div class="col">
+                                            <label for="Phone">Phone No (AS):</label>
+                                        </div>
+                                        <div class="col">
+                                            <input  pInputText id="phone" name="phone" 
+                                                   [(ngModel)]="groupForDialog.phoneama"/>
+                        
+                                        </div>
+                                        </div>
+                                        <div class="row m-3">
+                                            <div class="col">
+                                                <label for="Phone">Phone No (AMA):</label>
+                                            </div>
+                                            <div class="col">
+                                                <input  pInputText id="phone" name="phone" 
+                                                       [(ngModel)]="groupForDialog.phoneas"/>
+                            
+                                            </div>
+                                            </div>
+                                        <div class="row m-3" >
+                                            <div class="col">
+                                                <label for="CompanyType">Branch Type:</label><span class="required-field">*</span>
+                                            </div>
+                                            <div class="col" [class.has-error]="fullNameControl5.invalid && fullNameControl5.touched">
+                                                <p-dropdown name="companytype" placeholder="-Select-" [options]="CompanyTypes" [required]="true" optionLabel="companytypename" optionValue="companytype" (onChange)="onChange(groupForDialog.companytypeid)" [(ngModel)]="groupForDialog.companytypeid" #fullNameControl5="ngModel">
+                                                </p-dropdown>
+                                                <span style="color: red;" *ngIf="fullNameControl5.invalid && fullNameControl5.touched">Office Type is required</span>
+                                            </div>
+                                            </div>
+                                            <div class="row m-3">
+                                                <div *ngIf="div3" class="col" >
+                                                    <label for="RegionalOffice">Regional Office</label>
+                                                </div>
+                                                <div  *ngIf="div5" class="col">
+                                                    <input  pInputText id="regionaloffice" name="regionaloffice" [(ngModel)]="groupForDialog.regionaloffice"/>
+                                                </div>
+                                                <div *ngIf="div1" class="col">
+                                                    <p-dropdown name="regionaloffice" [virtualScroll]="true"  placeholder="-Select-"  [options]="SelectedCompany" [required]="true" optionLabel="companyname"  [(ngModel)]="selectedRO">
+                                                    </p-dropdown>
+                                                </div>
+                                                </div>
+                                                <div class="row m-3">
+                                                    <div  *ngIf="div4"class="col">
+                                                        <label for="Branch">Branch ID:</label>
+                                                    </div>
+                                                    <div *ngIf="div2" class="col">
+                                                        <p-dropdown name="branchid"  placeholder="-Select-"  [options]="SelectedCompany" [required]="true" optionLabel="companyname" optionValue="companyid" >
+                                                        <!-- <p-dropdown name="branchid" [options]="branch" [(ngModel)]="groupForDialog.branchid"> -->
+                                                        </p-dropdown>
+                                                    </div>
+                                                    <div *ngIf="div6" class="col">
+                                                        <input  pInputText id="branchid" name="branchid"  [(ngModel)]="groupForDialog.branchid"/>
+                                                        </div>
+                                                    </div>
+     
+                <div class="row m-3">
+                 <div class="col">
+                      <label for="isactive">Status:</label>
+                  </div>
+                  <div class="col">
+                        <p-dropdown name="isactive" [options]="isactive"  [(ngModel)]="groupForDialog.isactive">
+                        </p-dropdown>  
+                </div>
+            </div>
+
+        </div>
+        </form>
+        <p-footer>
+            <div class="ui-dialog-buttonpane ui-helper-clearfix">
+                <button type="submit" (click)="saveComponent()"  pButton icon="fa-check" 
+                        label="Save" [disabled]="!GroupForm.form.valid" ></button>
+
+                    <button type="Reset" (click)="ResetComponent()"  pButton icon="fa-check" 
+                    label="Reset" [disabled]="!GroupForm.form.valid" ></button>
+
+
+            </div>
+        </p-footer>
+        </p-dialog>
+
+        <p-dialog appendTo="body" class="container p-5" appendTo="body" header="Branch View" [(visible)]="displayViewDialog" 
+        [responsive]="true" showEffect="fade" [modal]="true" [style]="{width: '75vw'}"  >
+  <form #GroupForm="ngForm" class="mb-5" novalidate>
+      <div class="card">
+      <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="groupForDialog">
+        <div class="row m-3">
+            <div class="col">
+                  <label for="companyname">Branch Name:</label>
+              </div>
+              <div class="col">
+
+                <label for="companyname">{{groupForDialog.companyname}}</label>
+
+              </div>
+          </div>
+          <div class="row m-3">
+            <div class="col">
+                  <label for="tannumber">Tan No:</label>
+              </div>
+              <div class="col">
+
+                <label for="tannumber">{{groupForDialog.tannumber}}</label>
+
+              </div>
+          </div>
+          <div class="row m-3">
+            <div class="col">
+                  <label for="companyaddress1">Branch Add1:</label>
+              </div>
+              <div class="col">
+                <label for="companyaddress2">{{groupForDialog.companyaddress1}}</label>
+          
+              </div>
+          </div>
+          <div class="row m-3">
+            <div class="col">
+                <label for="companyaddress2">Branch Add2:</label>
+            </div>
+            <div class="col">
+                <label for="companyaddress2">{{groupForDialog.companyaddress2}}</label>
+
+
+            </div>
+        </div>
+        <div class="row m-3">
+            <div class="col">
+                <label for="State">State:</label>
+            </div>
+            <div class="col">
+                <label for="state">{{groupForDialog.statename}}</label>
+  
+            </div>
+        </div>
+        <div class="row m-3">
+            <div class="col" >
+                <label for="city">City:</label>
+            </div>
+            <div class="col">
+                <label for="city">{{groupForDialog.cityname}}</label>
+            </div>
+        </div>
+       
+        <div class="row m-3">
+            <div class="col">
+                <label for="pin">Pin:</label>
+            </div>
+            <div class="col">
+                <label for="pin">{{groupForDialog.pin}}</label>
+
+            </div>
+            </div>
+            <div class="row m-3">
+                <div class="col">
+                    <label for="pin">Website:</label>
+                </div>
+                <div class="col">
+                    <label for="website">{{groupForDialog.website}}</label>
+
+                </div>
+                </div>
+                <div class="row m-3">
+                    <div class="col">
+                 <label for="Email">Email Id:</label>
+                    </div>
+                    <div class="col">
+                        <label for="email">{{groupForDialog.emailid}}</label>    
+                    </div>
+                    </div>
+                    <div class="row m-3">
+                        <div class="col">
+                            <label for="GSTtIn" >GST Tin:</label>
+                        </div>
+                        <div class="col">
+                        
+                            <label for="gst">{{groupForDialog.gsttin}}</label>
+        
+                        </div>
+                        </div>
+                        <div class="row m-3"> 
+                            <div class="col">
+                                <label for="PAN">PAN:</label>
+                            </div>
+                            <div class="col">
+                                <label for="gst">{{groupForDialog.pan}}</label>
+
+                            </div>
+                            </div>
+                            <div class="row m-3">
+                                <div class="col">
+                                    <label for="Mobile">Mobile No:</label>
+                                </div>
+                                <div class="col">
+                                    <label for="mobile">{{groupForDialog.mobile}}</label>
+
+                                </div>
+                                </div>
+                                <div class="row m-3">
+                                    <div class="col">
+                                        <label for="Phone">Phone No:</label>
+                                    </div>
+                                    <div class="col">
+                                        <label for="phone">{{groupForDialog.phoneama}}</label>
+
+                    
+                                    </div>
+                                    </div>
+                                    <div class="row m-3" >
+                                        <div class="col">
+                                            <label for="CompanyType">Branch Type:</label>
+                                        </div>
+                                        <div class="col">
+                                            <label for="companytypename">{{groupForDialog.companytypename}}</label>
+
+                                        </div>
+                                        </div>
+                                        <div class="row m-3" >
+                                            <div class="col">
+                                                <label for="regionaloffice">Regional Office:</label>
+                                            </div>
+                                            <div class="col">
+                                                <label for="regionaloffice">{{groupForDialog.regionaloffice}}</label>
+    
+                                            </div>
+                                            </div>
+
+                                        <div class="row m-3" >
+                                            <div class="col">
+                                                <label for="branchid">Branch:</label>
+                                            </div>
+                                            <div class="col">
+                                                <label for="branchid">{{groupForDialog.branchid}}</label>
+    
+                                            </div>
+                                            </div>
+ 
+            <div class="row m-3">
+             <div class="col">
+                  <label for="isactive">Status:</label>
+              </div>
+              <div class="col" *ngIf="groupForDialog.isactive==true">
+                <label for="isactive">Active</label>
+
+
+            </div>
+                          <div class="col" *ngIf="groupForDialog.isactive==false">
+                <label for="isactive">InActive</label>
+
+
+            </div>
+        </div>
+    </div>
+    </div>
+    </form>
+
+    </p-dialog>
+        
+        
+
+
+
+
+        

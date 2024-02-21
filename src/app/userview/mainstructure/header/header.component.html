@@ -1,0 +1,48 @@
+
+    <mat-toolbar color="#3A608E">
+      <mat-toolbar-row style="height: 12px;" class="mt-1 flex-row-reverse"> <small><!-- {{current_date }}  -->last login :  {{current_date   | date: "dd-MM-yyyy"}}
+        {{current_date   | date: "HH:mm:ss"}}
+        </small></mat-toolbar-row>
+      <mat-toolbar-row>
+        <button (click)="toggleSidebar()" mat-icon-button class="example-icon " aria-label="Example icon-button with menu icon ">
+          <mat-icon>menu</mat-icon>
+          
+        </button>
+        
+
+      <span><img src="../../../assets/tblogo.png"  alt=""></span>
+      <mat-icon class="example-spacer ms-3">
+        FNA
+      </mat-icon>
+      <div class="row row text-end">
+      <div>
+        <small>{{userdetails?.companyname||''}}</small>&nbsp; &nbsp; 
+        <small > {{userdetails?.designationname}} </small>&nbsp; &nbsp; 
+        <small> {{userdetails?.rolename}} </small>
+        
+        
+      </div>
+      <div>
+        <button  (click)="toggleSidebar()" mat-button routerLink="dashboard"><mat-icon>home</mat-icon>
+          Home
+        </button>
+        <button mat-button ><i class="pi pi-fw pi-user"></i> {{getData()}}</button>
+        <button mat-button (click)="logout()"><i class="pi pi-fw pi-power-off"></i>Logout</button>
+        <mat-menu #menu="matMenu">
+<!-- <button mat-menu-item><i class="pi pi-fw pi-user"></i>User Details</button> -->
+
+</mat-menu>
+        </div>
+        </div>
+      </mat-toolbar-row>
+        <!--  <mat-toolbar-row>
+         <span class="example-spacer ms-3">
+           
+          </span>
+           
+        </mat-toolbar-row> -->
+    </mat-toolbar>
+  
+
+  
+  

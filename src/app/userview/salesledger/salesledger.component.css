@@ -1,0 +1,22 @@
+::ng-deep .mat-select-panel {
+    width: auto;
+    max-width: 100%;
+}
+label {
+    display: block;
+}
+mat-error{
+    display: block;
+}
+.dialogsetting{
+    width: 420px;
+    
+}
+
+.ui-dialog  {
+    min-height: 382px;
+    min-width: 450px;
+}
+::ng-deep .swal2-container{
+    z-index: 4125;
+}

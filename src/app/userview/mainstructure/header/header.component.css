@@ -1,0 +1,16 @@
+mat-toolbar{
+    color: aliceblue;
+    background-color: #3A608E;
+}
+::ng-deep .mat-toolbar{
+    z-index: 998;
+    position: fixed
+  }
+  .example-spacer {
+    flex: 1 1 auto;
+  }
+
+  small {
+    font-size: .545em;
+    font-family: ui-serif;
+}

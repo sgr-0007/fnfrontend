@@ -1,0 +1,134 @@
+<div class="card">
+    <div class="mb-3 moduleheaderbg">
+  <span class="moduleheadertext">Credit Limit Setting Master</span>
+    </div>
+  <p-table #dt [value]="item" sortField="creditlimitid" [sortOrder]="-1" [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first" 
+   styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[5,10,50]"
+   [globalFilterFields]="['buyerid','ledgername','creditlimitamount','creditlimitutilize','creditlimitbalance']"
+   dataKey="creditlimitid" editMode="row">
+   <ng-template pTemplate="caption">
+    <div class="row">
+        <div class="col-lg-1 mb-1"><p-button label="ADD" (onClick)="onUomAdd()"></p-button></div>
+        <div class="creditlimitsetting">Credit Limit Setting Master</div>
+     </div>
+     <div class="row align-left">  
+        <div class="col text-start">     
+        <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+        </span>
+        </div>
+        </div>
+  </ng-template>
+  <ng-template pTemplate="header"></ng-template>
+          <ng-template pTemplate="header" >
+        <tr>
+            <th pSortableColumn="ledgername">Buyer Name
+                <p-sortIcon field="ledgername"></p-sortIcon>
+            </th>            
+            <th pSortableColumn="creditlimitamount">Credit Limit Amount
+                <p-sortIcon field="creditlimitamount"></p-sortIcon>
+            </th>
+            <th pSortableColumn="creditlimitutilize">Credit Limit Utilize
+                <p-sortIcon field="creditlimitutilize"></p-sortIcon>
+            </th>
+            <th pSortableColumn="creditlimitbalance">Credit Limit Balance
+                <p-sortIcon field="creditlimitbalance"></p-sortIcon> 
+            </th>
+            <th></th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+        <tr [pEditableRow]="rowData">
+        <td>
+            <p-cellEditor>
+              <ng-template pTemplate="input">
+                <p-dropdown name="ledgername" [virtualScroll]="true" [itemSize]="30" [filter]="true" filterBy="ledgername" appendTo="body" [options]="ledgername" optionValue="ledgerid" optionLabel="ledgername" [(ngModel)]="rowData.buyerid">
+                </p-dropdown>
+              </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.ledgername}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.creditlimitamount">
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.creditlimitamount}}
+            </ng-template>
+        </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.creditlimitutilize">
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.creditlimitutilize}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+    <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.creditlimitbalance">
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.creditlimitbalance}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+        <td style="text-align:center">
+            <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil"
+                class="ui-button-info" [disabled]="disable" (click)="onRowEditInit(rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"
+                class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData.creditlimitid,rowData)"></button>
+            <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times"
+                class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
+        </td>
+    </ng-template>
+  </p-table>
+  <p-dialog appendTo="body"  header="Item Details" width="300" height="200" [(visible)]="displayDialog"
+            [responsive]="true" showEffect="fade" [modal]="true">
+      <form #GroupForm="ngForm" novalidate>
+          <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="uomForDialog">
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="ledgername">Buyer Name</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9"> 
+                    <p-dropdown name="ledgername" [virtualScroll]="true" [itemSize]="30" [filter]="true" filterBy="ledgername" appendTo="body" [required]="true" placeholder="-Select-" [options]="ledgername" optionLabel="ledgername" [(ngModel)]="selectedUom">
+                    </p-dropdown>
+                  </div>
+              </div>
+              <div class="ui-g ui-g-12 ui-g-nopad">
+                  <div class="ui-g-12 ui-md-3 ui-label">
+                      <label for="creditlimitamount">Credit Limit Amount</label><span class="required-field">*</span>
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <input  pInputText id="creditlimitamount" class="form-control" name="creditlimitamount" required
+                             [(ngModel)]="uomForDialog.creditlimitamount"/>
+                  </div>
+              </div>
+          </div>
+      </form>
+      <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+            <button type="submit" pButton icon="fa-check" (click)="saveUom()"
+                    label="Save" [disabled]="!GroupForm.form.valid"></button>
+        </div>
+    </p-footer>
+      </p-dialog>
+  
+  </div>
+  
+
+
+
+
+
+
+

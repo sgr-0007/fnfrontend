@@ -1,0 +1,106 @@
+<div class="card m-3 p-3">
+    <h1>Bank Reconcilation</h1>
+    
+        <p-table [value]="paymentdetails" dataKey="paymentid"[resizableColumns]="true" [paginator]="true"  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
+        [rowsPerPageOptions]="[10,25,50]" [rows]="rows" [(first)]="first" 
+         class="mt-3" responsiveLayout="scroll"
+         [globalFilterFields]="['buyerName','country.name','representative.name','status']">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>
+                            Payment NO
+                        </th>
+                        <th>
+                            Invoice NO
+                        </th>
+                        <th>
+                            Total Payment
+                        </th>
+                        
+                        <th>
+                             Paid Amount
+                        </th>
+                        <th>
+                            Payment Status
+                        </th>
+                        <th>
+                            Realized Date
+                        </th>
+                        
+                        <th>
+                            Realized Amount
+                        </th>
+                        
+                        <th>
+                            Verified
+                        </th>
+                        
+                        <th>
+                            Remark 
+                        </th>
+                        
+                        <th>
+                            File Attachment
+                        </th>
+
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-pay>
+                    <tr>
+                        <td>
+                            {{pay.paymentNo}}
+                        </td>
+                        <td>
+                            {{pay.invoiceNo}}
+                        </td>
+                        <td>
+                            {{pay.paymentAmount}}
+                        </td>
+                        <td>
+                            {{pay.pAmountPaid}}
+                        </td>
+                        <td>
+                            <label *ngIf="pay.paymentStatus==0">
+                            Pending
+                            </label>
+                        <label *ngIf="pay.paymentStatus==1">
+                            Paid
+                        </label>
+                        
+                        </td>
+                        
+                        <td>
+                            <p-calendar [(ngModel)]="pay.realizedDate||currentDate" [maxDate]="currentDate" dateFormat="dd.mm.yy" appendTo="body"></p-calendar>
+                        </td>
+                        
+                        <td>
+                            <p-inputNumber name="realizedAmount" [(ngModel)]="pay.realizedAmount"></p-inputNumber>
+                            
+                        </td>
+                        
+                        <td>
+                            <p-dropdown [(ngModel)]="pay.approverVerifiedStatus" [options]="approval" appendTo="body" optionValue="aid" optionLabel="aname"></p-dropdown>
+                        </td>
+                        
+                        <td>
+                           <input pInputText name="remark" [(ngModel)]="pay.remark" >
+                        </td>
+                        <td>
+                            <p-button class="p-button-rounded mx-2"  color="primary" (click)="fileleUpload()"><mat-icon>file_upload</mat-icon>
+                               
+                                </p-button>
+                               
+ 
+                            <!-- <button (click)="printPage()" >print</button> -->
+                             <p-button (click)="save(pay)" pTooltip="Save"><mat-icon>save</mat-icon></p-button> 
+                        </td>
+                        
+                    </tr>
+                </ng-template>
+            </p-table>
+
+   
+</div>
+<p-dialog [(visible)]="dialougeOpen" header="File Upload" showEffect="fade" [modal]="true">
+    <app-filesupload [title]="title"></app-filesupload>
+</p-dialog>

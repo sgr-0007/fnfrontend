@@ -1,0 +1,100 @@
+<div>
+<h2>
+    Ledger Details </h2>
+    <p-table #dt  [value]="salesData" [(selection)]="selectedData"   [paginator]="true" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+   styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,50]"
+   [globalFilterFields]="['iBuyerID','vcBuyerName','vcBankName','dBalanceAmt','status']" 
+   dataKey="bid"  [loading]="loading" [reorderableColumns]="true" sortField="bid" [sortOrder]="-1" [rowSelectable]="isRowSelectable">
+   <ng-template pTemplate="caption">
+    <div class="row">
+      
+      <div class="col-2 w-auto">
+        <p-dropdown name="companyname" placeholder="Filter By Branch" appendTo="body" [filter]="true"  filterBy="companyname" [required]="true"
+                               [options]="companies" optionLabel="companyname" [(ngModel)]="filteredbranchid"
+                               (onChange)="filterbybranch()" optionValue="companyid" >
+                            </p-dropdown>
+         </div>
+      <div class="col mb-1 text-end">
+        <p-button label="Approved" *ngIf="true"  class="mx-2" (click)="approveSelectedLdger()" ></p-button>
+         </div>
+      
+      <div class="tablename">List Of Buyer's from e-Auction</div>      
+      <div class="row align-left">  
+        <div class="col text-start">     
+        <span class="p-input-icon-left ml-auto">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+        </span>
+        </div>
+    
+          </div>
+
+
+      </div>
+  </ng-template>
+  <ng-template pTemplate="header" >
+    <tr >
+
+      <th style="width: 2rem">
+        <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+    </th>
+        <th  pSortableColumn="iBuyerID"> Buyer Code
+            <p-sortIcon field="iBuyerID"></p-sortIcon>
+        </th>
+        <th  pSortableColumn="vcBuyerName">Buyer Name
+            <p-sortIcon field="vcBuyerName"></p-sortIcon>
+        </th>
+
+        <th  pSortableColumn="vcBankName"> Bank Name
+            <p-sortIcon field="vcBankName"></p-sortIcon>
+        </th>
+        <th  pSortableColumn="dBalanceAmt"> Amount
+          <p-sortIcon field="dBalanceAmt"></p-sortIcon>
+      </th>
+      <th  pSortableColumn="status"> status
+        <p-sortIcon field="status"></p-sortIcon>
+    </th>
+
+        
+    
+      
+        <!-- <th>Status</th> -->
+        <th>Action</th>
+
+    </tr>
+</ng-template>
+<ng-template pTemplate="body" let-rowData  let-ri="rowIndex">
+  <tr [pEditableRow]="rowData">
+    <td>
+      <p-tableCheckbox [value]="rowData" [disabled]="isAlreadyApproved(rowData)"></p-tableCheckbox>
+  </td>
+    <td>
+                {{rowData.iBuyerID}}
+        
+    </td>
+    <td>
+              {{rowData.vcBuyerName}}
+      
+  </td>
+  
+    <td>
+                {{rowData.vcBankName}}
+      
+    </td>
+    <td>
+              {{rowData.dBalanceAmt}}
+      
+  </td>
+  <td>
+    <div *ngIf="rowData.status==1">Approved</div>  
+    <div *ngIf="!(rowData.status==1)">Pending</div>  
+    
+</td>
+    <td style="text-align:center">
+    <button [disabled]="isApproved(rowData)" pButton type="button" label="Approve"
+    class="ui-button-info" (click)="approveBuyer(rowData)" ></button>
+</td>
+</tr>
+</ng-template>
+   </p-table> 
+</div>

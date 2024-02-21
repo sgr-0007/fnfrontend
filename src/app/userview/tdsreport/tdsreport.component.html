@@ -1,0 +1,46 @@
+<div class="card">
+    <div class="ui-g mb-3 moduleheaderbg">
+        <span class="moduleheadertext">TDS</span>
+    </div>
+    <div class="row mb-3">
+        <form #VoucherForm="ngForm" novalidate>
+            <div *ngIf="daybookForDialog">
+                <div [hidden]="false" class="row mb-2">
+                    <div class="col-lg-3 col-md-3 col-sm-12">
+                        <p-dropdown placeholder="-ReturnType-" appendTo="body" [autoDisplayFirst]="false"
+                            [options]="returns" optionLabel="returnname" name="returnname" optionValue="returnid"
+                            [(ngModel)]="daybookForDialog.returnid">
+                        </p-dropdown>
+                    </div>
+                     <div class="col-lg-2 col-md-2 col-sm-12">
+                        <p-dropdown placeholder="-ReportType-" appendTo="body" [autoDisplayFirst]="false"
+                        [options]="rtypes" optionLabel="rtype" name="rtype" optionValue="rtypeid"
+                        [(ngModel)]="daybookForDialog.rtypeid">
+                    </p-dropdown>
+                     </div>
+                    
+                    <div class="col-lg-2 col-md-2 col-sm-12" *ngIf="daybookForDialog.rtypeid==1">
+                        <p-calendar name="voucherfromdate" placeholder="From" [maxDate]="dateTime" dateFormat="dd.mm.yy"
+                        [(ngModel)]="dateValue" [showIcon]="true" appendTo="body">
+                        </p-calendar>
+                    </div>                   
+                   
+                    <div class="col-lg-3 col-md-3 col-sm-12" *ngIf="daybookForDialog.rtypeid==2">
+                        <p-calendar name="month" placeholder="-SelectMonth-"  appendTo="body"  dateFormat="mm/yy" [readonlyInput]="true" inputId="basic" view="month" [(ngModel)]="month">
+                        </p-calendar>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-12" *ngIf="daybookForDialog.rtypeid==3">
+                        <p-calendar [(ngModel)]="year" name="year" placeholder="-SelectYear-" appendTo="body" view="year" dateFormat="yy" inputId="yearpicker"></p-calendar>
+                    </div>
+                        <div class="col-lg-1 col-md-1 col-sm-12">
+                            <p-button label="Generate" (onClick)="onSearch()"></p-button>
+                        </div>
+                </div>
+
+
+            </div>
+
+
+        </form>
+    </div>
+</div><iframe *ngIf="reportUrl" [src]="reportUrl" frameborder="0" allowfullscreen width="100%" height="700px"></iframe>

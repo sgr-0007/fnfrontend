@@ -1,0 +1,31 @@
+
+
+
+app-paymentreciept {
+    /* hide the printing component from @media screen */
+    display: none;
+  }
+  
+  @media print {
+    /* invert the display (show/hide) properties of the main */
+    /* aplication component and the printing component       */
+  
+    app-paymentreciept {
+      display: block;
+    }
+  
+    #payment {
+      display: none;
+    }
+    app-userview {
+      display: none;
+    }
+    app-header{
+        display: none;
+    }
+  }
+
+  horizontal-bottom {
+    text-decoration:underline;
+text-decoration-style: dotted;
+  }

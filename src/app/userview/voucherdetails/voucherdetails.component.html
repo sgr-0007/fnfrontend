@@ -1,0 +1,1184 @@
+
+<div class="card">
+  <div class="row">
+    <div class="col-lg-12 mt-3 mb-3">
+<p-table class="vtable" [value]="selectedVoucher"  [paginator]="false" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+ styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[5,10,50]"
+ dataKey="voucherid" editMode="row">
+
+<ng-template pTemplate="header"></ng-template>
+
+        <ng-template pTemplate="header" >
+      <tr>
+          <th>Branch</th>
+          <th>Voucher Number</th>
+          <th>Voucher Type</th>
+          <th>Voucher Date</th>
+          <th>Narration</th>
+
+
+      </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+    <tr [pEditableRow]="rowData" style="height: 5px;">
+      <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.companyname">
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.companyname}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+      <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.vouchernumber">
+              </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.vouchernumber}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+      <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.vouchertypename">
+
+
+
+              </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.vouchertypename}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+      <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.voucherdate">
+
+
+
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.voucherdate | date}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+      <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.narration">
+
+
+
+              </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.narration}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+
+  </tr>
+  </ng-template>
+</p-table>
+    </div>
+  </div>
+</div>
+
+
+<div class="card">
+
+  <div class="mb-3" style="text-align: center;">
+
+
+  </div>
+  <div class="row">
+    <div class="col-lg-5 mb-4">
+      <form novalidate>
+  
+    <div class="row">
+      <div class="col-11"> 
+        <p-fileUpload *ngIf="statusid!=4" #form name="myfile[]" accept=".xlsx,.pdf,.csv,.xls,.png,.jpg,jpeg" [customUpload]="true" (uploadHandler)="myUploader($event,form)"></p-fileUpload>
+      </div>
+  </div>
+  <div class="row"></div>
+  <div class="card mt-3">
+    <div class="card-header">List of Files</div>
+   
+   
+    <ul class="list-group list-group-flush" *ngFor="let file of fileInfos|async">
+      <li class="list-group-item">
+          <div class="row">
+              <!-- <div class="col-lg-8 mb-6"><a href="{{ file.url }}">{{ file.filedisplayname }}</a></div> -->
+              <div class="col-lg-8 mb-6"><a
+                      *ngIf="checktypeImage(file.filegeneratedname) ">{{
+                      file.filedisplayname }}</a>
+                  </div>
+                  <div class="col-lg-8 mb-6"><a
+                      *ngIf="checktypePdf(file.filegeneratedname)">{{
+                      file.filedisplayname }}</a>
+                  </div>
+              <p-button *ngIf="checktypeImage(file.filegeneratedname) ||checktypePdf(file.filegeneratedname)" (onClick)="viewDisable(file)"><i class="fa fa-eye"></i></p-button>
+              <div *ngIf="checktypeImage(file.filegeneratedname) || checktypePdf(file.filegeneratedname)" class="col-lg-4 mb-2"><p-button (onClick)="OnDeleteFile(file.filegeneratedname)"><i class="pi pi-trash"></i></p-button></div>
+
+          </div>
+      </li>
+      <li class="list-group-item">
+          
+        <a *ngIf="!checktypeImage(file.filegeneratedname) && !checktypePdf(file.filegeneratedname)" href="{{ file.url }}">{{ file.filedisplayname}} </a>
+              <div *ngIf="!checktypeImage(file.filegeneratedname) && !checktypePdf(file.filegeneratedname)" class="col-lg-4 mb-2"><p-button (onClick)="OnDeleteFile(file.filegeneratedname)"><i class="pi pi-trash"></i></p-button></div>
+      </li>
+  </ul>
+   
+   
+  
+  <p-dialog header="Uploaded Files" appendTo="body" [(visible)]="viewdisable">
+    <div *ngIf="imagefile">
+      <img *ngIf="imagefile" [src]="viewablefile.url" height="200px">
+      
+  </div>
+  <div *ngIf="pdffile">
+      <div class="pdf-container">
+          <pdf-viewer [src]="viewablefile.url" [rotation]="0" [original-size]="false" [show-all]="true"
+              [fit-to-page]="false" [zoom]="1" [zoom-scale]="'page-width'" [stick-to-page]="false"
+              [render-text]="true" [external-link-target]="'blank'" [autoresize]="true" [show-borders]="false"
+              style="width: 100%; height: 600px;"></pdf-viewer>
+      </div>
+  </div>
+  </p-dialog>
+      
+  </div>
+
+  </form>
+    </div>
+    <div class="col-lg-5 mb-4">
+      <p-button  label="Mode"  *ngIf="statusid==4 && (vtype==1 || vtype==3)"  (onClick)="mode()"></p-button>
+
+    </div>
+    </div>
+
+  <div class="col-lg-10 md-10"> 
+
+    <div class="col-lg-10 md-10" *ngIf="urole==checker && vtype==1"> 
+
+      <div class="row mb-1">
+        <span class="p-buttonset">
+        
+          <button pButton  class="p-button-raised p-button-text" (click)="getOfficeGSTLedger('cgst')" label="GST">
+          </button>
+          <button pButton  class="p-button-raised p-button-text" (click)="getOfficeITLedger('sgst')" label="IT">
+          </button> 
+        </span>
+         
+      </div>
+
+      <p-dialog appendTo="body" header="GST Details" [(visible)]="displayGstDialog" [responsive]="true"
+      showEffect="fade" [modal]="true">
+      <form #GroupForm="ngForm" novalidate>
+        <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="gstDetails">
+          <div class="ui-g ui-g-12 ui-g-nopad">
+            <div class="ui-g-12 ui-md-3 ui-label">
+              <label for="gstbvledgeralias">Buyer/Vendor</label>
+            </div>
+            <div class="ui-g-12 ui-md-9">
+              <p-dropdown [required]="true" placeholder="-Select-" appendTo="body" [autoDisplayFirst]="false"
+                [options]="gstledgers" (onChange)="gstbvOnChange(gstDetails.gstbvledgerid)" optionLabel="gstbvledgeralias" name="gstbvledgeralias" optionValue="gstbvledgerid"            
+                [(ngModel)]="gstDetails.gstbvledgerid"> 
+              </p-dropdown>
+            </div>
+            <div class="ui-g-12 ui-md-3 ui-label">
+              <label for="invoicedate">GST No.</label>
+            </div>
+            <div class="ui-g-12 ui-md-9">
+              <label for="gsttin">{{gstDetails.gstbvgsttin}}</label>
+      
+            </div>
+          <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="invoicenumber">Invoice No.</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+    
+            <input type="text" pInputText name="invoicenumber"
+              [(ngModel)]="gstDetails.invoicenumber">
+          </div>
+          <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="invoicedate">Invoice Date</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+            <p-calendar name="invoicedate" appendTo="body" [maxDate]="dateTime" dateFormat="dd.mm.yy"
+            [(ngModel)]="gstDetails.invoicedate" [showIcon]="true" ></p-calendar>
+    
+          </div>
+    
+          <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="invtype">Invoice Type</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+            <p-dropdown [required]="true" placeholder="-Select-" appendTo="body" [autoDisplayFirst]="false"
+              [options]="invtypes" optionLabel="invtype" name="invtype" optionValue="invtypeid"          
+              [(ngModel)]="gstDetails.invtypeid">
+            </p-dropdown>
+          </div>
+    
+    
+          <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+            <label for="igstrate">IGST Rate</label>
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-9">
+    
+            <input type="text" pInputText name="igstrate"
+              [(ngModel)]="gstDetails.igstrate">
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+            <label for="cgstrate">CGST Rate</label>
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-9">
+    
+            <input type="text" pInputText name="cgstrate"
+              [(ngModel)]="gstDetails.cgstrate">
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+            <label for="sgstrate">SGST Rate</label>
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-9">
+    
+            <input type="text" pInputText name="sgstrate"
+              [(ngModel)]="gstDetails.sgstrate">
+          </div>
+    
+          <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="invoicevalue">Invoice Value</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+    
+            <input type="text" pInputText name="invoicevalue"
+              [(ngModel)]="gstDetails.invoicevalue">
+          </div>
+          <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="taxablevalue">Taxable Value</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+    
+            <input type="text" pInputText name="taxablevalue"
+              [(ngModel)]="gstDetails.taxablevalue">
+          </div>
+    
+    
+    
+    
+          <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+            <label for="igst">Integrated Tax</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+    
+            <input [hidden]="true" type="text" pInputText name="igst"
+              [(ngModel)]="gstDetails.igstvalue">
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+            <label for="cgst">Central Tax</label>
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-9">
+    
+            <input type="text" pInputText name="cgst"
+              [(ngModel)]="gstDetails.cgstvalue">
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+            <label for="sgst">State Tax</label>
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-9">
+    
+            <input type="text" pInputText name="sgst"
+              [(ngModel)]="gstDetails.sgstvalue">
+          </div>
+    
+    
+          <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+            <label for="igst">GSTTDS IGST</label>
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-9">
+    
+            <input type="text" pInputText name="gsttdsigst" 
+              [(ngModel)]="gstDetails.gsttdsigst">
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+            <label for="cgst">GSTTDS CGST</label>
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-9">
+    
+            <input type="text" pInputText name="gsttdscgst"
+              [(ngModel)]="gstDetails.gsttdscgst">
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+            <label for="sgst">GSTTDS SGST</label>
+          </div>
+          <div [hidden]="true" class="ui-g-12 ui-md-9">
+    
+            <input type="text" pInputText name="gsttdssgst"
+              [(ngModel)]="gstDetails.gsttdssgst">
+          </div>
+    
+         
+          <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="sgst">Supply Attract</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+    
+            <p-dropdown name="supplyattract"  appendTo="body" [options]="supplyattract" [(ngModel)]="gstDetails.supplyattract">
+            </p-dropdown>
+          </div>
+        </div>
+        </div>
+      
+      </form>
+      <p-footer>
+        <div class="ui-dialog-buttonpane ui-helper-clearfix">
+          <button type="submit" pButton icon="fa-check" (click)="saveGst()" label="Save"
+            [disabled]="!GroupForm.form.valid"></button>
+          <!-- <p-button label="Reset" (onClick)="onPayReset()"></p-button> -->
+        </div>
+      </p-footer>
+    </p-dialog>
+    
+    
+    <p-dialog appendTo="body" header="IT Details" [(visible)]="displayItDialog" [responsive]="true"
+    showEffect="fade" [modal]="true">
+    <form #Group1Form="ngForm" novalidate>
+      <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="itDetails">
+        <div class="ui-g ui-g-12 ui-g-nopad">
+          <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="sectionname">Section</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+            <p-dropdown [required]="true" placeholder="-Select-" appendTo="body" [autoDisplayFirst]="false"
+              [options]="sections" optionLabel="sectionname" name="sectionname" optionValue="sectionid"            
+              [(ngModel)]="itDetails.sectionid">
+            </p-dropdown>
+          </div>
+          <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="itbvledgeralias">Buyer/Vendor</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+            <p-dropdown [required]="true" placeholder="-Select-" appendTo="body" [autoDisplayFirst]="false"
+              [options]="itledgers" (onChange)="iTbvOnChange(itDetails.itbvledgerid)" optionLabel="itbvledgeralias" name="itbvledgeralias" optionValue="itbvledgerid"            
+              [(ngModel)]="itDetails.itbvledgerid">
+            </p-dropdown>
+          </div>
+         
+          <div  class="ui-g-12 ui-md-3 ui-label">
+            <label for="tdsrate">TDS Rate %</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+      
+            <input type="text" pInputText name="tdsrate"
+              [(ngModel)]="itDetails.rate">
+          </div>
+          <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="returnname">Return</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+            <p-dropdown  placeholder="-Select-" appendTo="body" [autoDisplayFirst]="false"
+              [options]="returns" optionLabel="returnname" name="returnname" optionValue="returnid"            
+              [(ngModel)]="itDetails.returnid">
+            </p-dropdown>
+          </div>
+          <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="netamount">TDS Deducted</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+      
+            <input type="text" pInputText name="netamount"
+              [(ngModel)]="itDetails.netamount">
+          </div>
+       
+        <div [hidden]="true" class="ui-g-12 ui-md-3 ui-label">
+          <label for="tds">TDS Amount</label>
+        </div> 
+        <div  [hidden]="true" class="ui-g-12 ui-md-9">
+          <input type="text" pInputText name="tds"
+            [(ngModel)]="itDetails.tds">
+        </div>
+    
+        <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="grossamount">Taxable Value</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+    
+          <input type="text" pInputText name="grossamount"
+            [(ngModel)]="itDetails.grossamount">
+        </div>
+        
+    
+      </div>
+      </div>
+    
+    </form>
+    <p-footer>
+      <div class="ui-dialog-buttonpane ui-helper-clearfix">
+        <button type="submit" pButton icon="fa-check" (click)="saveIt()" label="Save"
+          [disabled]="!Group1Form.form.valid"></button>
+        <!-- <p-button label="Reset" (onClick)="onPayReset()"></p-button> -->
+      </div>
+    </p-footer>
+    </p-dialog>
+</div>
+
+<div class="row mb-1" *ngIf=" vtype==1">
+  <div class="col-lg-10 col-md-10 col-sm-12">
+    <p-table  [value]="newGstDetailstbl" class="vtable"
+      [paginator]="false" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+     editMode="row">
+    <ng-template pTemplate="header"></ng-template>
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th>GST Buyer/Vendor</th>
+        <th>GST</th>
+        <th>Invoice No.</th>
+         <th>Invoice value</th>
+         <th>Taxable value</th>
+         <th>IGST</th>
+         <th>CGST</th>
+         <th>SGST</th>
+         <th>GSTTDSIGST</th>
+         <th>GSTTDSCGST</th>
+         <th>GSTTDSSGST</th>
+
+         <th *ngIf="urole==checker && vtype==1"></th>
+
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body"  let-rowData let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="rowData">
+       
+        <td>
+         {{rowData.gstbvledgeralias}}
+        </td>
+        <td>
+          {{rowData.gstbvgsttin}}
+
+        </td>
+        <td>
+          {{rowData.invoicenumber}}
+
+        </td>     
+          
+        <td>
+          {{rowData.invoicevalue}}
+
+        </td>
+        <td>
+          {{rowData.taxablevalue}}
+
+        </td>
+        <td>
+          {{rowData.igstvalue}}
+
+        </td>
+        <td>
+          {{rowData.cgstvalue}}
+
+        </td>
+        <td>
+          {{rowData.sgstvalue}}
+
+        </td>
+        <td>
+          {{rowData.gsttdsigst}}
+
+        </td>
+        <td>
+          {{rowData.gsttdscgst}}
+
+        </td>
+        <td>
+          {{rowData.gsttdssgst}}
+
+        </td>
+        <td *ngIf="urole==checker && vtype==1">
+          <p-button (onClick)="removeGst(rowData)">
+            <i class="pi pi-trash"></i>
+          </p-button></td>
+       
+    </tr>
+    
+    </ng-template>
+   
+  </p-table>
+  </div>
+
+
+</div>
+<div class="row mb-1" *ngIf="vtype==1">
+  <div class="col-lg-10 col-md-10 col-sm-12">
+    <p-table  [value]="newItDetailstbl" class="vtable"
+      [paginator]="false" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+     editMode="row">
+    <ng-template pTemplate="header"></ng-template>
+
+    <ng-template pTemplate="header">
+      <tr>
+        <th>IT Buyer/Vendor</th>
+        <th>PAN</th>
+        <th>Return</th>
+        <th>Section</th>
+         <th>TDS deducted</th>
+         <th>Taxable value</th>
+<th *ngIf="urole==checker && vtype==1"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body"  let-rowData let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="rowData">
+       
+        <td>
+         {{rowData.ledgeralias}}
+        </td>
+        <td>
+          {{rowData.panno}}
+
+        </td>
+        
+        <td>
+          {{rowData.returnname}}
+
+        </td>
+        <td>
+          {{rowData.sectionname}}
+
+        </td>
+            <td>
+         {{rowData.netamount}}
+        </td>
+        <td>
+          {{rowData.grossamount}}
+
+        </td>
+        <td *ngIf="urole==checker && vtype==1">
+          <p-button (onClick)="removeIt(rowData)">
+            <i class="pi pi-trash"></i>
+          </p-button></td>
+       
+    </tr>
+    
+    </ng-template>
+   
+  </p-table>
+  </div>
+
+
+</div>
+
+<p-table [value]="vouchers" rowGroupMode="rowspan" groupRowsBy="voucherseq" styleClass="p-datatable-sm"  [paginator]="false" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+ dataKey="voucherdetailid" editMode="row">
+ <ng-template pTemplate="caption">
+   <div class="row">
+  <!-- <div class="col-lg-2">
+  <p-button (onClick)="onCreditDebitAdd()"><i class="pi pi-plus"></i></p-button>
+  </div> -->
+  <div class="col-lg-4">
+      Debit and Credit
+    </div>
+</div>
+
+
+ </ng-template>
+
+
+<ng-template pTemplate="header"></ng-template>
+
+        <ng-template pTemplate="header" >
+      <tr>
+         <th>S.No.</th>
+          <th>Particulars</th>
+          <th *ngIf="vtype==1 || vtype==3 || vtype==4 || vtype==6">SubLedger</th>
+
+          <th>Branch</th>
+          <th *ngIf="vtype!=4">Narration</th>
+
+          <th>Debit</th>
+          <th>Credit</th>
+          <!-- <th *ngIf="vtype==1">HSN/SAC</th> -->
+          <th *ngIf="vtype==1">Rate</th>
+
+          <th></th>
+
+          <th *ngIf="vtype==1 && urole==checker"></th>
+
+      </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowgroup="rowgroup" let-rowspan="rowspan" let-rowData let-editing="editing" let-ri="rowIndex">
+    <tr [pEditableRow]="rowData">
+      <td *ngIf="rowgroup" [attr.rowspan]="rowspan">
+        <span class="font-bold ml-2">{{rowData.voucherseq}}</span>
+    </td>      <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input" *ngIf="rowData.creditamount!=null">
+              <p-dropdown name="crledgeralias" [filter]="true" filterBy="crledgeralias" (onChange)="LedgerOnChange($event,'cr')"
+              placeholder="-Select-" [options]="ledgers" optionLabel="crledgeralias" optionValue="creditledger"
+              [(ngModel)]="rowData.creditledger"></p-dropdown>
+
+            </ng-template>
+            <ng-template pTemplate="input" *ngIf="rowData.debitamount!=null">
+              <p-dropdown name="drledgeralias" [filter]="true" filterBy="drledgeralias" (onChange)="LedgerOnChange($event,'dr')"
+              placeholder="-Select-" [options]="debitledgers" optionLabel="drledgeralias" optionValue="debitledger"
+              [(ngModel)]="rowData.debitledger"></p-dropdown>
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.ledgeralias}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+    <td *ngIf="vtype==1 ||vtype==3 || vtype==4 || vtype==6">
+      <p-cellEditor>
+          <ng-template pTemplate="input">
+            <p-dropdown name="subledgername" [filter]="true" filterBy="subledgername"
+            placeholder="-SubLedger-"
+            [options]="subledgs" optionLabel="subledgername" optionValue="subledgerid" appendTo="body"
+            [(ngModel)]="rowData.subledgerid">
+          </p-dropdown>    
+              </ng-template>
+          <ng-template pTemplate="output">
+              {{rowData.subledgername}}
+          </ng-template>
+      </p-cellEditor>
+  </td>
+    <td>{{rowData.companyname}}</td>
+    <td>
+      <p-cellEditor>
+          <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="rowData.narration">
+          </ng-template>
+          <ng-template pTemplate="output">
+              {{rowData.narration}}
+          </ng-template>
+      </p-cellEditor>
+  </td>
+      <td>
+          <p-cellEditor>
+            <ng-template  *ngIf="rowData.debitamount!=null" pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="rowData.debitamount">
+          </ng-template>
+          <ng-template  *ngIf="rowData.debitamount==null" pTemplate="input">
+            {{rowData.debitamount}}
+        </ng-template>
+              <ng-template pTemplate="output">
+                <span style="float: right"> {{rowData.debitamount}} </span>
+              </ng-template>
+          </p-cellEditor>
+      </td>
+      <td>
+          <p-cellEditor>
+              <ng-template  *ngIf="rowData.creditamount!=null" pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.creditamount">
+              </ng-template>
+              <ng-template  *ngIf="rowData.creditamount==null" pTemplate="input">
+                {{rowData.creditamount}}
+            </ng-template>
+              <ng-template pTemplate="output">
+                <span style="float: right">  {{rowData.creditamount}}  </span>
+              </ng-template>
+          </p-cellEditor>
+      </td>
+      <!-- <td *ngIf="vtype==1">
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.hsnsaccode">
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.hsnsaccode}}
+            </ng-template>
+        </p-cellEditor>
+    </td> -->
+    <td *ngIf="vtype==1 && urole==checker">
+      <p-cellEditor>
+          <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="rowData.rate">
+          </ng-template>
+          <ng-template pTemplate="output">
+            <input pInputText type="text" [(ngModel)]="rowData.rate">
+          </ng-template>
+      </p-cellEditor>
+  </td>
+  <td *ngIf="vtype==1 && urole!=checker">
+    <p-cellEditor>
+        <ng-template pTemplate="input">
+            <input pInputText type="text" [(ngModel)]="rowData.rate">
+        </ng-template>
+        <ng-template pTemplate="output">
+          <span style="float: right"> {{rowData.rate}}</span>
+        </ng-template>
+    </p-cellEditor>
+</td>
+    <td *ngIf="statusid==1 && urole!=approver && urole!=sadmin" style="text-align:center">
+      <button *ngIf="!editing" pButton type="button" pInitEditableRow icon="pi pi-pencil"
+          class="ui-button-info"  (click)="onRowEditInit(rowData)"></button>
+      <button *ngIf="editing" pButton type="button" pSaveEditableRow icon="pi pi-check"
+          class="ui-button-success" style="margin-right: .5em" (click)="onRowEditSave(rowData.voucherdetailid,rowData)"></button>
+      <button *ngIf="editing" pButton type="button" pCancelEditableRow icon="pi pi-times"
+          class="ui-button-danger" (click)="onRowEditCancel(rowData, ri)"></button>
+  </td>
+ <td *ngIf="vtype==1 && urole==checker">
+  <p-button  label="Rate"  (onClick)="rate(rowData)"></p-button>
+
+ </td>
+  </tr>
+
+  </ng-template>
+<ng-template pTemplate="footer">
+  <tr>
+    <td >Total:</td><td ></td><td></td><td></td><td *ngIf="vtype==1 || vtype==3 || vtype==6 || vtype==4" ></td>
+    <td>  <span style="float: right"> ₹{{totaldebitamounttt}}</span></td>
+    <td>   <span style="float: right">₹{{totalcreditamounttt}}</span></td>
+</tr>
+<tr>
+  <td *ngIf="(totaldebitamounttt - totalcreditamounttt) != 0" >Difference:</td>
+
+  <ng-container *ngIf="(totaldebitamounttt - totalcreditamounttt) > 0">
+    <td></td>
+    <td >₹{{totaldebitamounttt - totalcreditamounttt}}</td> 
+  </ng-container> 
+  <ng-container *ngIf="(totaldebitamounttt - totalcreditamounttt) < 0">   
+    <td >₹{{-1 * (totaldebitamounttt - totalcreditamounttt)}}</td>
+    <td></td>
+  </ng-container>
+   
+
+</tr>
+<tr *ngIf="((totaldebitamounttt - totalcreditamounttt) > 0) || ((totaldebitamounttt - totalcreditamounttt) < 0)">
+  <td ><span style="color: red;">Total Debit and Credit Amount of the Voucher should be same</span></td>
+
+</tr>
+</ng-template>
+</p-table>
+<div class="ms-2 mt-2 mb-2">
+ 
+  
+    <p-button  label="Back"  (onClick)="back()"></p-button>
+  
+</div>
+<p-dialog appendTo="body" class="container p-1" header=" " [(visible)]="recDialog" [responsive]="true"
+showEffect="fade" [modal]="true" [style]="{width: '100vw'}">
+
+<p-button  label="Header"
+  class="ui-button-info" (onClick)="addHeader()"></p-button> 
+
+<p-table class="vtable" [value]="bankRec"  [paginator]="false" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+ styleClass="myTable" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[5,10,50]"
+ dataKey="voucherdetailid" editMode="row">
+
+<ng-template pTemplate="header">
+  
+     
+</ng-template>
+
+        <ng-template pTemplate="header" >
+      <tr>
+          <th>Sl No.</th>
+          <th>Particulars</th>
+          <th>Narration</th>
+          <th>Debit</th>
+          <th>Credit</th>
+          <th >Mode</th>
+          <th ></th>
+
+      </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+    <tr [pEditableRow]="rowData" style="height: 5px;">
+      <td>
+       {{rowData.voucherseq}}
+    </td>
+      <td>
+        {{rowData.ledgeralias}}
+
+      </td>
+      <td>
+         {{rowData.narration}}
+
+      </td>
+      <td>
+        {{rowData.debitamount}}
+
+    </td>
+      <td>
+        {{rowData.creditamount}}
+
+      </td>
+      <td *ngIf="rowData.creditamount>0 && vtype==1">        
+
+    <button  label="Mode" pButton type="button" 
+    class="ui-button-info" (click)="addMode(rowData)"></button>
+      </td>
+      <td *ngIf="rowData.creditamount>0 && vtype==1">
+
+        <button label="Add Favour" pButton type="button" 
+        class="ui-button-info" (click)="addFavour(rowData)"></button>
+          </td>
+
+
+      <td *ngIf="rowData.debitamount>0 && vtype==1">
+
+        <button label="Add Favour" pButton type="button" 
+        class="ui-button-info" (click)="addFavour(rowData)"></button>
+          </td>
+      <td *ngIf="rowData.creditamount>0 && vtype==3">        
+
+        <button  label="Mode" pButton type="button" 
+        class="ui-button-info" (click)="addMode(rowData)"></button>      
+          </td>
+         
+               
+        
+  </tr>
+  </ng-template>
+</p-table> 
+</p-dialog>
+<p-dialog appendTo="body" class="container p-1" header=" " [(visible)]="modeDialog" [responsive]="true"
+showEffect="fade" [modal]="true" [style]="{width: '70vw'}">
+<form #GroupForm="ngForm" novalidate>
+  <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="paymentForDialog">
+      <div class="ui-g ui-g-12 ui-g-nopad">
+          <div class="ui-g-12 ui-md-3 ui-label">
+              <label for="modename">Payment Mode</label><span class="required-field">*</span>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+            <p-dropdown name="modename" [required]="true"  [(ngModel)]="paymentForDialog.modeid" [filter]="true"  [options]="modes"
+            optionLabel="modename" optionValue="modeid">
+        </p-dropdown>
+          </div>
+      </div>
+<div *ngIf="paymentForDialog.modeid==1">
+      <div class="ui-g ui-g-12 ui-g-nopad">
+        <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="chequebankname">Cheque Bank</label><span class="required-field"></span>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+            <input  pInputText id="chequebankname" class="form-control" name="chequebankname" 
+                   [(ngModel)]="paymentForDialog.chequebankname"/>                  
+
+        </div>
+    </div>
+
+    <div class="ui-g ui-g-12 ui-g-nopad">
+      <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="chequebanknameddl">OR</label><span class="required-field"></span>
+      </div>
+      <div class="ui-g-12 ui-md-9">
+        <p-dropdown  placeholder="-Select Bank" appendTo="body" [autoDisplayFirst]="false"
+        [options]="branchinfavour" [filter]="true" filterBy="apfname" optionLabel="apfname" name="apfname" (onChange)="branchinfavourchangecheque()" optionValue="branchdetailsid"            
+        [(ngModel)]="paymentForDialog.branchdetailsid"> 
+      </p-dropdown>                 
+
+      </div>
+  </div>
+
+
+      <div class="ui-g ui-g-12 ui-g-nopad">
+        <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="chequenumber">Cheque No.</label><span class="required-field">*</span>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+          <input  pInputText id="chequenumber" class="form-control" name="chequenumber" 
+          [(ngModel)]="paymentForDialog.chequenumber" required/>  
+        </div>
+    </div>
+    <div class="ui-g ui-g-12 ui-g-nopad">
+      <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="chequedate">Cheque Date</label><span class="required-field">*</span>
+      </div>
+      <div class="ui-g-12 ui-md-9">
+        <p-calendar name="chequedate" appendTo="body" [maxDate]="dateTime" dateFormat="dd.mm.yy"
+        [(ngModel)]="paymentForDialog.chequedate" [showIcon]="true" [required]="true"></p-calendar> 
+      </div>
+  </div>
+  <div class="ui-g ui-g-12 ui-g-nopad">
+    <div class="ui-g-12 ui-md-3 ui-label">
+        <label for="chequeamount">Cheque Amount</label><span class="required-field">*</span>
+    </div>
+    <div class="ui-g-12 ui-md-9">
+      <p-inputNumber [(ngModel)]="paymentForDialog.chequeamount" name="chequeamount" mode="decimal" locale="en-IN" [minFractionDigits]="2" [required]="true"></p-inputNumber>
+  
+    </div>
+</div>
+<div class="ui-g ui-g-12 ui-g-nopad">
+  <div class="ui-g-12 ui-md-3 ui-label">
+      <label *ngIf="vtype==3" for="chequepaidto">Received From</label><span *ngIf="vtype==3" class="required-field">*</span>
+      <label *ngIf="vtype==1" for="chequepaidto">Paid To</label><span *ngIf="vtype==1" class="required-field">*</span>
+  </div>
+  <div class="ui-g-12 ui-md-9">
+    <input  pInputText id="chequepaidto" class="form-control" name="chequepaidto" 
+    [(ngModel)]="paymentForDialog.chequepaidto" required/>  
+  </div>
+</div>
+</div>
+
+
+<div *ngIf="paymentForDialog.modeid==2">
+  <div class="ui-g ui-g-12 ui-g-nopad">
+    <div class="ui-g-12 ui-md-3 ui-label">
+        <label for="onlinebankname">Online Bank</label>
+    </div>
+    <div class="ui-g-12 ui-md-9">
+        <input  pInputText id="onlinebankname" class="form-control" name="onlinebankname" 
+               [(ngModel)]="paymentForDialog.onlinebankname"/>                  
+
+    </div>
+</div>
+<div class="ui-g ui-g-12 ui-g-nopad">
+  <div class="ui-g-12 ui-md-3 ui-label">
+      <label for="onlinebanknameddl">OR</label><span class="required-field"></span>
+  </div>
+  <div class="ui-g-12 ui-md-9">
+    <p-dropdown  placeholder="-Select Bank" appendTo="body" [autoDisplayFirst]="false"
+    [options]="branchinfavour" [filter]="true" filterBy="apfname" optionLabel="apfname" name="apfname" (onChange)="branchinfavourchangeol()" optionValue="branchdetailsid"            
+    [(ngModel)]="paymentForDialog.branchdetailsid"> 
+  </p-dropdown>                 
+
+  </div>
+</div>
+
+  <div class="ui-g ui-g-12 ui-g-nopad">
+    <div class="ui-g-12 ui-md-3 ui-label">
+        <label for="onlinetransactionid">Transaction Id.</label>
+    </div>
+    <div class="ui-g-12 ui-md-9">
+      <input  pInputText id="onlinetransactionid" class="form-control" name="onlinetransactionid" 
+      [(ngModel)]="paymentForDialog.onlinetransactionid"/>  
+    </div>
+</div>
+<div class="ui-g ui-g-12 ui-g-nopad">
+  <div class="ui-g-12 ui-md-3 ui-label">
+      <label for="onlinedate">Transaction Date</label>
+  </div>
+  <div class="ui-g-12 ui-md-9">
+    <p-calendar name="onlinedate" appendTo="body" [maxDate]="dateTime" dateFormat="dd.mm.yy"
+    [(ngModel)]="paymentForDialog.onlinedate" [showIcon]="true" ></p-calendar> 
+  </div>
+</div>
+<div class="ui-g ui-g-12 ui-g-nopad">
+<div class="ui-g-12 ui-md-3 ui-label">
+    <label for="onlineamount">Transaction Amount</label>
+</div>
+<div class="ui-g-12 ui-md-9">
+  <p-inputNumber [(ngModel)]="paymentForDialog.onlineamount" name="onlineamount" mode="decimal" locale="en-IN" [minFractionDigits]="2"></p-inputNumber>
+
+</div>
+</div>
+<div class="ui-g ui-g-12 ui-g-nopad">
+<div class="ui-g-12 ui-md-3 ui-label">
+  <label for="onlinebankingcharges">Transaction Charges</label>
+</div>
+<div class="ui-g-12 ui-md-9">
+  <p-inputNumber [(ngModel)]="paymentForDialog.onlinebankingcharges" name="onlinebankingcharges" mode="decimal" locale="en-IN" [minFractionDigits]="2"></p-inputNumber>
+ 
+</div>
+</div>
+</div>
+
+
+<div *ngIf="paymentForDialog.modeid==3">
+  <div class="ui-g ui-g-12 ui-g-nopad">
+    <div class="ui-g-12 ui-md-3 ui-label">
+        <label for="ddbankname">DD Bank</label>
+    </div>
+    <div class="ui-g-12 ui-md-9">
+        <input  pInputText id="ddbankname" class="form-control" name="ddbankname" 
+               [(ngModel)]="paymentForDialog.ddbankname"/>                  
+
+    </div>
+</div>
+<div class="ui-g ui-g-12 ui-g-nopad">
+  <div class="ui-g-12 ui-md-3 ui-label">
+      <label for="ddbanknameddl">OR</label><span class="required-field"></span>
+  </div>
+  <div class="ui-g-12 ui-md-9">
+    <p-dropdown  placeholder="-Select Bank" appendTo="body" [autoDisplayFirst]="false"
+    [options]="branchinfavour" [filter]="true" filterBy="apfname" optionLabel="apfname" name="apfname" (onChange)="branchinfavourchangedd()" optionValue="branchdetailsid"            
+    [(ngModel)]="paymentForDialog.branchdetailsid"> 
+  </p-dropdown>                 
+
+  </div>
+</div>
+
+  <div class="ui-g ui-g-12 ui-g-nopad">
+    <div class="ui-g-12 ui-md-3 ui-label">
+        <label for="ddnumber">DD No.</label>
+    </div>
+    <div class="ui-g-12 ui-md-9">
+      <input  pInputText id="ddnumber" class="form-control" name="ddnumber" 
+      [(ngModel)]="paymentForDialog.ddnumber"/>  
+    </div>
+</div>
+<div class="ui-g ui-g-12 ui-g-nopad">
+  <div class="ui-g-12 ui-md-3 ui-label">
+      <label for="dddate">DD Date</label>
+  </div>
+  <div class="ui-g-12 ui-md-9">
+    <p-calendar name="dddate" appendTo="body" [maxDate]="dateTime" dateFormat="dd.mm.yy"
+    [(ngModel)]="paymentForDialog.dddate" [showIcon]="true" ></p-calendar> 
+  </div>
+</div>
+<div class="ui-g ui-g-12 ui-g-nopad">
+<div class="ui-g-12 ui-md-3 ui-label">
+    <label for="ddamount">DD Amount</label>
+</div>
+<div class="ui-g-12 ui-md-9">
+  <p-inputNumber [(ngModel)]="paymentForDialog.ddamount" name="ddamount" mode="decimal" locale="en-IN" [minFractionDigits]="2"></p-inputNumber>
+
+</div>
+</div>
+<div class="ui-g ui-g-12 ui-g-nopad">
+<div class="ui-g-12 ui-md-3 ui-label">
+  <label *ngIf="vtype==3" for="chequepaidto">Received From</label><span *ngIf="vtype==3"  class="required-field">*</span>
+  <label *ngIf="vtype==1" for="chequepaidto">Paid To</label><span *ngIf="vtype==1" class="required-field">*</span>
+</div>
+<div class="ui-g-12 ui-md-9">
+<input  pInputText id="ddpaidto" class="form-control" name="ddpaidto" 
+[(ngModel)]="paymentForDialog.ddpaidto"/>  
+</div>
+</div>
+</div>
+
+
+
+<div *ngIf="paymentForDialog.modeid==4">
+  
+<div class="ui-g ui-g-12 ui-g-nopad">
+  <div class="ui-g-12 ui-md-3 ui-label">
+      <label for="cashdate">Date</label>
+  </div>
+  <div class="ui-g-12 ui-md-9">
+    <p-calendar name="cashdate" appendTo="body" [maxDate]="dateTime" dateFormat="dd.mm.yy"
+    [(ngModel)]="paymentForDialog.cashdate" [showIcon]="true" ></p-calendar> 
+  </div>
+</div>
+<div class="ui-g ui-g-12 ui-g-nopad">
+<div class="ui-g-12 ui-md-3 ui-label">
+    <label for="cashamount">Amount</label>
+</div>
+<div class="ui-g-12 ui-md-9">
+  <p-inputNumber [(ngModel)]="paymentForDialog.cashamount" name="cashamount" mode="decimal" locale="en-IN" [minFractionDigits]="2"></p-inputNumber>
+
+</div>
+</div>
+<div class="ui-g ui-g-12 ui-g-nopad">
+<div class="ui-g-12 ui-md-3 ui-label">
+  <label *ngIf="vtype==3" for="chequepaidto">Received From</label><span *ngIf="vtype==3" class="required-field">*</span>
+  <label *ngIf="vtype==1" for="chequepaidto">Paid To</label><span *ngIf="vtype==1" class="required-field">*</span>
+</div>
+<div class="ui-g-12 ui-md-9">
+  <input  pInputText id="cashpaidto" class="form-control" name="cashpaidto" 
+  [(ngModel)]="paymentForDialog.cashpaidto"/> 
+</div>
+</div>
+</div>
+
+
+  </div>
+</form>
+<p-footer>
+  <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="submit" pButton icon="fa-check" (click)="savePayMode()"
+              label="Save" [disabled]="!GroupForm.form.valid"></button>
+             
+  </div>
+</p-footer>
+
+</p-dialog>
+
+<p-dialog appendTo="body" class="container p-1" header=" " [(visible)]="favDialog" [responsive]="true"
+showEffect="fade" [modal]="true" [style]="{width: '70vw'}">
+<form #FavGroupForm="ngForm" novalidate>
+  <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="favourForDialog">
+      <div class="ui-g ui-g-12 ui-g-nopad">
+        <div class="ui-g-12 ui-md-3 ui-label">
+          <label for="gstbvledgeralias">In Favour of</label>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+          <p-dropdown  placeholder="-Select TDS/GST Vendor-" appendTo="body" [autoDisplayFirst]="false"
+            [options]="gstledgers" [filter]="true" filterBy="gstbvledgeralias" optionLabel="gstbvledgeralias" (onChange)="buyerbankchange()" name="gstbvledgeralias" optionValue="gstbvledgerid"            
+            [(ngModel)]="favourForDialog.gstbvledgerid"> 
+          </p-dropdown>
+        </div>
+        <div class="ui-g-12 ui-md-9"> OR
+        </div>
+        <div class="ui-g-12 ui-md-9">
+          <p-dropdown  placeholder="-Select Employee" appendTo="body" [autoDisplayFirst]="false"
+            [options]="empbanks" [filter]="true" filterBy="employeename" optionLabel="employeename" name="employeename" (onChange)="empbankchange()" optionValue="bankemployeeid"            
+            [(ngModel)]="favourForDialog.bankemployeeid"> 
+          </p-dropdown>
+        </div>
+
+        <div class="ui-g-12 ui-md-9"> OR
+        </div>
+        <div class="ui-g-12 ui-md-9">
+          <p-dropdown  placeholder="-Select Pensioner" appendTo="body" [autoDisplayFirst]="false"
+            [options]="pensioners" [filter]="true" filterBy="pensioner" optionLabel="pensioner" name="pensioner" (onChange)="pensionerbankchange()" optionValue="pensionerid"            
+            [(ngModel)]="favourForDialog.pensionerid"> 
+          </p-dropdown>
+        </div>
+
+        <div class="ui-g-12 ui-md-9"> OR
+        </div>
+        <div class="ui-g-12 ui-md-9">
+          <p-dropdown  placeholder="-Select Family Pensioner" appendTo="body" [autoDisplayFirst]="false"
+            [options]="fampensioners" [filter]="true" filterBy="pensionerfamily" optionLabel="pensionerfamily" name="pensionerfamily" (onChange)="pensionerfambankchange()" optionValue="pensionerfamilyid"            
+            [(ngModel)]="favourForDialog.pensionerfamilyid"> 
+          </p-dropdown>
+        </div>
+        <div class="ui-g-12 ui-md-9"> OR
+        </div>
+        <div class="ui-g-12 ui-md-9">
+          <p-dropdown  placeholder="-Select Branch" appendTo="body" [autoDisplayFirst]="false"
+            [options]="branchinfavour" [filter]="true" filterBy="apfname" optionLabel="apfname" name="apfname" (onChange)="branchinfavourchange()" optionValue="branchdetailsid"            
+            [(ngModel)]="favourForDialog.branchdetailsid"> 
+          </p-dropdown>
+        </div>
+      </div>
+
+
+  </div>
+</form>
+<p-footer>
+  <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="submit" pButton icon="fa-check" (click)="saveFavour()"
+              label="Save" [disabled]="!FavGroupForm.form.valid"></button>
+             
+  </div>
+</p-footer>
+
+</p-dialog>
+
+
+<p-dialog appendTo="body" class="container p-1" header=" " [(visible)]="headerDialog" [responsive]="true"
+showEffect="fade" [modal]="true" [style]="{width: '70vw'}">
+<form #GroupHForm="ngForm" novalidate>
+  <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="headerForDialog">
+   
+
+      <div class="ui-g ui-g-12 ui-g-nopad">
+       
+      <div class="ui-g-12 ui-md-9">
+        <p-dropdown  placeholder="-Select Bank" appendTo="body" [autoDisplayFirst]="false"
+        [options]="branchinfavour" [filter]="true" filterBy="apfname" optionLabel="apfname" name="apfname" (onChange)="branchinfavourchangecheque()" optionValue="branchdetailsid"            
+        [(ngModel)]="headerForDialog.branchdetailsid"> 
+      </p-dropdown>                 
+
+      </div>
+      </div>
+  </div>
+</form>
+<p-footer>
+  <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="submit" pButton icon="fa-check" (click)="saveHeader()"
+              label="Save" [disabled]="!GroupHForm.form.valid"></button>
+             
+  </div>
+</p-footer>
+
+</p-dialog>
+
+  </div>
+</div>

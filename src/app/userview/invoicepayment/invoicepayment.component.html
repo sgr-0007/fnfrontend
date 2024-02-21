@@ -1,0 +1,150 @@
+<div class="card p-2">
+    <h2>Invoice Payment</h2>
+    <div class="row my-2">
+        <div class="col">
+            <label>Invoice No: {{payinvoicedetails.invoicenumber}}</label>
+
+        </div>
+        <div class="col">
+            <label>Buyer :{{payinvoicedetails.buyerName}}</label>
+
+        </div>
+    </div>
+    <form #payment1="ngForm" (ngSubmit)="save(payment1)">
+        <div class="row my-2">
+            <div class="col"><label for="paymentDate">Payment Recieved Date</label></div>
+            <div class="col">
+                <p-calendar name="paymentDate" [maxDate]="currentDate"  appendTo="body"  #paymentDate="ngModel" dateFormat="dd/mm/yy" [(ngModel)]="currentDate"></p-calendar>
+            </div>
+        </div>
+        <div class="row my-2">
+
+           <div class="col"> <label for="">Payment Category</label></div>
+            <div class="col">
+                <p-dropdown   [required]="true"  [options]="paymnetstatus" optionLabel="paymentStatusDes"
+                name="paymentCategory" optionValue="paymentStatusId" #paymentStatus [(ngModel)]="payment.paymentStatus" [disabled]="true">
+            </p-dropdown>
+            </div>
+
+        </div>
+
+        <div class="row my-2">
+
+            <div class="col"><label for="">Payment Type</label></div>
+            <div class="col"><p-dropdown [required]="true"  [options]="paymenttype" optionLabel="name"
+                name="paymentType"   optionValue="pid" ngModel>
+            </p-dropdown></div>
+        </div>
+        <div class="row my-2">
+            <div class="col"><label> Total Amount Due : Rupees: {{payinvoicedetails.invoicetotal}}</label></div>
+            <div class="col"><label> Invoice Balance : {{payinvoicedetails.paymentbalance}} </label></div>
+            <div class="col"><label> Buyer Trading Balance : Rupees: {{payinvoicedetails.creditlimit}}</label></div>
+        </div>
+        <div class="row my-2">
+
+            <div class="col"><label for="">Payment Mode</label></div>
+            <div class="col"><p-dropdown [required]="true" appendTo="body" [autoDisplayFirst]="false" [options]="paymentmode" optionLabel="name" (onClick)="change()"
+                name="paymentMode" optionValue="pid" #paymentMode="ngModel" ngModel>
+            </p-dropdown></div>
+        </div>
+        <div class="card m-1  p-2" *ngIf="paymentMode.value==1">
+            <label>Cash Payment</label>
+            <div class="row my-2">
+            <div class="col"><label for="">Amount Recieved : </label>
+
+                <p-inputNumber  [(ngModel)]="paymentDetails.cashAmount" name="cashAmount" #cashAmount="ngModel"></p-inputNumber>
+                <div>
+                    <span style="color: red;" *ngIf="paymentDetails.cashAmount>payinvoicedetails.paymentbalance">Amount exceed </span>
+                    </div>
+            </div>
+            <div class="col"><label for="">Amount Recieved Form :</label>
+                <input type="text" pInputText  [(ngModel)]="paymentDetails.cashPaidBy" name="cashPaidBy">
+            </div>
+            </div>
+        </div>
+        <div class="card m-1  p-2" *ngIf="paymentMode.value==2">
+            <label>Online Payment</label>
+            <div class="row my-2">
+                <div class="col"><label for="">Online Transaction Id</label></div>
+                <div class="col"><input type="text" pInputText name="onlineTransactionId" #onlineTransactionId="ngModel" [(ngModel)]="paymentDetails.onlineTransactionId"></div>
+
+            </div>
+            <div class="row my-2">
+
+                <div class="col"><label for="">Mode</label></div>
+                <div class="col"><p-dropdown [required]="true" [autoDisplayFirst]="false" [options]="bankmode" optionLabel="name"
+                    name="bankMode" #bankMode="ngModel"  [(ngModel)]="paymentDetails.bankMode" optionValue="pid">
+                </p-dropdown></div>
+            </div>
+            <div class="row my-2">
+
+                <div class="col"><label for="">Amount Recieved</label></div>
+                <div class="col"><p-inputNumber name="paymentAmount" #paymentAmount="ngModel" [(ngModel)]="paymentDetails.onlineTranAmount"></p-inputNumber></div>
+            </div>
+            <div class="row my-2">
+
+                <div class="col"><label for="">Banking Charges</label></div>
+                <div class="col"><p-inputNumber name="bankingCharges" #bankingCharges [(ngModel)]="paymentDetails.bankingCharges"></p-inputNumber></div>
+            </div>
+            <div class="row my-2">
+
+                <div class="col"><label for="">From BANK /UPI/THIRD PARTY</label></div>
+                <div class="col"><input pInputText name="bank" #bank="ngModel" [(ngModel)]="paymentDetails.bank"></div>
+            </div>
+            <div class="row my-2">
+
+                <div class="col"><label for="">Recieved Reference From</label></div>
+                <div class="col"><input tyoe="text" pInputText name="reference" [(ngModel)]="paymentDetails.cashPaidBy"></div>
+            </div>
+        </div>
+        <div class="card m-1  p-2" *ngIf="paymentMode.value==3">
+            <label>Cheque Mode</label>
+            <div class="row my-2">
+                <div class="col"><label for="">Bank Drawn on</label></div>
+                    <div class="col"><input type="text" pInputText name="chequeBank" #chequeBank="ngModel" [(ngModel)]="paymentDetails.chequeBank"></div>
+
+            </div>
+            <div class="row my-2">
+                <div class="col"><label for="">Cheque Date</label></div>
+                <div class="col"><p-calendar name="chequeDate"[maxDate]="currentDate" appendTo="body"  #chequeDate="ngModel" dateFormat="dd/mm/yy" [(ngModel)]="paymentDetails.chequeDate"></p-calendar></div>
+
+            </div>
+            <div class="row my-2">
+                <div class="col"><label for="">Amount </label></div>
+                <div class="col"><input type="text" pInputText name="chequeAmount" #chequeAmount="ngModel" [(ngModel)]="paymentDetails.chequeAmount"></div>
+
+            </div>
+            <div class="row my-2">
+                <div class="col"><label for="">cheque on</label></div>
+                <div class="col"><input type="text" pInputText [(ngModel)]="paymentDetails.chequeSubmitedBy" name="chequeon"></div>
+
+                </div>
+        </div>
+        <div class="card m-1  p-2" *ngIf="paymentMode.value==4">
+            <label>DD Mode</label>
+            <div class="row my-2">
+                <div class="col"><label for="">DD DrawnBank</label></div>
+                <div class="col"><input type="text" name="ddBank" #ddBank="ngModel" [(ngModel)]="paymentDetails.ddBank" pInputText></div>
+
+            </div>
+            <div class="row my-2">
+                <div class="col"><label for="">DD Date</label></div>
+                <div class="col"><p-calendar name="ddDrawnDate" [maxDate]="currentDate" appendTo="body" dateFormat="dd/mm/yy" [(ngModel)]="paymentDetails.ddDrawnkDate"></p-calendar></div>
+
+            </div>
+            <div class="row my-2">
+                <div class="col"><label for="">Amount </label></div>
+                <div class="col"><input type="text" pInputText name="ddAmount" [(ngModel)]="paymentDetails.ddAmount"></div>
+
+            </div>
+            <div class="row my-2">
+                <div class="col"><label for=""> DD Number</label></div>
+               <div class="col"> <input type="text" pInputText name="ddNumber" #ddNumber="ngModel" [(ngModel)]="paymentDetails.ddNumber"></div>
+
+                </div>
+        </div>
+        <div class="row text-center">
+            <p-button label="Pay" type="submit" ></p-button>
+            </div>
+    </form>
+</div>

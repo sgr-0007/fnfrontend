@@ -1,0 +1,41 @@
+.logo{
+    text-align: center;
+    padding: 2.6rem 1.6rem;
+}
+
+.mat-icon{
+    vertical-align: center;
+    margin-right: 1rem;
+}
+
+.mat-nav-list{
+    background-color: 3A608E;
+}
+
+.sidebarview{
+    background-color: 3A608E;
+}
+
+.mat-accordion .mat-expansion-panel:last-of-type {
+    background-color: #3A608E;
+    color: whitesmoke;
+}
+mat-panel-title{
+    color: aliceblue;
+}
+
+ 
+.mat-nav-list .mat-list-item {
+    color: aliceblue;
+ 
+}
+
+.mat-accordion>.mat-expansion-panel-spacing:first-child, .mat-accordion>*:first-child:not(.mat-expansion-panel) .mat-expansion-panel-spacing {
+    margin-top: 0;
+    background-color: #3A608E;
+}
+
+.mat-accordion .mat-expansion-panel {
+    
+    background:#3A608E;
+}

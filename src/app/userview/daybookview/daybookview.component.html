@@ -1,0 +1,176 @@
+<div class="card">
+  <div class="ui-g mb-3 moduleheaderbg">  
+<span class="moduleheadertext">Daybook View</span>
+  </div>
+<div class="row mb-3">
+    <form #VoucherForm="ngForm" novalidate>
+      <div *ngIf="daybookForDialog">
+        <div class="row mb-2">
+                <div class="col-lg-1 col-md-1 col-sm-12">
+                    <label for="voucherfromdate">From Date</label>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-12">  
+                  <p-calendar name="voucherfromdate" [maxDate]="dateTime" dateFormat="dd.mm.yy" [(ngModel)]="daybookForDialog.voucherfromdate" [showIcon]="true"  appendTo="body" ></p-calendar>
+                </div>
+
+            
+              <div class="col-lg-1 col-md-1 col-sm-12">
+                  <label for="vouchertodate">To Date</label>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-12">  
+                <p-calendar name="vouchertodate" [maxDate]="dateTime" dateFormat="dd.mm.yy"  appendTo="body"  [(ngModel)]="daybookForDialog.vouchertodate" [showIcon]="true" [style]="{'overflow': 'visible', 'z-index': '999'}"></p-calendar>
+              </div>
+              <div class="col-lg-1 col-md-1 col-sm-12">
+                <label for="vouchertypename">Voucher Type</label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-12">  
+              
+              <p-dropdown  name="vouchertypename"  placeholder="-Select-" [options]="vouchertypes" optionLabel="vouchertypename" optionValue="vouchertypeid"  [(ngModel)]="daybookForDialog.vouchertypeid">
+              </p-dropdown>
+            </div>
+          </div>
+          <div class="row mb-2">                  
+          <div class="col-lg-1 col-md-1 col-sm-12">
+              <label for="companyname">Branch/RMO</label>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-12">  
+            <p-dropdown name="companyname"  placeholder="-Select-" [options]="companies" optionLabel="companyname"  optionValue="companyid"  [(ngModel)]="daybookForDialog.companyid">
+            </p-dropdown>
+          </div>
+          <div class="col-lg-1 col-md-1 col-sm-12">
+            <label for="vouchernumber">Voucher #.</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12">  
+          <input pInputText class="form-control" type="text" name="vouchernumber"
+          [(ngModel)]="daybookForDialog.vouchernumber">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-1 col-md-1 col-sm-12">
+         
+      </div>
+        <div class="col-lg-1 col-md-1 col-sm-12">
+          
+          <p-button label="Search" (onClick)="onSearch()"></p-button>
+        </div>
+        <div class="col-lg-1 col-md-1 col-sm-12">
+          <p-button label="Reset" (onClick)="onReset()"></p-button>
+      </div>   
+  </div>  
+</div>
+    </form>
+  </div>
+<div class="row">
+  <p-table #dt [value]="vouchers" [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,50]" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+   editMode="row"  groupRowsBy="vouchernumber" dataKey="voucherid"
+  rowGroupMode="subheader"
+  [globalFilterFields]="['ledgeralias','vouchertypename','vouchernumber','creditamount','debitamount']">   
+  <ng-template pTemplate="caption">
+    <div class="flex mt-2">       
+       <span class="p-input-icon-left ml-auto">
+           <i class="pi pi-search"></i>
+           <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+       </span>
+   </div>
+ </ng-template>
+         <ng-template pTemplate="header" >
+       <tr>
+           <th>Voucher Date</th>
+           <th>Voucher Type</th>   
+           <th>Particulars</th>    
+           <th>Narration</th>   
+           <th>Debit Amount</th>              
+           <th>Credit Amount</th>
+          
+       </tr>
+ 
+   </ng-template>
+   <ng-template pTemplate="groupheader" let-rowData let-rowIndex="rowIndex" let-expanded="expanded">
+    <tr>
+        <td colspan="6">
+            <button type="button" pButton pRipple [pRowToggler]="rowData" class="p-button-text p-button-rounded p-button-plain p-mr-2" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+            <span class="p-text-bold p-ml-2">{{rowData.vouchernumber}}</span>
+        </td>
+    </tr>
+</ng-template> 
+ <ng-template pTemplate="groupfooter" let-rowData>
+  <tr class="p-rowgroup-footer">
+      <td  style="font-weight: bolder;">Total</td>
+    <td></td><td></td><td></td>
+      <td style="font-weight: bolder;">{{calculateLedgerDebitTotal(rowData.vouchernumber)}}</td>
+      <td style="font-weight: bolder;">{{calculateLedgerCreditTotal(rowData.vouchernumber)}}</td>
+  </tr>
+</ng-template>
+   <ng-template pTemplate="rowexpansion" let-rowData >
+     <tr [pEditableRow]="rowData">
+    
+       <td> 
+         <p-cellEditor>
+             <ng-template pTemplate="input">
+                 <input pInputText type="text" [(ngModel)]="rowData.voucherdate">
+             </ng-template>
+             <ng-template pTemplate="output">
+                 {{rowData.voucherdate| date}}
+             </ng-template>
+         </p-cellEditor>
+     </td>
+     <td>
+      <p-cellEditor>
+          <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="rowData.vouchertypename">
+          </ng-template>
+          <ng-template pTemplate="output">
+              {{rowData.vouchertypename}}
+          </ng-template>
+      </p-cellEditor>
+  </td>
+       <td>
+           <p-cellEditor>
+               <ng-template pTemplate="input">
+                   <input pInputText type="text" [(ngModel)]="rowData.ledgeralias">
+               </ng-template>
+               <ng-template pTemplate="output">
+                   {{rowData.ledgeralias}}
+               </ng-template>
+           </p-cellEditor>
+       </td>
+     
+       <td>
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.narration">
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.narration}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+  
+
+
+  <td>
+      <p-cellEditor>
+          <ng-template pTemplate="input">
+              <input pInputText type="text" [(ngModel)]="rowData.debitamount">
+          </ng-template>
+          <ng-template pTemplate="output">
+              {{rowData.debitamount}}
+          </ng-template>
+      </p-cellEditor>
+  </td>
+  <td>
+    <p-cellEditor>
+        <ng-template pTemplate="input">
+            <input pInputText type="text" [(ngModel)]="rowData.creditamount">
+        </ng-template>
+        <ng-template pTemplate="output">
+            {{rowData.creditamount}}
+        </ng-template>
+    </p-cellEditor>
+</td>
+   </tr>
+   </ng-template>
+ </p-table>
+</div>
+
+</div>

@@ -1,0 +1,234 @@
+<div class="card">
+    <div class="ui-g mb-3 moduleheaderbg">  
+  <span class="moduleheadertext">CashBook</span>
+    </div>
+    <div class="row">
+        <div class="col-lg-1 mb-1"><p-button label="ADD" (onClick)="onDbAdd()"></p-button>
+        </div>
+    <p-dialog appendTo="body" header="Daybook Add" width="300" height="200" [(visible)]="displayDialog"
+    [responsive]="true" showEffect="fade" [modal]="true">
+<form #GroupForm="ngForm" novalidate>
+  <div class="ui-grid ui-grid-responsive ui-fluid" *ngIf="dbForDialog">
+      <div class="ui-g ui-g-12 ui-g-nopad">
+          <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="companyname">Company</label><span class="required-field">*</span>
+
+          </div>
+          <div class="ui-g-12 ui-md-9">
+            <div class="col-lg-5 col-md-5 col-sm-12">
+                <p-dropdown name="companyname" [filter]="true" filterBy="companyname" [required]="true"
+                  (onChange)="BranchOnChange(dbForDialog.companyid)" placeholder="Select" [options]="companies" optionLabel="companyname"
+                  optionValue="companyid" [(ngModel)]="dbForDialog.companyid">
+                </p-dropdown>
+              </div>
+          </div>
+      </div>
+      <div class="ui-g ui-g-12 ui-g-nopad">
+        <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="ledgeralias">Ledger</label><span class="required-field">*</span>
+
+        </div>
+        <div class="ui-g-12 ui-md-9">
+            <p-dropdown name="drledgeralias" [filter]="true" filterBy="drledgeralias"
+                             placeholder="-Ledger-"
+                            [options]="normalledger" optionLabel="drledgeralias" optionValue="debitledger" appendTo="body"
+                            [(ngModel)]="dbForDialog.debitledger">
+                          </p-dropdown>
+
+        </div>
+    </div>
+      <div class="ui-g ui-g-12 ui-g-nopad">
+        <div class="ui-g-12 ui-md-3 ui-label">
+            <label for="openingbalance">Opening Balance</label><span class="required-field">*</span>
+        </div>
+        <div class="ui-g-12 ui-md-9">
+           
+            <p-inputNumber [(ngModel)]="dbForDialog.openingbalance" name="openingbalance" mode="decimal" locale="en-IN" [minFractionDigits]="2"></p-inputNumber>
+        </div>
+    </div>
+      <div class="ui-g ui-g-12 ui-g-nopad">
+          <div class="ui-g-12 ui-md-3 ui-label">
+              <label for="daybookdate">Daybook Date</label>
+          </div>
+          <div class="ui-g-12 ui-md-9">
+           
+          <label  for="daybookdate">{{dbForDialog.daybookdate | date: 'dd.MM.yyyy'}}</label>
+
+          </div>
+      </div>
+    
+
+  </div>
+</form>
+<p-footer>
+  <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="submit" pButton icon="fa-check" (click)="saveDb()"
+              label="Save" [disabled]="!GroupForm.form.valid"></button>
+             
+  </div>
+</p-footer>
+</p-dialog>
+
+
+  <div class="row mb-3">
+      <form #VoucherForm="ngForm" novalidate>
+        <div *ngIf="cashbookForDialog">
+          <div class="row mb-2">
+                  <div class="col-lg-1 col-md-1 col-sm-12">
+                      <label for="voucherfromdate">From Date</label>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-12">  
+                    <p-calendar name="voucherfromdate" [maxDate]="dateTime" dateFormat="dd.mm.yy" [(ngModel)]="cashbookForDialog.daybookfromdate" [showIcon]="true"   appendTo="body" ></p-calendar>
+                  </div>
+  
+              
+                <div class="col-lg-1 col-md-1 col-sm-12">
+                    <label for="vouchertodate">To Date</label>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-12">  
+                  <p-calendar name="vouchertodate" [maxDate]="dateTime" dateFormat="dd.mm.yy" [(ngModel)]="cashbookForDialog.daybooktodate"  appendTo="body"  [showIcon]="true"></p-calendar>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12">
+                    <p-dropdown name="accounttype" placeholder="-Select-" [filter]="true"  filterBy="accounttype" [required]="true"
+                    [options]="voucherAccounts" optionLabel="accounttype"
+                   optionValue="accounttypeid" [(ngModel)]="cashbookForDialog.accounttypeid">
+                 </p-dropdown>
+                  </div>
+                <div class="col-lg-1 col-md-1 col-sm-12">
+            
+                    <p-button label="Search" (onClick)="onSearch()"></p-button>
+                  </div>
+                  <div class="col-lg-1 col-md-1 col-sm-12">
+                    <p-button label="Reset" (onClick)="onReset()"></p-button>
+                </div>  
+ 
+            </div> 
+  </div>
+      </form>
+    </div>
+  <div class="row">
+    <p-table #dt [value]="cashbook"  [paginator]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [rowsPerPageOptions]="[10,50]" [rows]="rows" [showCurrentPageReport]="true" [(first)]="first"
+    dataKey="daybookledgerid" editMode="row"
+    [globalFilterFields]="['companyname','ledgeralias','statusdaybook','openingbalance','closingbalance']" >   
+     <ng-template pTemplate="caption">
+         <div class="flex mt-2">       
+            <span class="p-input-icon-left ml-auto">
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search keyword" />
+            </span>
+        </div>
+      </ng-template>
+   
+           <ng-template pTemplate="header" >
+         <tr>
+            <th>Daybook Date</th>
+             <th>Company</th>
+             <th>Ledger</th>
+             <th>Opening Bal.</th>            
+             <th>Closing Bal.</th>            
+             <th>Status</th>  
+             <th *ngIf="urole==sadmin"></th>  
+
+         </tr>
+   
+     </ng-template>
+     <ng-template pTemplate="body" let-rowData let-editing="editing" let-ri="rowIndex">
+       <tr [pEditableRow]="rowData">
+        <td>
+            <p-cellEditor>
+                <ng-template pTemplate="input">
+                    <input pInputText type="text" [(ngModel)]="rowData.daybookdate">
+      
+      
+      
+                </ng-template>
+                <ng-template pTemplate="output">
+                    {{rowData.daybookdate | date}}
+                </ng-template>
+            </p-cellEditor>
+        </td>
+         <td> 
+           <p-cellEditor>
+               <ng-template pTemplate="input">
+                   <input pInputText type="text" [(ngModel)]="rowData.companyname">
+               </ng-template>
+               <ng-template pTemplate="output">
+                   {{rowData.companyname}}
+               </ng-template>
+           </p-cellEditor>
+       </td>
+         <td>
+             <p-cellEditor>
+                 <ng-template pTemplate="input">
+                     <input pInputText type="text" [(ngModel)]="rowData.ledgeralias">
+                 </ng-template>
+                 <ng-template pTemplate="output">
+                     {{rowData.ledgeralias}}
+                 </ng-template>
+             </p-cellEditor>
+         </td>
+         <td>
+             <p-cellEditor>
+                 <ng-template pTemplate="input">
+                     <input pInputText type="text" [(ngModel)]="rowData.openingbalance">
+   
+   
+   
+                 </ng-template>
+                 <ng-template pTemplate="output">
+                     {{rowData.openingbalance}}
+                 </ng-template>
+             </p-cellEditor>
+         </td>
+         <td>
+          <p-cellEditor>
+              <ng-template pTemplate="input">
+                  <input pInputText type="text" [(ngModel)]="rowData.closingbalance">
+  
+  
+  
+              </ng-template>
+              <ng-template pTemplate="output">
+                  {{rowData.closingbalance}}
+              </ng-template>
+          </p-cellEditor>
+      </td>
+      
+    <td *ngIf="(rowData.statusdaybook=='Closed')" [style]="{'background-color':'lightgreen'}">
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.statusdaybook">  
+  
+  
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.statusdaybook}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+    <td *ngIf="(rowData.statusdaybook=='Opened')" [style]="{'background-color':'yellow'}">
+        <p-cellEditor>
+            <ng-template pTemplate="input">
+                <input pInputText type="text" [(ngModel)]="rowData.statusdaybook">  
+  
+  
+            </ng-template>
+            <ng-template pTemplate="output">
+                {{rowData.statusdaybook}}
+            </ng-template>
+        </p-cellEditor>
+    </td>
+<td>
+    <p-button (onClick)="onDelete(rowData.daybookledgerid)"
+    *ngIf="urole==sadmin">
+    <i class="pi pi-trash"></i>
+  </p-button>
+</td>
+
+     </tr>
+     </ng-template>
+   </p-table>
+  </div>
+  
+  </div>
+  

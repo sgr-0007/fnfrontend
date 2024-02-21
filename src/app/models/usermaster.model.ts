@@ -1,0 +1,30 @@
+export class Usermaster {
+    userid?:number;
+    employeeId?:string;
+    userfirstname?:string;
+    usermiddlename?:string
+    userlastname?:string;
+    userloginname?:string;
+    emailid?:string;
+    mobilenumber?:string;
+    dob?:Date;
+    reportingmanager?:number;
+    designationid?:number; 
+    designation?:number;
+    originaldepartment?:number;
+    currentdepartment?:number;
+    post?:number;
+    password?:string;
+    officenameid?:number;
+    officename?:string;
+    sectionnameid?:number;
+    sectionname?:string;
+    designationname?:string;
+    rmempcode?:string;
+    rmname?:string;
+    rmdesigntion?:string;
+    rolemappingid?:number;
+    moduleid?:number;
+    roleid?:number;
+}
+

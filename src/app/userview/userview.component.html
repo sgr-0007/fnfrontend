@@ -1,0 +1,14 @@
+<app-header (toggleSideBarForMe)="togglesidebar()"></app-header>  
+<mat-drawer-container  class="example-container" autosize>
+  <mat-drawer #drawer class="background-primary example-sidenav" mode="side" [opened]="sideBarOpen">
+    
+    <app-sidebar (toggleSideBarForMe)="togglesidebar()"></app-sidebar>
+  </mat-drawer>
+  <mat-drawer-content>
+
+    <div class="ng-container viewbody">
+    <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-content>
+
+</mat-drawer-container>

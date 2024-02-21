@@ -1,0 +1,43 @@
+
+<div class="back">
+    <div class="div-center">
+      <div class="content"> 
+      <h2 style="text-align: center;">Password Change</h2>
+        <hr />
+        <form #loginform="ngForm" (ngSubmit)= "changepass(loginform)">
+            <small class ="text-danger"></small>
+          <div class="form-group my-2">
+            <label for="exampleInputEmail1" style="font-size:17px">Username</label>
+            <input type="text" class="form-control" name="userloginname" ngModel required #userloginname="ngModel"
+            [class.is-invalid]="userloginname.invalid && userloginname.touched"
+        >
+        <small class ="text-danger" [class.d-none]="userloginname.valid || userloginname.untouched">Username  is required field</small>
+          </div>
+          <div class="form-group my-2">
+            <label for="exampleInputPassword1" style="font-size:17px">Password</label>
+            <input type="password"  class="form-control"  name="password" ngModel required #password="ngModel"
+            [class.is-invalid]="password.invalid && password.touched"
+            >
+            <small class ="text-danger" [class.d-none]="password.valid || password.untouched">Password is required field</small>
+          </div>
+          <div class="form-group my-2">
+            <label for="exampleInputPassword1" style="font-size:17px">Re-Enter Password</label>
+            <input type="password" class="form-control"  name="password1" ngModel required #password1="ngModel"
+            [class.is-invalid]="password1.invalid && password1.touched"
+            >
+            <small class ="text-danger" [class.d-none]="password1.valid || password1.untouched" >Password is required field</small>
+            <small class ="text-danger" *ngIf="password.value!=password1.value && (password1.touched||password1.touched)" >Please Check the password</small>
+          </div>
+        
+          <p-button type="submit"  [disabled]="loginform.invalid" class="p-btn-info" >change</p-button>
+        
+         
+
+          <hr />
+      
+          <button type="button" routerLink="/login" class="btn btn-link">Login</button>
+          
+        </form>
+  
+      </div>
+    </div>
